@@ -5,12 +5,14 @@ interface ScoreDisplayProps {
     teamA: Team;
     teamB: Team;
     onOpenScoreboard?: () => void;
+    onOpenSettings?: () => void;
 }
 
 export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
     teamA,
     teamB,
-    onOpenScoreboard
+    onOpenScoreboard,
+    onOpenSettings
 }) => {
     return (
         <div className="score-display">
@@ -43,14 +45,24 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
                 </div>
             </div>
 
-            {onOpenScoreboard && (
-                <button
-                    className="scoreboard-button"
-                    onClick={onOpenScoreboard}
-                >
-                    📊 Abrir Scoreboard Detalhado
-                </button>
-            )}
+            <div className="score-actions">
+                {onOpenScoreboard && (
+                    <button
+                        className="scoreboard-button"
+                        onClick={onOpenScoreboard}
+                    >
+                        📊 Abrir Scoreboard Detalhado
+                    </button>
+                )}
+                {onOpenSettings && (
+                    <button
+                        className="settings-button"
+                        onClick={onOpenSettings}
+                    >
+                        ⚙️ Configuração de Times
+                    </button>
+                )}
+            </div>
         </div>
     );
 }; 

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { ScoreDisplay } from '../components/ScoreDisplay';
 import { GamesList } from '../components/GamesList';
 import { ToolsSection } from '../components/ToolsSection';
-import { useGameState } from '../hooks/useGameState';
 import { games } from '../data/gameData';
 
 interface DashboardProps {
@@ -10,15 +9,25 @@ interface DashboardProps {
     onOpenBuzzer: () => void;
     onOpenSettings: () => void;
     onGameClick: (gameId: string) => void;
+    gameState: {
+        teams: {
+            teamA: any;
+            teamB: any;
+        };
+    };
+    addPoints: (teamId: 'A' | 'B', points: number) => void;
+    resetScores: () => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
     onOpenScoreboard,
     onOpenBuzzer,
     onOpenSettings,
-    onGameClick
+    onGameClick,
+    gameState,
+    addPoints,
+    resetScores
 }) => {
-    const { gameState, addPoints, resetScores } = useGameState();
 
     // Atalhos de teclado
     useEffect(() => {
@@ -74,6 +83,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     teamA={gameState.teams.teamA}
                     teamB={gameState.teams.teamB}
                     onOpenScoreboard={onOpenScoreboard}
+                    onOpenSettings={onOpenSettings}
                 />
 
                 <GamesList
@@ -88,7 +98,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             resetScores();
                         }
                     }}
-                    onOpenSettings={onOpenSettings}
                 />
             </main>
         </div>

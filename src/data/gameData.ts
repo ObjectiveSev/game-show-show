@@ -1,26 +1,4 @@
-import { Team, Game } from '../types';
-
-// Dados dos times
-export const initialTeams: { teamA: Team; teamB: Team } = {
-    teamA: {
-        id: 'A',
-        name: 'Time A',
-        captain: 'Baby',
-        members: ['Baby', 'João', 'Álan', 'Matheus'],
-        color: '#ff6b6b',
-        gradient: 'linear-gradient(145deg, #ff6b6b, #ee5a52)',
-        score: 0
-    },
-    teamB: {
-        id: 'B',
-        name: 'Time B',
-        captain: 'Victor',
-        members: ['Victor', 'Átila', 'Bruno', 'Sand'],
-        color: '#4ecdc4',
-        gradient: 'linear-gradient(145deg, #4ecdc4, #44a08d)',
-        score: 0
-    }
-};
+import { Game } from '../types';
 
 // Lista de jogos
 export const games: Game[] = [

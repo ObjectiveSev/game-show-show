@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Team, GameScores } from '../types';
-import { initialTeams } from '../data/gameData';
+import { loadGameConfig, saveGameConfig, GameConfig } from '../config/gameConfig';
 
 interface GameState {
     teams: {
@@ -16,11 +16,18 @@ export const useGameState = () => {
     const [gameState, setGameState] = useState<GameState>(() => {
         // Carregar estado salvo ou usar estado inicial
         const saved = localStorage.getItem(STORAGE_KEY);
+        const config = loadGameConfig();
+
         if (saved) {
-            return JSON.parse(saved);
+            const parsed = JSON.parse(saved);
+            // Merge saved state with current config (to get updated team info)
+            return {
+                teams: config.teams,
+                gameScores: parsed.gameScores || {}
+            };
         }
         return {
-            teams: initialTeams,
+            teams: config.teams,
             gameScores: {}
         };
     });
@@ -29,6 +36,20 @@ export const useGameState = () => {
     useEffect(() => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
     }, [gameState]);
+
+    // Recarregar configuração quando ela mudar no localStorage
+    useEffect(() => {
+        const handleStorageChange = () => {
+            const config = loadGameConfig();
+            setGameState(prev => ({
+                ...prev,
+                teams: config.teams
+            }));
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, []);
 
     // Função para adicionar pontos a um time
     const addPoints = (teamId: 'A' | 'B', points: number) => {
@@ -89,11 +110,59 @@ export const useGameState = () => {
         }));
     };
 
+    // Função para atualizar membros dos times
+    const updateTeamMembers = (teamId: 'A' | 'B', members: string[]) => {
+        setGameState(prev => ({
+            ...prev,
+            teams: {
+                ...prev.teams,
+                [`team${teamId}`]: {
+                    ...prev.teams[`team${teamId}` as keyof typeof prev.teams],
+                    members
+                }
+            }
+        }));
+    };
+
+    // Função para atualizar configuração completa dos times
+    const updateTeamConfig = (teamId: 'A' | 'B', team: Partial<Team>) => {
+        setGameState(prev => ({
+            ...prev,
+            teams: {
+                ...prev.teams,
+                [`team${teamId}`]: {
+                    ...prev.teams[`team${teamId}` as keyof typeof prev.teams],
+                    ...team
+                }
+            }
+        }));
+    };
+
+    // Função para salvar configuração atual
+    const saveConfig = () => {
+        const config = loadGameConfig();
+        config.teams = gameState.teams;
+        saveGameConfig(config);
+    };
+
+    // Função para recarregar configuração
+    const reloadConfig = () => {
+        const config = loadGameConfig();
+        setGameState(prev => ({
+            ...prev,
+            teams: config.teams
+        }));
+    };
+
     return {
         gameState,
         addPoints,
         addGamePoints,
         resetScores,
-        updateTeamNames
+        updateTeamNames,
+        updateTeamMembers,
+        updateTeamConfig,
+        saveConfig,
+        reloadConfig
     };
 }; 
