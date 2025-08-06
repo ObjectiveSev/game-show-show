@@ -1,0 +1,3 @@
+# Game Show Show - React Version
+
+Projeto em desenvolvimento...

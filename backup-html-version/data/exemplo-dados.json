@@ -1,0 +1,78 @@
+{
+  "verdades-absurdas": {
+    "textos": [
+      {
+        "texto": "O cientista Albert Einstein nunca aprendeu a dirigir um carro. Ele preferia andar a pé ou usar transporte público. Em 1921, ele ganhou o Prêmio Nobel de Física por sua explicação do efeito fotoelétrico. Curiosamente, Einstein também era um excelente violinista e tocava em concertos beneficentes. Ele morreu em 1955 aos 76 anos de idade.",
+        "verdades": [
+          "Einstein nunca aprendeu a dirigir",
+          "Ganhou o Prêmio Nobel em 1921",
+          "Era violinista",
+          "Morreu em 1955",
+          "Tinha 76 anos quando morreu"
+        ]
+      },
+      {
+        "texto": "A Torre Eiffel foi construída em apenas 2 anos, entre 1887 e 1889. Ela tem exatamente 324 metros de altura e pesa cerca de 10.100 toneladas. Durante o verão, a torre pode crescer até 15 centímetros devido à expansão térmica do metal. A estrutura foi originalmente pintada de vermelho, mas hoje é marrom. Mais de 7 milhões de pessoas visitam a torre anualmente.",
+        "verdades": [
+          "Foi construída em 2 anos",
+          "Tem 324 metros de altura",
+          "Pesa 10.100 toneladas",
+          "Cresce no verão",
+          "7 milhões de visitantes por ano"
+        ]
+      }
+    ]
+  },
+  "dicionario-surreal": {
+    "palavras": [
+      {
+        "palavra": "Sesquipedaliano",
+        "definicoes": [
+          "Que usa palavras muito longas e complicadas",
+          "Relativo a um tipo de dinossauro herbívoro",
+          "Instrumento musical de sopro antigo"
+        ],
+        "correta": 0
+      },
+      {
+        "palavra": "Defenestração",
+        "definicoes": [
+          "Ato de atirar alguém pela janela",
+          "Processo de limpeza de vidros",
+          "Técnica de construção medieval"
+        ],
+        "correta": 0
+      }
+    ]
+  },
+  "noticias-extraordinarias": {
+    "manchetes": [
+      {
+        "titulo": "Homem encontra diamante de 9 quilates em seu quintal",
+        "real": true
+      },
+      {
+        "titulo": "Gato aprende a falar português fluente",
+        "real": false
+      },
+      {
+        "titulo": "Cientistas descobrem nova espécie de peixe que voa",
+        "real": true
+      }
+    ]
+  },
+  "caro-pra-chuchu": {
+    "itens": [
+      {
+        "item": "iPhone original (2007)",
+        "preco": 599,
+        "dica": "Primeiro smartphone da Apple"
+      },
+      {
+        "item": "Bitcoin (2010)",
+        "preco": 0.08,
+        "dica": "Primeira criptomoeda"
+      }
+    ]
+  }
+} 
