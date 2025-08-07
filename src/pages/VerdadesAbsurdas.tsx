@@ -12,9 +12,15 @@ export const VerdadesAbsurdas: React.FC = () => {
 
     // Carregar dados do jogo
     useEffect(() => {
+        let isMounted = true;
+
         const carregarDados = async () => {
             try {
                 const data = await carregarVerdadesAbsurdas();
+                
+                // Verificar se o componente ainda está montado
+                if (!isMounted) return;
+                
                 setVerdadesAbsurdas(data.verdadesAbsurdas);
 
                 // Inicializar estados dos textos
@@ -30,20 +36,34 @@ export const VerdadesAbsurdas: React.FC = () => {
                 setLoading(false);
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
 
         carregarDados();
+
+        // Cleanup function
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     const handleCardClick = (texto: VerdadeAbsurda) => {
         // TODO: Implementar navegação para o modal do texto
-        console.log('Abrir texto:', texto.titulo);
+        try {
+            console.log('Abrir texto:', texto.titulo);
+        } catch (error) {
+            console.error('Erro ao abrir texto:', error);
+        }
     };
 
     const handleVoltarDashboard = () => {
-        navigate('/');
+        // Usar setTimeout para evitar problemas com message channel
+        setTimeout(() => {
+            navigate('/');
+        }, 0);
     };
 
     if (loading) {

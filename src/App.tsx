@@ -44,10 +44,13 @@ function App() {
   };
 
   const handleClearLocalStorage = () => {
-    if (confirm('Tem certeza que deseja limpar todo o localStorage? Isso irá apagar todas as configurações e pontuações.')) {
-      clearAllLocalStorage();
-      window.location.reload();
-    }
+    // Usar setTimeout para evitar problemas com message channel
+    setTimeout(() => {
+      if (confirm('Tem certeza que deseja limpar todo o localStorage? Isso irá apagar todas as configurações e pontuações.')) {
+        clearAllLocalStorage();
+        window.location.reload();
+      }
+    }, 0);
   };
 
   return (

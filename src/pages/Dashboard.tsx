@@ -64,9 +64,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         break;
                     case 'r':
                         event.preventDefault();
-                        if (confirm('Tem certeza que deseja resetar a pontuação?')) {
-                            resetScores();
-                        }
+                        // Usar setTimeout para evitar problemas com message channel
+                        setTimeout(() => {
+                            if (confirm('Tem certeza que deseja resetar a pontuação?')) {
+                                resetScores();
+                            }
+                        }, 0);
                         break;
                 }
             }
@@ -98,9 +101,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <ToolsSection
                     onOpenBuzzer={onOpenBuzzer}
                     onResetScores={() => {
-                        if (confirm('Tem certeza que deseja resetar a pontuação?')) {
-                            resetScores();
-                        }
+                        // Usar setTimeout para evitar problemas com message channel
+                        setTimeout(() => {
+                            if (confirm('Tem certeza que deseja resetar a pontuação?')) {
+                                resetScores();
+                            }
+                        }, 0);
                     }}
                     onClearLocalStorage={onClearLocalStorage}
                 />

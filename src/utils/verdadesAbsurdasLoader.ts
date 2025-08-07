@@ -2,7 +2,14 @@ import type { VerdadesAbsurdasData, Verdade } from '../types/verdadesAbsurdas';
 
 export const carregarVerdadesAbsurdas = async (): Promise<VerdadesAbsurdasData> => {
     try {
-        const response = await fetch('/config/verdades-absurdas.json');
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos timeout
+
+        const response = await fetch('/config/verdades-absurdas.json', {
+            signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
 
         if (!response.ok) {
             throw new Error(`Erro ao carregar verdades absurdas: ${response.status}`);
@@ -11,6 +18,10 @@ export const carregarVerdadesAbsurdas = async (): Promise<VerdadesAbsurdasData> 
         const data: VerdadesAbsurdasData = await response.json();
         return data;
     } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+            console.error('❌ Timeout ao carregar verdades absurdas');
+            throw new Error('Timeout ao carregar dados');
+        }
         console.error('❌ Erro ao carregar verdades absurdas:', error);
         throw error;
     }
