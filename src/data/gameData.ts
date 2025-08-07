@@ -1,4 +1,4 @@
-import { Game } from '../types';
+import type { Game } from '../types';
 
 // Lista de jogos
 export const games: Game[] = [

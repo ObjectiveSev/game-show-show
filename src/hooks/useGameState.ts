@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { Team, GameScores } from '../types';
 import { loadGameConfig, saveGameConfig } from '../config/gameConfig';
-import type { GameConfig } from '../config/gameConfig';
+
 
 interface GameState {
     teams: {

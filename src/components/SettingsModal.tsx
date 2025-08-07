@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Team } from '../types';
+import type { Team } from '../types';
 
 interface SettingsModalProps {
     isOpen: boolean;
@@ -7,7 +7,7 @@ interface SettingsModalProps {
     teamA: Team;
     teamB: Team;
     onUpdateTeamConfig: (teamId: 'A' | 'B', team: Partial<Team>) => void;
-    onSaveConfig: () => void;
+    onSaveConfig: (customData?: any) => void;
     onReloadConfig: () => void;
 }
 

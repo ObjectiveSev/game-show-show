@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+
 import { ScoreDisplay } from '../components/ScoreDisplay';
 import { GamesList } from '../components/GamesList';
 import { ToolsSection } from '../components/ToolsSection';
@@ -30,6 +31,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
     resetScores,
     onClearLocalStorage
 }) => {
+
 
     // Atalhos de teclado
     useEffect(() => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Team } from '../types';
+import type { Team } from '../types';
 
 interface ScoreDisplayProps {
     teamA: Team;
