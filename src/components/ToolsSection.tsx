@@ -3,11 +3,13 @@ import React from 'react';
 interface ToolsSectionProps {
     onOpenBuzzer: () => void;
     onResetScores: () => void;
+    onClearLocalStorage: () => void;
 }
 
 export const ToolsSection: React.FC<ToolsSectionProps> = ({
     onOpenBuzzer,
-    onResetScores
+    onResetScores,
+    onClearLocalStorage
 }) => {
     return (
         <div className="tools-section">
@@ -23,6 +25,10 @@ export const ToolsSection: React.FC<ToolsSectionProps> = ({
                     <span>Resetar Pontuação</span>
                 </button>
 
+                <button className="tool-button" onClick={onClearLocalStorage}>
+                    <span className="tool-icon">🗑️</span>
+                    <span>Limpar LocalStorage</span>
+                </button>
 
             </div>
 

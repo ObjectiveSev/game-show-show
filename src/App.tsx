@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Dashboard } from './pages/Dashboard';
 import { SettingsModal } from './components/SettingsModal';
 import { useGameState } from './hooks/useGameState';
+import { clearAllLocalStorage } from './utils/fileSystem';
 import './styles/Dashboard.css';
 import './styles/SettingsModal.css';
 
@@ -10,6 +11,8 @@ function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { gameState, updateTeamConfig, saveConfig, reloadConfig, addPoints, resetScores } = useGameState();
   const [renderKey, setRenderKey] = useState(0);
+
+
 
   const handleOpenScoreboard = () => {
     setCurrentView('scoreboard');
@@ -27,13 +30,20 @@ function App() {
     setIsSettingsOpen(true);
   };
 
-  const handleSaveConfig = () => {
-    saveConfig();
+  const handleSaveConfig = async (customData?: any) => {
+    await saveConfig(customData);
     setRenderKey(prev => prev + 1); // Força re-renderização
   };
 
   const handleGameClick = (gameId: string) => {
     alert(`Jogo "${gameId}" será implementado em breve!`);
+  };
+
+  const handleClearLocalStorage = () => {
+    if (confirm('Tem certeza que deseja limpar todo o localStorage? Isso irá apagar todas as configurações e pontuações.')) {
+      clearAllLocalStorage();
+      window.location.reload();
+    }
   };
 
   return (
@@ -47,6 +57,7 @@ function App() {
         gameState={gameState}
         addPoints={addPoints}
         resetScores={resetScores}
+        onClearLocalStorage={handleClearLocalStorage}
       />
 
       <SettingsModal

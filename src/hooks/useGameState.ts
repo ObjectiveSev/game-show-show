@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Team, GameScores } from '../types';
-import { loadGameConfig, saveGameConfig, GameConfig } from '../config/gameConfig';
+import type { Team, GameScores } from '../types';
+import { loadGameConfig, saveGameConfig } from '../config/gameConfig';
+import type { GameConfig } from '../config/gameConfig';
 
 interface GameState {
     teams: {
@@ -10,46 +11,76 @@ interface GameState {
     gameScores: GameScores;
 }
 
-const STORAGE_KEY = 'gameShowState';
+const SCORES_STORAGE_KEY = 'gameShowScores';
 
 export const useGameState = () => {
-    const [gameState, setGameState] = useState<GameState>(() => {
-        // Carregar estado salvo ou usar estado inicial
-        const saved = localStorage.getItem(STORAGE_KEY);
-        const config = loadGameConfig();
-
-        if (saved) {
-            const parsed = JSON.parse(saved);
-            // Merge saved state with current config (to get updated team info)
-            return {
-                teams: config.teams,
-                gameScores: parsed.gameScores || {}
-            };
-        }
-        return {
-            teams: config.teams,
-            gameScores: {}
-        };
+    const [gameState, setGameState] = useState<GameState>({
+        teams: {
+            teamA: {
+                id: 'A',
+                name: '',
+                captain: '',
+                members: [],
+                color: '#ff6b6b',
+                gradient: 'linear-gradient(145deg, #ff6b6b, #ee5a52)',
+                score: 0
+            },
+            teamB: {
+                id: 'B',
+                name: '',
+                captain: '',
+                members: [],
+                color: '#4ecdc4',
+                gradient: 'linear-gradient(145deg, #4ecdc4, #44a08d)',
+                score: 0
+            }
+        },
+        gameScores: {}
     });
 
-    // Salvar estado no localStorage sempre que mudar
-    useEffect(() => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
-    }, [gameState]);
 
-    // Recarregar configuração quando ela mudar no localStorage
+
+    // Carregar configuração inicial do localStorage
     useEffect(() => {
-        const handleStorageChange = () => {
-            const config = loadGameConfig();
-            setGameState(prev => ({
-                ...prev,
-                teams: config.teams
-            }));
+        const loadInitialConfig = async () => {
+            try {
+                const config = await loadGameConfig();
+                setGameState(prev => ({
+                    ...prev,
+                    teams: config.teams
+                }));
+            } catch (error) {
+                console.error('❌ Erro ao carregar configuração inicial:', error);
+            }
         };
 
-        window.addEventListener('storage', handleStorageChange);
-        return () => window.removeEventListener('storage', handleStorageChange);
+        loadInitialConfig();
     }, []);
+
+    // Carregar scores salvos do localStorage
+    useEffect(() => {
+        const savedScores = localStorage.getItem(SCORES_STORAGE_KEY);
+        if (savedScores) {
+            try {
+                const parsed = JSON.parse(savedScores);
+                setGameState(prev => ({
+                    ...prev,
+                    gameScores: parsed.gameScores || {}
+                }));
+            } catch (error) {
+                console.error('❌ Erro ao carregar scores:', error);
+            }
+        }
+    }, []);
+
+    // Salvar scores no localStorage sempre que mudar
+    useEffect(() => {
+        localStorage.setItem(SCORES_STORAGE_KEY, JSON.stringify({
+            gameScores: gameState.gameScores
+        }));
+    }, [gameState.gameScores]);
+
+
 
     // Função para adicionar pontos a um time
     const addPoints = (teamId: 'A' | 'B', points: number) => {
@@ -138,20 +169,51 @@ export const useGameState = () => {
         }));
     };
 
-    // Função para salvar configuração atual
-    const saveConfig = () => {
-        const config = loadGameConfig();
-        config.teams = gameState.teams;
-        saveGameConfig(config);
+    // Função para salvar configuração atual no localStorage
+    const saveConfig = async (customData?: any) => {
+        try {
+            let configToSave;
+
+            if (customData) {
+                // Usar dados customizados se fornecidos
+                configToSave = customData;
+            } else {
+                // Usar estado atual
+                configToSave = {
+                    teams: {
+                        teamA: {
+                            id: gameState.teams.teamA.id,
+                            name: gameState.teams.teamA.name,
+                            captain: gameState.teams.teamA.captain,
+                            members: gameState.teams.teamA.members
+                        },
+                        teamB: {
+                            id: gameState.teams.teamB.id,
+                            name: gameState.teams.teamB.name,
+                            captain: gameState.teams.teamB.captain,
+                            members: gameState.teams.teamB.members
+                        }
+                    }
+                };
+            }
+
+            await saveGameConfig(configToSave);
+        } catch (error) {
+            console.error('❌ Erro ao salvar configuração:', error);
+        }
     };
 
     // Função para recarregar configuração
-    const reloadConfig = () => {
-        const config = loadGameConfig();
-        setGameState(prev => ({
-            ...prev,
-            teams: config.teams
-        }));
+    const reloadConfig = async () => {
+        try {
+            const config = await loadGameConfig();
+            setGameState(prev => ({
+                ...prev,
+                teams: config.teams
+            }));
+        } catch (error) {
+            console.error('Erro ao recarregar configuração:', error);
+        }
     };
 
     return {

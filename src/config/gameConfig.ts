@@ -1,15 +1,10 @@
-import { Team } from '../types';
+import type { Team } from '../types';
+import { readTeamsFile, writeTeamsFile } from '../utils/fileSystem';
 
 export interface GameConfig {
     teams: {
         teamA: Team;
         teamB: Team;
-    };
-    settings: {
-        defaultPoints: number;
-        maxScore: number;
-        enableSound: boolean;
-        enableAnimations: boolean;
     };
 }
 
@@ -34,35 +29,85 @@ export const defaultGameConfig: GameConfig = {
             gradient: 'linear-gradient(145deg, #4ecdc4, #44a08d)',
             score: 0
         }
-    },
-    settings: {
-        defaultPoints: 1,
-        maxScore: 100,
-        enableSound: true,
-        enableAnimations: true
     }
 };
 
-// Function to load custom config from localStorage or use default
-export const loadGameConfig = (): GameConfig => {
-    const savedConfig = localStorage.getItem('gameShowConfig');
-    if (savedConfig) {
-        try {
-            const parsed = JSON.parse(savedConfig);
-            return { ...defaultGameConfig, ...parsed };
-        } catch (error) {
-            console.warn('Failed to parse saved config, using default:', error);
-        }
+// Function to load custom config from teams.json file
+export const loadGameConfig = async (): Promise<GameConfig> => {
+    try {
+        const fileConfig = await readTeamsFile();
+
+        // Converte a estrutura do arquivo para o formato do GameConfig
+        const config: GameConfig = {
+            teams: {
+                teamA: {
+                    ...fileConfig.teams.teamA,
+                    color: '#ff6b6b',
+                    gradient: 'linear-gradient(145deg, #ff6b6b, #ee5a52)',
+                    score: 0 // Score sempre começa em 0
+                },
+                teamB: {
+                    ...fileConfig.teams.teamB,
+                    color: '#4ecdc4',
+                    gradient: 'linear-gradient(145deg, #4ecdc4, #44a08d)',
+                    score: 0 // Score sempre começa em 0
+                }
+            }
+        };
+
+        return config;
+    } catch (error) {
+        console.warn('❌ Failed to load teams.json, using default:', error);
+        return defaultGameConfig;
     }
-    return defaultGameConfig;
 };
 
-// Function to save config to localStorage
-export const saveGameConfig = (config: GameConfig): void => {
-    localStorage.setItem('gameShowConfig', JSON.stringify(config));
+// Interface para dados básicos do time (sem cores e scores)
+interface TeamBasicData {
+    id: string;
+    name: string;
+    captain: string;
+    members: string[];
+}
+
+interface TeamsBasicConfig {
+    teams: {
+        teamA: TeamBasicData;
+        teamB: TeamBasicData;
+    };
+}
+
+// Function to save config to teams.json file
+export const saveGameConfig = async (config: TeamsBasicConfig): Promise<void> => {
+    try {
+        await writeTeamsFile(config);
+    } catch (error) {
+        console.error('❌ Failed to save teams.json:', error);
+        throw error;
+    }
 };
 
 // Function to reset config to default
-export const resetGameConfig = (): void => {
-    localStorage.removeItem('gameShowConfig');
+export const resetGameConfig = async (): Promise<void> => {
+    try {
+        await writeTeamsFile({
+            teams: {
+                teamA: {
+                    id: 'A',
+                    name: 'Time A',
+                    captain: 'Baby',
+                    members: ['Baby', 'João', 'Álan', 'Matheus']
+                },
+                teamB: {
+                    id: 'B',
+                    name: 'Time B',
+                    captain: 'Victor',
+                    members: ['Victor', 'Átila', 'Bruno', 'Sand']
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Failed to reset teams.json:', error);
+        throw error;
+    }
 }; 

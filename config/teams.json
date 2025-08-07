@@ -9,9 +9,7 @@
                 "João",
                 "Álan",
                 "Matheus"
-            ],
-            "color": "#ff6b6b",
-            "gradient": "linear-gradient(145deg, #ff6b6b, #ee5a52)"
+            ]
         },
         "teamB": {
             "id": "B",
@@ -22,15 +20,7 @@
                 "Átila",
                 "Bruno",
                 "Sand"
-            ],
-            "color": "#4ecdc4",
-            "gradient": "linear-gradient(145deg, #4ecdc4, #44a08d)"
+            ]
         }
-    },
-    "settings": {
-        "defaultPoints": 1,
-        "maxScore": 100,
-        "enableSound": true,
-        "enableAnimations": true
     }
 }

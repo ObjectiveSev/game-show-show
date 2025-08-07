@@ -17,6 +17,7 @@ interface DashboardProps {
     };
     addPoints: (teamId: 'A' | 'B', points: number) => void;
     resetScores: () => void;
+    onClearLocalStorage: () => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
@@ -26,7 +27,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
     onGameClick,
     gameState,
     addPoints,
-    resetScores
+    resetScores,
+    onClearLocalStorage
 }) => {
 
     // Atalhos de teclado
@@ -98,6 +100,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             resetScores();
                         }
                     }}
+                    onClearLocalStorage={onClearLocalStorage}
                 />
             </main>
         </div>

@@ -22,11 +22,11 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
                     className="team-card team-a"
                     style={{ background: teamA.gradient }}
                 >
-                    <div className="team-name">{teamA.name}</div>
+                    <div className="team-name">{teamA.name || 'Time A'}</div>
                     <div className="team-score">{teamA.score}</div>
-                    <div className="team-captain">Capitão: {teamA.captain}</div>
+                    <div className="team-captain">Capitão: {teamA.captain || 'Não definido'}</div>
                     <div className="team-members">
-                        {teamA.members.join(', ')}
+                        {teamA.members.length > 0 ? teamA.members.join(', ') : 'Nenhum membro'}
                     </div>
                 </div>
 
@@ -36,11 +36,11 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
                     className="team-card team-b"
                     style={{ background: teamB.gradient }}
                 >
-                    <div className="team-name">{teamB.name}</div>
+                    <div className="team-name">{teamB.name || 'Time B'}</div>
                     <div className="team-score">{teamB.score}</div>
-                    <div className="team-captain">Capitão: {teamB.captain}</div>
+                    <div className="team-captain">Capitão: {teamB.captain || 'Não definido'}</div>
                     <div className="team-members">
-                        {teamB.members.join(', ')}
+                        {teamB.members.length > 0 ? teamB.members.join(', ') : 'Nenhum membro'}
                     </div>
                 </div>
             </div>

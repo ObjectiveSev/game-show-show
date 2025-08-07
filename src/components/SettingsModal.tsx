@@ -31,13 +31,37 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
     if (!isOpen) return null;
 
-    const handleSave = () => {
+    const handleSave = async () => {
         // Aplicar todas as mudanças do estado local
         onUpdateTeamConfig('A', localTeamA);
         onUpdateTeamConfig('B', localTeamB);
-        onSaveConfig();
+
+        // Aguardar um tick para garantir que o estado foi atualizado
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        // Preparar dados para salvar
+        const dataToSave = {
+            teams: {
+                teamA: {
+                    id: localTeamA.id,
+                    name: localTeamA.name,
+                    captain: localTeamA.captain,
+                    members: localTeamA.members
+                },
+                teamB: {
+                    id: localTeamB.id,
+                    name: localTeamB.name,
+                    captain: localTeamB.captain,
+                    members: localTeamB.members
+                }
+            }
+        };
+
+        await onSaveConfig(dataToSave);
         onClose();
     };
+
+
 
     // Atualizar apenas o estado local
     const handleTeamChange = (teamId: 'A' | 'B', updates: Partial<Team>) => {
@@ -128,6 +152,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                             <input
                                 type="text"
                                 value={localTeamA.name}
+                                placeholder="Digite o nome do Time A"
                                 onChange={(e) => handleTeamChange('A', { name: e.target.value })}
                             />
                         </div>
@@ -136,7 +161,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                             <select
                                 value={localTeamA.captain}
                                 onChange={(e) => handleTeamChange('A', { captain: e.target.value })}
+                                disabled={localTeamA.members.length === 0}
                             >
+                                <option value="">Selecione um capitão</option>
                                 {localTeamA.members.map((member, index) => (
                                     <option key={index} value={member}>
                                         {member}
@@ -147,17 +174,21 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         <div className="config-row">
                             <label>Membros:</label>
                             <div className="members-list">
-                                {localTeamA.members.map((member, index) => (
-                                    <div key={index} className="member-item">
-                                        <span>{member}</span>
-                                        <button
-                                            className="remove-member"
-                                            onClick={() => removeMember('A', index)}
-                                        >
-                                            ×
-                                        </button>
-                                    </div>
-                                ))}
+                                {localTeamA.members.length === 0 ? (
+                                    <div className="no-members">Nenhum membro adicionado</div>
+                                ) : (
+                                    localTeamA.members.map((member, index) => (
+                                        <div key={index} className="member-item">
+                                            <span>{member}</span>
+                                            <button
+                                                className="remove-member"
+                                                onClick={() => removeMember('A', index)}
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
+                                    ))
+                                )}
                                 <button className="add-member" onClick={() => addMember('A')}>
                                     + Adicionar Membro
                                 </button>
@@ -173,6 +204,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                             <input
                                 type="text"
                                 value={localTeamB.name}
+                                placeholder="Digite o nome do Time B"
                                 onChange={(e) => handleTeamChange('B', { name: e.target.value })}
                             />
                         </div>
@@ -181,7 +213,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                             <select
                                 value={localTeamB.captain}
                                 onChange={(e) => handleTeamChange('B', { captain: e.target.value })}
+                                disabled={localTeamB.members.length === 0}
                             >
+                                <option value="">Selecione um capitão</option>
                                 {localTeamB.members.map((member, index) => (
                                     <option key={index} value={member}>
                                         {member}
@@ -192,17 +226,21 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         <div className="config-row">
                             <label>Membros:</label>
                             <div className="members-list">
-                                {localTeamB.members.map((member, index) => (
-                                    <div key={index} className="member-item">
-                                        <span>{member}</span>
-                                        <button
-                                            className="remove-member"
-                                            onClick={() => removeMember('B', index)}
-                                        >
-                                            ×
-                                        </button>
-                                    </div>
-                                ))}
+                                {localTeamB.members.length === 0 ? (
+                                    <div className="no-members">Nenhum membro adicionado</div>
+                                ) : (
+                                    localTeamB.members.map((member, index) => (
+                                        <div key={index} className="member-item">
+                                            <span>{member}</span>
+                                            <button
+                                                className="remove-member"
+                                                onClick={() => removeMember('B', index)}
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
+                                    ))
+                                )}
                                 <button className="add-member" onClick={() => addMember('B')}>
                                     + Adicionar Membro
                                 </button>
@@ -220,7 +258,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                                 Cancelar
                             </button>
                             <button className="btn-save" onClick={handleSave}>
-                                💾 Aplicar Alterações
+                                💾 Salvar Alterações
                             </button>
                         </div>
                     </div>
