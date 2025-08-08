@@ -1,19 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { VerdadeAbsurda, TextoEstado } from '../types/verdadesAbsurdas';
+import type { VerdadeAbsurda, TextoEstado, PontuacaoConfig } from '../types/verdadesAbsurdas';
 import { carregarVerdadesAbsurdas } from '../utils/verdadesAbsurdasLoader';
+import { appendVerdadesAbsurdasScore } from '../utils/scoreStorage';
 import { TextoModal } from '../components/TextoModal';
-import { useGameState } from '../hooks/useGameState';
+import type { AppState } from '../types';
 import '../styles/VerdadesAbsurdas.css';
 
-export const VerdadesAbsurdas: React.FC = () => {
-    const { gameState } = useGameState();
+interface VerdadesAbsurdasProps {
+    gameState: AppState;
+    addGamePoints: (gameId: string, teamId: 'A' | 'B', points: number) => void;
+    addPoints: (teamId: 'A' | 'B', points: number) => void;
+}
+
+export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({ gameState, addGamePoints, addPoints }) => {
     const [verdadesAbsurdas, setVerdadesAbsurdas] = useState<VerdadeAbsurda[]>([]);
     const [estadosTextos, setEstadosTextos] = useState<TextoEstado[]>([]);
     const [loading, setLoading] = useState(true);
     const [modalAberto, setModalAberto] = useState(false);
     const [textoAtual, setTextoAtual] = useState<VerdadeAbsurda | null>(null);
     const [estadoAtual, setEstadoAtual] = useState<TextoEstado | null>(null);
+    const [pontuacaoConfig, setPontuacaoConfig] = useState<PontuacaoConfig>({
+        acertoVerdade: 1,
+        erroFalso: 1,
+        verdadeNaoEncontradaPeloRival: 1
+    });
     const navigate = useNavigate();
     const ESTADOS_STORAGE_KEY = 'verdadesAbsurdasEstados';
 
@@ -29,6 +40,7 @@ export const VerdadesAbsurdas: React.FC = () => {
                 if (!isMounted) return;
 
                 setVerdadesAbsurdas(data.verdadesAbsurdas);
+                setPontuacaoConfig(data.pontuacao);
 
                 // Inicializar estados dos textos (default)
                 const estadosIniciais: TextoEstado[] = data.verdadesAbsurdas.map(texto => ({
@@ -104,6 +116,48 @@ export const VerdadesAbsurdas: React.FC = () => {
             )
         );
         setEstadoAtual(novoEstado);
+    };
+
+    const handleSalvarPontuacao = (timeLeitor: 'A' | 'B') => {
+        if (!textoAtual || !estadoAtual || estadoAtual.pontuacaoSalva) return;
+
+        const total = textoAtual.verdades.length;
+        const acertosRival = estadoAtual.verdadesEncontradas.length;
+        const naoEncontradas = total - acertosRival;
+        const errosRival = estadoAtual.erros;
+        const timeAdivinhador: 'A' | 'B' = timeLeitor === 'A' ? 'B' : 'A';
+
+        const pontosAdivinhador = acertosRival * pontuacaoConfig.acertoVerdade - errosRival * pontuacaoConfig.erroFalso;
+        const pontosLeitor = naoEncontradas * pontuacaoConfig.verdadeNaoEncontradaPeloRival;
+
+        appendVerdadesAbsurdasScore({
+            textoId: textoAtual.id,
+            timeLeitor,
+            timeAdivinhador,
+            verdadesEncontradas: acertosRival,
+            verdadesNaoEncontradas: naoEncontradas,
+            erros: errosRival,
+            pontosLeitor,
+            pontosAdivinhador,
+            verdadesAcertadasIndices: estadoAtual.verdadesEncontradas,
+            timestamp: Date.now()
+        });
+
+        // Atualizar placar agregado do jogo
+        addGamePoints('verdades-absurdas', timeLeitor, pontosLeitor);
+        addGamePoints('verdades-absurdas', timeAdivinhador, pontosAdivinhador);
+
+        // Atualizar placar total (Dashboard)
+        addPoints(timeLeitor, pontosLeitor);
+        addPoints(timeAdivinhador, pontosAdivinhador);
+
+        // Marcar como lido e pontuação salva
+        const novoEstado: TextoEstado = {
+            ...estadoAtual,
+            lido: true,
+            pontuacaoSalva: true
+        };
+        handleUpdateEstado(novoEstado);
     };
 
     // Próximo texto removido por design atual; fechamento via handleCloseModal
@@ -186,6 +240,7 @@ export const VerdadesAbsurdas: React.FC = () => {
                 texto={textoAtual}
                 estado={estadoAtual}
                 onUpdateEstado={handleUpdateEstado}
+                onSalvarPontuacao={handleSalvarPontuacao}
                 teams={gameState.teams}
             />
         </div>

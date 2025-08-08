@@ -10,6 +10,7 @@ interface TextoModalProps {
     texto: VerdadeAbsurda | null;
     estado: TextoEstado | null;
     onUpdateEstado: (estado: TextoEstado) => void;
+    onSalvarPontuacao: (timeLeitor: 'A' | 'B') => void;
     teams: { teamA: Team; teamB: Team };
 }
 
@@ -19,6 +20,7 @@ export const TextoModal: React.FC<TextoModalProps> = ({
     texto,
     estado,
     onUpdateEstado,
+    onSalvarPontuacao,
     teams
 }) => {
     const [textoRenderizado, setTextoRenderizado] = useState<string>('');
@@ -225,15 +227,11 @@ export const TextoModal: React.FC<TextoModalProps> = ({
                                 className="btn-salvar"
                                 onClick={() => {
                                     if (!estado || !timeSelecionado) return;
-                                    const novoEstado: TextoEstado = {
-                                        ...estado,
-                                        lido: true
-                                    };
-                                    onUpdateEstado(novoEstado);
+                                    onSalvarPontuacao(timeSelecionado as 'A' | 'B');
                                 }}
-                                disabled={!timeSelecionado}
+                                disabled={!timeSelecionado || !!estado.pontuacaoSalva}
                             >
-                                💾 Salvar Pontuação
+                                {estado.pontuacaoSalva ? '✅ Pontuação Salva' : '💾 Salvar Pontuação'}
                             </button>
                         </div>
                     </div>

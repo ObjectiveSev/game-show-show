@@ -1,0 +1,124 @@
+.placar-detalhado {
+    padding: 24px;
+    padding-top: 80px;
+    /* espaço para o botão fixo de voltar */
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+}
+
+.pd-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.pd-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.pd-header p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+.voltar-button {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    text-decoration: none;
+    z-index: 1200;
+}
+
+.voltar-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.totais-section {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.total-card {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.12);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.total-card .label {
+    font-size: 1.1rem;
+}
+
+.total-card .valor {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.entries-section {
+    background: rgba(255, 255, 255, 0.12);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.entries-section h2 {
+    margin: 0 0 12px 0;
+}
+
+.empty {
+    opacity: 0.9;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.pd-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #fff;
+}
+
+.pd-table th,
+.pd-table td {
+    padding: 10px 12px;
+}
+
+.pd-table thead th {
+    text-align: left;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.25);
+}
+
+.pd-table tbody tr {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.pd-table .right {
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .totais-section {
+        flex-direction: column;
+    }
+}

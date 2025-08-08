@@ -73,10 +73,65 @@ export const useGameState = () => {
         }
     }, []);
 
+    // Fallback: agregação a partir do histórico detalhado (verdadesAbsurdasScores)
+    useEffect(() => {
+        try {
+            const raw = localStorage.getItem('verdadesAbsurdasScores');
+            if (!raw) return;
+            const entries = JSON.parse(raw);
+            if (!Array.isArray(entries)) return;
+
+            const totals = entries.reduce(
+                (acc: { A: number; B: number }, e: any) => {
+                    acc.A += (e.timeLeitor === 'A' ? e.pontosLeitor || 0 : 0) + (e.timeAdivinhador === 'A' ? e.pontosAdivinhador || 0 : 0);
+                    acc.B += (e.timeLeitor === 'B' ? e.pontosLeitor || 0 : 0) + (e.timeAdivinhador === 'B' ? e.pontosAdivinhador || 0 : 0);
+                    return acc;
+                },
+                { A: 0, B: 0 }
+            );
+
+            setGameState(prev => {
+                // não sobrescrever se já existe pontuação agregada para o jogo
+                if (prev.gameScores['verdades-absurdas']) return prev;
+                return {
+                    ...prev,
+                    gameScores: {
+                        ...prev.gameScores,
+                        ['verdades-absurdas']: { teamA: totals.A, teamB: totals.B }
+                    }
+                };
+            });
+        } catch {
+            // ignore
+        }
+    }, []);
+
     // Salvar scores no localStorage sempre que mudar
     useEffect(() => {
         localStorage.setItem(SCORES_STORAGE_KEY, JSON.stringify({
             gameScores: gameState.gameScores
+        }));
+    }, [gameState.gameScores]);
+
+    // Recalcular placar total a partir dos gameScores (após carregar/somar pontos)
+    useEffect(() => {
+        const totals = Object.values(gameState.gameScores).reduce(
+            (acc, gs) => {
+                if (!gs) return acc;
+                acc.teamA += gs.teamA || 0;
+                acc.teamB += gs.teamB || 0;
+                return acc;
+            },
+            { teamA: 0, teamB: 0 }
+        );
+
+        setGameState(prev => ({
+            ...prev,
+            teams: {
+                ...prev.teams,
+                teamA: { ...prev.teams.teamA, score: totals.teamA },
+                teamB: { ...prev.teams.teamB, score: totals.teamB }
+            }
         }));
     }, [gameState.gameScores]);
 

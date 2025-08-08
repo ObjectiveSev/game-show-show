@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Dashboard } from './pages/Dashboard';
 import { VerdadesAbsurdas } from './pages/VerdadesAbsurdas';
+import { PlacarDetalhado } from './pages/PlacarDetalhado';
 import { SettingsModal } from './components/SettingsModal';
 import { useGameState } from './hooks/useGameState';
 import { clearAllLocalStorage } from './utils/fileSystem';
@@ -11,13 +12,13 @@ import './styles/SettingsModal.css';
 function App() {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const { gameState, updateTeamConfig, saveConfig, reloadConfig, addPoints, resetScores } = useGameState();
+  const { gameState, updateTeamConfig, saveConfig, reloadConfig, addPoints, addGamePoints, resetScores } = useGameState();
   const [renderKey, setRenderKey] = useState(0);
 
 
 
   const handleOpenScoreboard = () => {
-    alert('Scoreboard será implementado em breve!');
+    window.location.href = '/placar-detalhado';
   };
 
   const handleOpenBuzzer = () => {
@@ -70,7 +71,8 @@ function App() {
               onClearLocalStorage={handleClearLocalStorage}
             />
           } />
-          <Route path="/verdades-absurdas" element={<VerdadesAbsurdas />} />
+          <Route path="/verdades-absurdas" element={<VerdadesAbsurdas gameState={gameState} addGamePoints={addGamePoints} addPoints={addPoints} />} />
+          <Route path="/placar-detalhado" element={<PlacarDetalhado />} />
         </Routes>
 
         <SettingsModal

@@ -1,4 +1,4 @@
-import type { VerdadesAbsurdasData, Verdade } from '../types/verdadesAbsurdas';
+import type { VerdadesAbsurdasData, Verdade, PontuacaoConfig } from '../types/verdadesAbsurdas';
 
 export const carregarVerdadesAbsurdas = async (): Promise<VerdadesAbsurdasData> => {
     try {
@@ -15,7 +15,20 @@ export const carregarVerdadesAbsurdas = async (): Promise<VerdadesAbsurdasData> 
             throw new Error(`Erro ao carregar verdades absurdas: ${response.status}`);
         }
 
-        const data: VerdadesAbsurdasData = await response.json();
+        const raw = await response.json();
+
+        // Defaults de pontuação caso não venham no JSON
+        const defaultPontuacao: PontuacaoConfig = {
+            acertoVerdade: 1,
+            erroFalso: 1,
+            verdadeNaoEncontradaPeloRival: 1
+        };
+
+        const data: VerdadesAbsurdasData = {
+            verdadesAbsurdas: raw.verdadesAbsurdas,
+            pontuacao: raw.pontuacao ?? defaultPontuacao
+        };
+
         return data;
     } catch (error) {
         if (error instanceof Error && error.name === 'AbortError') {

@@ -1,4 +1,9 @@
 {
+  "pontuacao": {
+    "acertoVerdade": 1,
+    "erroFalso": 1,
+    "verdadeNaoEncontradaPeloRival": 1
+  },
   "verdadesAbsurdas": [
     {
       "id": "texto-1",
