@@ -34,7 +34,7 @@ export const extrairTextoVerdade = (textoCompleto: string, verdade: Verdade): st
 
 // Função para verificar se uma posição está dentro de uma verdade
 export const posicaoEstaNaVerdade = (posicao: number, verdade: Verdade): boolean => {
-    return posicao >= verdade.inicio && posicao <= verdade.fim;
+    return posicao >= verdade.inicio && posicao < verdade.fim;
 };
 
 // Função para encontrar o índice da verdade baseado na posição

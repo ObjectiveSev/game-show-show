@@ -2,13 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { VerdadeAbsurda, TextoEstado } from '../types/verdadesAbsurdas';
 import { carregarVerdadesAbsurdas } from '../utils/verdadesAbsurdasLoader';
+import { TextoModal } from '../components/TextoModal';
+import { useGameState } from '../hooks/useGameState';
 import '../styles/VerdadesAbsurdas.css';
 
 export const VerdadesAbsurdas: React.FC = () => {
+    const { gameState } = useGameState();
     const [verdadesAbsurdas, setVerdadesAbsurdas] = useState<VerdadeAbsurda[]>([]);
     const [estadosTextos, setEstadosTextos] = useState<TextoEstado[]>([]);
     const [loading, setLoading] = useState(true);
+    const [modalAberto, setModalAberto] = useState(false);
+    const [textoAtual, setTextoAtual] = useState<VerdadeAbsurda | null>(null);
+    const [estadoAtual, setEstadoAtual] = useState<TextoEstado | null>(null);
     const navigate = useNavigate();
+    const ESTADOS_STORAGE_KEY = 'verdadesAbsurdasEstados';
 
     // Carregar dados do jogo
     useEffect(() => {
@@ -17,13 +24,13 @@ export const VerdadesAbsurdas: React.FC = () => {
         const carregarDados = async () => {
             try {
                 const data = await carregarVerdadesAbsurdas();
-                
+
                 // Verificar se o componente ainda está montado
                 if (!isMounted) return;
-                
+
                 setVerdadesAbsurdas(data.verdadesAbsurdas);
 
-                // Inicializar estados dos textos
+                // Inicializar estados dos textos (default)
                 const estadosIniciais: TextoEstado[] = data.verdadesAbsurdas.map(texto => ({
                     id: texto.id,
                     lido: false,
@@ -31,7 +38,23 @@ export const VerdadesAbsurdas: React.FC = () => {
                     erros: 0,
                     verdadesReveladas: false
                 }));
-                setEstadosTextos(estadosIniciais);
+
+                // Tentar carregar estados salvos do localStorage e mesclar por id
+                try {
+                    const salvo = localStorage.getItem(ESTADOS_STORAGE_KEY);
+                    if (salvo) {
+                        const estadosSalvos: TextoEstado[] = JSON.parse(salvo);
+                        const mesclados = estadosIniciais.map((estado) => {
+                            const encontrado = estadosSalvos.find(s => s.id === estado.id);
+                            return encontrado ? { ...estado, ...encontrado } : estado;
+                        });
+                        setEstadosTextos(mesclados);
+                    } else {
+                        setEstadosTextos(estadosIniciais);
+                    }
+                } catch {
+                    setEstadosTextos(estadosIniciais);
+                }
 
                 setLoading(false);
             } catch (error) {
@@ -50,12 +73,20 @@ export const VerdadesAbsurdas: React.FC = () => {
         };
     }, []);
 
-    const handleCardClick = (texto: VerdadeAbsurda) => {
-        // TODO: Implementar navegação para o modal do texto
+    // Persistir mudanças de estado no localStorage (inclui campo lido)
+    useEffect(() => {
+        if (estadosTextos.length === 0) return;
         try {
-            console.log('Abrir texto:', texto.titulo);
-        } catch (error) {
-            console.error('Erro ao abrir texto:', error);
+            localStorage.setItem(ESTADOS_STORAGE_KEY, JSON.stringify(estadosTextos));
+        } catch { }
+    }, [estadosTextos]);
+
+    const handleCardClick = (texto: VerdadeAbsurda) => {
+        const estado = estadosTextos.find(e => e.id === texto.id);
+        if (estado) {
+            setTextoAtual(texto);
+            setEstadoAtual(estado);
+            setModalAberto(true);
         }
     };
 
@@ -64,6 +95,23 @@ export const VerdadesAbsurdas: React.FC = () => {
         setTimeout(() => {
             navigate('/');
         }, 0);
+    };
+
+    const handleUpdateEstado = (novoEstado: TextoEstado) => {
+        setEstadosTextos(prev =>
+            prev.map(estado =>
+                estado.id === novoEstado.id ? novoEstado : estado
+            )
+        );
+        setEstadoAtual(novoEstado);
+    };
+
+    // Próximo texto removido por design atual; fechamento via handleCloseModal
+
+    const handleCloseModal = () => {
+        setModalAberto(false);
+        setTextoAtual(null);
+        setEstadoAtual(null);
     };
 
     if (loading) {
@@ -131,6 +179,15 @@ export const VerdadesAbsurdas: React.FC = () => {
                     })}
                 </div>
             </main>
+
+            <TextoModal
+                isOpen={modalAberto}
+                onClose={handleCloseModal}
+                texto={textoAtual}
+                estado={estadoAtual}
+                onUpdateEstado={handleUpdateEstado}
+                teams={gameState.teams}
+            />
         </div>
     );
 }; 
