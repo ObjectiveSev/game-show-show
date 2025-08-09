@@ -179,6 +179,14 @@ export const useGameState = () => {
             },
             gameScores: {}
         }));
+
+        // Limpar persistência de pontuação no localStorage
+        try {
+            localStorage.removeItem(SCORES_STORAGE_KEY);
+            localStorage.removeItem('verdadesAbsurdasScores');
+        } catch {
+            // ignore
+        }
     };
 
     // Função para atualizar nomes dos times
