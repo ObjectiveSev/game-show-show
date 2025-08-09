@@ -3,6 +3,8 @@ import type { VerdadeAbsurda, TextoEstado } from '../types/verdadesAbsurdas';
 import type { Team } from '../types';
 import { extrairTextoVerdade, encontrarIndiceVerdade } from '../utils/verdadesAbsurdasLoader';
 import '../styles/TextoModal.css';
+import { TeamSelector } from './common/TeamSelector';
+import { HostControls } from './common/HostControls';
 
 interface TextoModalProps {
     isOpen: boolean;
@@ -31,6 +33,16 @@ export const TextoModal: React.FC<TextoModalProps> = ({
 
 
 
+
+    // Fechar com ESC
+    useEffect(() => {
+        if (!isOpen) return;
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, [isOpen, onClose]);
 
     // Renderizar texto com verdades marcadas
     useEffect(() => {
@@ -178,18 +190,7 @@ export const TextoModal: React.FC<TextoModalProps> = ({
 
                     <div className="controles-host">
                         <div className="status-info">
-                            <div className="team-selector">
-                                <span className="label">Time leitor:</span>
-                                <select
-                                    className="team-dropdown"
-                                    value={timeSelecionado}
-                                    onChange={(e) => setTimeSelecionado(e.target.value)}
-                                >
-                                    <option value="">Selecionar o time</option>
-                                    <option value="A">{teams.teamA?.name || 'Time A'}</option>
-                                    <option value="B">{teams.teamB?.name || 'Time B'}</option>
-                                </select>
-                            </div>
+                            <TeamSelector teams={teams} value={timeSelecionado as any} onChange={(v) => setTimeSelecionado(v)} />
                             <div className="verdades-info">
                                 <span className="label">Verdades encontradas:</span>
                                 <span className="valor">{verdadesEncontradas}/{totalVerdades}</span>
@@ -201,38 +202,9 @@ export const TextoModal: React.FC<TextoModalProps> = ({
                         </div>
 
                         <div className="botoes-controle">
-                            <button
-                                className="btn-erro"
-                                onClick={handleAdicionarErro}
-                            >
-                                ❌ +1 Erro
-                            </button>
-
-                            <button
-                                className="btn-resetar"
-                                onClick={handleResetarPontuacao}
-                            >
-                                🔄 Resetar Pontuação
-                            </button>
-
-                            <button
-                                className="btn-revelar"
-                                onClick={handleRevelarVerdades}
-                                disabled={verdadesReveladas}
-                            >
-                                🔍 Revelar Verdades
-                            </button>
-
-                            <button
-                                className="btn-salvar"
-                                onClick={() => {
-                                    if (!estado || !timeSelecionado) return;
-                                    onSalvarPontuacao(timeSelecionado as 'A' | 'B');
-                                }}
-                                disabled={!timeSelecionado || !!estado.pontuacaoSalva}
-                            >
-                                {estado.pontuacaoSalva ? '✅ Pontuação Salva' : '💾 Salvar Pontuação'}
-                            </button>
+                            <button className="btn-erro" onClick={handleAdicionarErro}>❌ +1 Erro</button>
+                            <button className="btn-revelar" onClick={handleRevelarVerdades} disabled={verdadesReveladas}>🔍 Revelar Verdades</button>
+                            <HostControls onReset={handleResetarPontuacao} onSave={() => { if (!estado || !timeSelecionado) return; onSalvarPontuacao(timeSelecionado as 'A' | 'B'); }} canSave={!!timeSelecionado && !estado.pontuacaoSalva} saveLabel={estado.pontuacaoSalva ? '✅ Pontuação Salva' : '💾 Salvar Pontuação'} />
                         </div>
                     </div>
                 </div>

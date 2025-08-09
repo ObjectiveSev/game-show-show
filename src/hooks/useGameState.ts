@@ -73,34 +73,45 @@ export const useGameState = () => {
         }
     }, []);
 
-    // Fallback: agregação a partir do histórico detalhado (verdadesAbsurdasScores)
+    // Agregar a partir do histórico detalhado (autoridade) e refletir nos gameScores ao carregar
     useEffect(() => {
         try {
-            const raw = localStorage.getItem('verdadesAbsurdasScores');
-            if (!raw) return;
-            const entries = JSON.parse(raw);
-            if (!Array.isArray(entries)) return;
+            // Verdades Absurdas
+            const vaRaw = localStorage.getItem('verdadesAbsurdasScores');
+            const vaEntries = vaRaw ? JSON.parse(vaRaw) : [];
+            const vaTotals = Array.isArray(vaEntries)
+                ? vaEntries.reduce(
+                    (acc: { A: number; B: number }, e: any) => {
+                        acc.A += (e.timeLeitor === 'A' ? e.pontosLeitor || 0 : 0) + (e.timeAdivinhador === 'A' ? e.pontosAdivinhador || 0 : 0);
+                        acc.B += (e.timeLeitor === 'B' ? e.pontosLeitor || 0 : 0) + (e.timeAdivinhador === 'B' ? e.pontosAdivinhador || 0 : 0);
+                        return acc;
+                    },
+                    { A: 0, B: 0 }
+                )
+                : { A: 0, B: 0 };
 
-            const totals = entries.reduce(
-                (acc: { A: number; B: number }, e: any) => {
-                    acc.A += (e.timeLeitor === 'A' ? e.pontosLeitor || 0 : 0) + (e.timeAdivinhador === 'A' ? e.pontosAdivinhador || 0 : 0);
-                    acc.B += (e.timeLeitor === 'B' ? e.pontosLeitor || 0 : 0) + (e.timeAdivinhador === 'B' ? e.pontosAdivinhador || 0 : 0);
-                    return acc;
-                },
-                { A: 0, B: 0 }
-            );
+            // Dicionário Surreal
+            const dsRaw = localStorage.getItem('dicionarioSurrealScores');
+            const dsEntries = dsRaw ? JSON.parse(dsRaw) : [];
+            const dsTotals = Array.isArray(dsEntries)
+                ? dsEntries.reduce(
+                    (acc: { A: number; B: number }, e: any) => {
+                        if (e.timeAdivinhador === 'A') acc.A += e.pontos || 0;
+                        if (e.timeAdivinhador === 'B') acc.B += e.pontos || 0;
+                        return acc;
+                    },
+                    { A: 0, B: 0 }
+                )
+                : { A: 0, B: 0 };
 
-            setGameState(prev => {
-                // não sobrescrever se já existe pontuação agregada para o jogo
-                if (prev.gameScores['verdades-absurdas']) return prev;
-                return {
-                    ...prev,
-                    gameScores: {
-                        ...prev.gameScores,
-                        ['verdades-absurdas']: { teamA: totals.A, teamB: totals.B }
-                    }
-                };
-            });
+            setGameState(prev => ({
+                ...prev,
+                gameScores: {
+                    ...prev.gameScores,
+                    ['verdades-absurdas']: { teamA: vaTotals.A, teamB: vaTotals.B },
+                    ['dicionario-surreal']: { teamA: dsTotals.A, teamB: dsTotals.B }
+                }
+            }));
         } catch {
             // ignore
         }
@@ -184,6 +195,7 @@ export const useGameState = () => {
         try {
             localStorage.removeItem(SCORES_STORAGE_KEY);
             localStorage.removeItem('verdadesAbsurdasScores');
+            localStorage.removeItem('dicionarioSurrealScores');
         } catch {
             // ignore
         }

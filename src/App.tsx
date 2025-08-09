@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Dashboard } from './pages/Dashboard';
 import { VerdadesAbsurdas } from './pages/VerdadesAbsurdas';
 import { PlacarDetalhado } from './pages/PlacarDetalhado';
+import { DicionarioSurreal } from './pages/DicionarioSurreal';
 import { SettingsModal } from './components/SettingsModal';
 import { useGameState } from './hooks/useGameState';
 import { clearAllLocalStorage } from './utils/fileSystem';
@@ -39,6 +40,9 @@ function App() {
       case 'verdades-absurdas':
         window.location.href = '/verdades-absurdas';
         break;
+      case 'dicionario-surreal':
+        window.location.href = '/dicionario-surreal';
+        break;
       default:
         alert(`Jogo "${gameId}" será implementado em breve!`);
     }
@@ -72,6 +76,7 @@ function App() {
             />
           } />
           <Route path="/verdades-absurdas" element={<VerdadesAbsurdas gameState={gameState} addGamePoints={addGamePoints} addPoints={addPoints} />} />
+          <Route path="/dicionario-surreal" element={<DicionarioSurreal gameState={gameState} addGamePoints={addGamePoints} addPoints={addPoints} />} />
           <Route path="/placar-detalhado" element={<PlacarDetalhado />} />
         </Routes>
 

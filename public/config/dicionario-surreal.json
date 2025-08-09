@@ -1,0 +1,140 @@
+{
+    "pontuacao": {
+        "baseAcerto": 3,
+        "pontosPorDica": 1
+    },
+    "palavras": [
+        {
+            "id": "esputacao",
+            "palavra": "Esputação",
+            "definicaoCorretaId": "d1",
+            "definicoes": [
+                {
+                    "id": "d1",
+                    "texto": "O que o Patolino costuma fazer, salivar em excesso, cuspir",
+                    "dica": "Ônus de 2 pontos se não escolher a resposta em 10 segundos"
+                },
+                {
+                    "id": "d2",
+                    "texto": "Que faz referência à meretriz, retirar ou remover recém cônjuge da zona ou ofício do meretrício",
+                    "dica": "Bônus de 5 pontos"
+                },
+                {
+                    "id": "d3",
+                    "texto": "Ato ou efeito de esputar. O mesmo que fingir disputar. Perder o jogo propositalmente ocultando a intenção",
+                    "dica": "Uso: Alguns jogadores foram indiciados por esputação, após as provas serem entregues à polícia"
+                }
+            ]
+        },
+        {
+            "id": "baquista",
+            "palavra": "Baquista",
+            "definicaoCorretaId": "d2",
+            "definicoes": [
+                {
+                    "id": "d1",
+                    "texto": "Episcopado substituto do arcebispado católico. Segundo em comando em uma arquidiocese metropolitana",
+                    "dica": "Valendo 3 pontos cante uma música que tenha a palavra 'sucesso'"
+                },
+                {
+                    "id": "d2",
+                    "texto": "Adepto de bebedeiras e orgias. Termo originário de Baco",
+                    "dica": "Ativou o modo Stone. Aposte no mínimo 1 ponto pra acertar essa palavra, se ganhar dobra"
+                },
+                {
+                    "id": "d3",
+                    "texto": "Gíria de origem grega para aquele que sente uma atração sexual patológica por crianças",
+                    "dica": "Ônus de 1 ponto"
+                }
+            ]
+        },
+        {
+            "id": "geolho",
+            "palavra": "Geolho",
+            "definicaoCorretaId": "d2",
+            "definicoes": [
+                {
+                    "id": "d1",
+                    "texto": "Instrumento de medição visual de minérios",
+                    "dica": "Uso: Sem a ajuda do geolho digital seria necessário enviar essa amostra para um laboratório e esperar por dias o resultado da averiguação"
+                },
+                {
+                    "id": "d2",
+                    "texto": "O mesmo que joelho só que dito de uma maneira arcaica",
+                    "dica": "Uso: Rogo-lhe... para que possa ir atrás da árvore tirar a água do geolho"
+                },
+                {
+                    "id": "d3",
+                    "texto": "Medicamento em forma de unguento utilizado no século XIX para cura de males da visão",
+                    "dica": "Bônus de 1 ponto se o Igor não estiver no seu time"
+                }
+            ]
+        },
+        {
+            "id": "osmar",
+            "palavra": "Osmar",
+            "definicaoCorretaId": "d3",
+            "definicoes": [
+                {
+                    "id": "d1",
+                    "texto": "O mesmo que tomar para si uma parte maior de um bocado",
+                    "dica": "Uso: Na partilha da recompensa pela captura do bandido, o delegado tentou osmar o xerife"
+                },
+                {
+                    "id": "d2",
+                    "texto": "Gíria que denota qualidade de um grupo de pessoas... na comunidade LGBT brasileira",
+                    "dica": "Uso: Essas festas que o Junior dá são sempre osmar"
+                },
+                {
+                    "id": "d3",
+                    "texto": "Do grego, osmis, que significa odor, o mesmo que cheirar, calcular ou conjecturar enquanto se observa algo",
+                    "dica": "Ônus de 1 ponto para cada palavra falada até o final dessa rodada"
+                }
+            ]
+        },
+        {
+            "id": "bulcao",
+            "palavra": "Bulcão",
+            "definicaoCorretaId": "d1",
+            "definicoes": [
+                {
+                    "id": "d1",
+                    "texto": "Negrume ou nuvem espessa que precede uma tempestade",
+                    "dica": "Uso: Os pescadores voltaram rapidamente ao ver o bulcão se formando no horizonte"
+                },
+                {
+                    "id": "d2",
+                    "texto": "Viga principal de madeira que sustenta o telhado",
+                    "dica": "Uso: O carpinteiro disse que o bulcão estava rachado e precisava ser substituído"
+                },
+                {
+                    "id": "d3",
+                    "texto": "Instrumento de sopro usado em rituais religiosos durante o período medieval",
+                    "dica": "Ônus de 3 pontos se não conseguir imitar o som que o instrumento faria"
+                }
+            ]
+        },
+        {
+            "id": "esconso",
+            "palavra": "Esconso",
+            "definicaoCorretaId": "d2",
+            "definicoes": [
+                {
+                    "id": "d1",
+                    "texto": "Dança folclórica portuguesa executada em círculos durante festivais de colheita",
+                    "dica": "Desafio bônus: dance o esconso por 10 segundos para ganhar +2 pontos"
+                },
+                {
+                    "id": "d2",
+                    "texto": "O mesmo que escondido, oculto, às escondidas",
+                    "dica": "Uso: O ladrão mantinha suas joias de esconso no porão da casa abandonada"
+                },
+                {
+                    "id": "d3",
+                    "texto": "Ferramenta de navegação usada pelos vikings para medir a profundidade do mar",
+                    "dica": "Ativou o modo Stone. Aposte no mínimo 1 ponto pra acertar essa palavra, se ganhar dobra"
+                }
+            ]
+        }
+    ]
+}

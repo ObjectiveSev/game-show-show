@@ -29,6 +29,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         setLocalTeamB(teamB);
     }, [teamA, teamB]);
 
+    // Fechar com ESC
+    useEffect(() => {
+        if (!isOpen) return;
+        const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') handleCancel(); };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, [isOpen, teamA, teamB]);
+
     if (!isOpen) return null;
 
     const handleSave = async () => {

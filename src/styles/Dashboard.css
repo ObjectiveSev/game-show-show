@@ -170,6 +170,7 @@
     position: relative;
     overflow: hidden;
     text-align: center;
+    text-decoration: none;
 }
 
 .game-card:hover {
@@ -202,6 +203,7 @@
     color: #666;
     margin-bottom: 15px;
     font-size: 0.95rem;
+    text-decoration: none;
 }
 
 .game-points {

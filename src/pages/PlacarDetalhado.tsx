@@ -1,14 +1,17 @@
 import React, { useMemo, useEffect, useState } from 'react';
-import { loadVerdadesAbsurdasScores } from '../utils/scoreStorage';
+import { loadVerdadesAbsurdasScores, loadDicionarioSurrealScores } from '../utils/scoreStorage';
 import { useGameState } from '../hooks/useGameState';
 import '../styles/PlacarDetalhado.css';
 import { carregarVerdadesAbsurdas } from '../utils/verdadesAbsurdasLoader';
+import { carregarDicionarioSurreal } from '../utils/dicionarioLoader';
 
 export const PlacarDetalhado: React.FC = () => {
     const { gameState } = useGameState();
 
     const entries = loadVerdadesAbsurdasScores();
+    const dicEntries = loadDicionarioSurrealScores();
     const [tituloPorTextoId, setTituloPorTextoId] = useState<Record<string, string>>({});
+    const [palavraPorId, setPalavraPorId] = useState<Record<string, string>>({});
 
     useEffect(() => {
         let isMounted = true;
@@ -20,11 +23,19 @@ export const PlacarDetalhado: React.FC = () => {
                 setTituloPorTextoId(map);
             })
             .catch(() => { });
+        carregarDicionarioSurreal()
+            .then(data => {
+                if (!isMounted) return;
+                const map: Record<string, string> = {};
+                data.palavras.forEach(p => { map[p.id] = p.palavra; });
+                setPalavraPorId(map);
+            })
+            .catch(() => { });
         return () => { isMounted = false; };
     }, []);
 
     const totais = useMemo(() => {
-        return entries.reduce(
+        const base = entries.reduce(
             (acc, e) => {
                 acc.A += e.pontosAdivinhador * (e.timeAdivinhador === 'A' ? 1 : 0) + e.pontosLeitor * (e.timeLeitor === 'A' ? 1 : 0);
                 acc.B += e.pontosAdivinhador * (e.timeAdivinhador === 'B' ? 1 : 0) + e.pontosLeitor * (e.timeLeitor === 'B' ? 1 : 0);
@@ -32,7 +43,12 @@ export const PlacarDetalhado: React.FC = () => {
             },
             { A: 0, B: 0 }
         );
-    }, [entries]);
+        // Dicionário: pontos vão apenas para o time adivinhador
+        dicEntries.forEach((d) => {
+            if (d.timeAdivinhador === 'A') base.A += d.pontos; else base.B += d.pontos;
+        });
+        return base;
+    }, [entries, dicEntries]);
 
     return (
         <div className="placar-detalhado">
@@ -84,6 +100,38 @@ export const PlacarDetalhado: React.FC = () => {
                                         <td className="right">{e.erros}</td>
                                         <td className="right">{e.pontosLeitor}</td>
                                         <td className="right">{e.pontosAdivinhador}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </section>
+
+            <section className="entries-section" style={{ marginTop: 16 }}>
+                <h2>Dicionário Surreal</h2>
+                {dicEntries.length === 0 ? (
+                    <div className="empty">Nenhum registro salvo ainda.</div>
+                ) : (
+                    <div className="table-wrapper">
+                        <table className="pd-table">
+                            <thead>
+                                <tr>
+                                    <th>Palavra</th>
+                                    <th>Adivinhador</th>
+                                    <th className="right">Dicas</th>
+                                    <th className="right">Acertou?</th>
+                                    <th className="right">Pontos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {dicEntries.map((e, idx) => (
+                                    <tr key={idx}>
+                                        <td>{palavraPorId[e.palavraId] || e.palavraId}</td>
+                                        <td>{e.timeAdivinhador === 'A' ? (gameState.teams.teamA.name || 'Time A') : (gameState.teams.teamB.name || 'Time B')}</td>
+                                        <td className="right">{e.dicasAbertas}</td>
+                                        <td className="right">{e.acertou ? 'Sim' : 'Não'}</td>
+                                        <td className="right">{e.pontos}</td>
                                     </tr>
                                 ))}
                             </tbody>
