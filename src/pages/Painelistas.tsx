@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import type { AppState, Team } from '../types';
-import type { FatoEstado, FatoPainelista, PainelistasData } from '../types/painelistas';
+import type { FatoEstado, FatoPainelista, PainelistasData, PainelistasScoreEntry } from '../types/painelistas';
 import { carregarPainelistas } from '../utils/painelistasLoader';
 import { carregarParticipantes } from '../utils/participantesLoader';
-import { appendPainelistasScore, appendPainelistasPunicao, removePainelistasPunicao, loadPainelistasPunicoes } from '../utils/scoreStorage';
+import { appendPainelistasScore, appendPainelistasPunicao, removePainelistasPunicao, loadPainelistasPunicoes, loadPainelistasScores } from '../utils/scoreStorage';
 import { PainelistasModal } from '../components/PainelistasModal';
 import { BackButton } from '../components/common/BackButton';
 import '../styles/Painelistas.css';
 import { STORAGE_KEYS } from '../constants';
 
 interface Props {
-    gameState: AppState;
+    gameState: AppState & { syncPoints?: () => void };
     addGamePoints: (gameId: string, teamId: 'A' | 'B', points: number) => void;
     addPoints: (teamId: 'A' | 'B', points: number) => void;
 }
@@ -142,28 +142,45 @@ export const Painelistas: React.FC<Props> = ({ gameState, addGamePoints, addPoin
         }
     };
 
-    const handleRemoverPunicao = (participanteId: string) => {
+    const handleResetarPontuacao = (participanteId: string) => {
         if (dados) {
             const jogador = dados.jogadores.find(j => j.participanteId === participanteId);
             if (jogador) {
-                // Calcular fatos faltando baseado na configuração (não nos estados)
-                const fatosConfigurados = jogador.fatos.length;
-                const fatosEsperados = dados.pontuacao.fatosEsperadosPorJogador;
-                const fatosFaltando = Math.max(0, fatosEsperados - fatosConfigurados);
-
-                const pontos = dados.pontuacao.fatoNaoFornecido;
                 const time = gameState.teams.teamA.members.includes(participanteId) ? 'A' : 'B';
+                
+                // 1. Resetar todos os fatos lidos deste participante
+                setEstados(prev => prev.map(estado => 
+                    estado.id.startsWith(participanteId + ':') 
+                        ? { ...estado, verificado: false }
+                        : estado
+                ));
 
-                // Remover pontuação negativa (reverter a punição)
-                const pontosARemover = pontos * fatosFaltando;
-                addGamePoints('painelistas-excentricos', time, -pontosARemover);
-                addPoints(time, -pontosARemover);
+                // 2. Remover pontuações deste participante do placar detalhado
+                const scoresExistentes = loadPainelistasScores();
+                const scoresFiltrados = scoresExistentes.filter((score: PainelistasScoreEntry) => 
+                    score.participanteId !== participanteId
+                );
+                localStorage.setItem(STORAGE_KEYS.PAINELISTAS_SCORES, JSON.stringify(scoresFiltrados));
 
-                // Remover punição do storage
+                // 3. Remover punições deste participante
                 removePainelistasPunicao(participanteId);
-
-                // Atualizar estado local
                 setPunicoes(prev => ({ ...prev, [participanteId]: false }));
+
+                // 4. Recalcular e atualizar placar geral
+                // Primeiro, remover pontos existentes deste participante
+                const pontosExistentes = scoresExistentes
+                    .filter((score: PainelistasScoreEntry) => score.participanteId === participanteId)
+                    .reduce((sum: number, score: PainelistasScoreEntry) => sum + (score.pontos || 0), 0);
+                
+                if (pontosExistentes !== 0) {
+                    addGamePoints('painelistas-excentricos', time, -pontosExistentes);
+                    addPoints(time, -pontosExistentes);
+                }
+
+                // 5. Sincronizar pontos para atualizar o dashboard
+                if (gameState.syncPoints) {
+                    gameState.syncPoints();
+                }
             }
         }
     };
@@ -212,9 +229,6 @@ export const Painelistas: React.FC<Props> = ({ gameState, addGamePoints, addPoin
                                         <span className="fatos-status">
                                             {fatosVerificados}/{fatosEsperados} fatos
                                         </span>
-                                        {temPunicao && (
-                                            <span className="punicao-badge">⚠️ Punido</span>
-                                        )}
                                     </div>
                                 </div>
 
@@ -242,6 +256,13 @@ export const Painelistas: React.FC<Props> = ({ gameState, addGamePoints, addPoin
                                     </div>
                                 )}
 
+                                {/* Tag de punição movida para baixo dos fatos */}
+                                {temPunicao && (
+                                    <div className="punicao-info">
+                                        <span className="punicao-badge">⚠️ Punido</span>
+                                    </div>
+                                )}
+
                                 {!temPunicao && fatosFaltando > 0 && (
                                     <div className="multas-container">
                                         <button
@@ -256,12 +277,13 @@ export const Painelistas: React.FC<Props> = ({ gameState, addGamePoints, addPoin
                                     </div>
                                 )}
 
-                                {temPunicao && (
+                                {/* Botão de resetar pontuação - aparece para participantes com fatos lidos OU punição */}
+                                {(fatosVerificados > 0 || temPunicao) && (
                                     <button
-                                        className="remover-punicao-btn"
-                                        onClick={() => handleRemoverPunicao(membroId)}
+                                        className="resetar-pontuacao-btn"
+                                        onClick={() => handleResetarPontuacao(membroId)}
                                     >
-                                        🔄 Remover Punição
+                                        🔄 Resetar Pontuação
                                     </button>
                                 )}
                             </div>
