@@ -12,6 +12,7 @@ interface TextoModalProps {
     estado: TextoEstado | null;
     onUpdateEstado: (estado: TextoEstado) => void;
     onSalvarPontuacao: (timeLeitor: 'A' | 'B') => void;
+    onResetarPontuacao?: (textoId: string) => void; // Nova prop para resetar pontuação
     teams: { teamA: Team; teamB: Team };
 }
 
@@ -22,6 +23,7 @@ export const TextoModal: React.FC<TextoModalProps> = ({
     estado,
     onUpdateEstado,
     onSalvarPontuacao,
+    onResetarPontuacao,
     teams
 }) => {
     const [textoRenderizado, setTextoRenderizado] = useState<string>('');
@@ -147,13 +149,20 @@ export const TextoModal: React.FC<TextoModalProps> = ({
 
 
     const handleResetarPontuacao = () => {
-        if (!estado) return;
+        if (!estado || !texto) return;
+
+        // Chamar função para remover pontuação do localStorage se existir
+        if (onResetarPontuacao) {
+            onResetarPontuacao(texto.id);
+        }
 
         const novoEstado: TextoEstado = {
             ...estado,
-            verdadesEncontradas: [],
-            erros: 0,
-            verdadesReveladas: false
+            lido: false, // Marcar como não lido
+            verdadesEncontradas: [], // Limpar verdades encontradas
+            erros: 0, // Resetar erros
+            verdadesReveladas: false, // Esconder verdades reveladas
+            pontuacaoSalva: false // Permitir salvar novamente
         };
 
         onUpdateEstado(novoEstado);

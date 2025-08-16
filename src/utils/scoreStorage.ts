@@ -24,6 +24,16 @@ export const appendVerdadesAbsurdasScore = (entry: VerdadesAbsurdasScoreEntry): 
     }
 };
 
+export const removeVerdadesAbsurdasScore = (textoId: string): void => {
+    try {
+        const scores = loadVerdadesAbsurdasScores();
+        const filtered = scores.filter(score => score.textoId !== textoId);
+        localStorage.setItem(STORAGE_KEYS.VERDADES_ABSURDAS_SCORES, JSON.stringify(filtered));
+    } catch {
+        // noop
+    }
+};
+
 export const clearVerdadesAbsurdasScores = (): void => {
     try {
         localStorage.removeItem(STORAGE_KEYS.VERDADES_ABSURDAS_SCORES);

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { Team, AppState } from '../types';
 import { loadGameConfig, saveGameConfig } from '../config/gameConfig';
 import { STORAGE_KEYS } from '../constants';
+import { syncGameScores } from '../utils/scoreSync';
 
 // Estado inicial padrão
 const initialState: AppState = {
@@ -58,7 +59,18 @@ export const useGameState = () => {
     useEffect(() => {
         const loadSavedScores = async () => {
             try {
-                const savedScores = localStorage.getItem(STORAGE_KEYS.GAME_SCORES);
+                // Sincronizar scores dos jogos individuais
+                const syncResult = await syncGameScores();
+                if (syncResult.success && syncResult.updatedScores) {
+                    const updatedScores = syncResult.updatedScores;
+                    setGameState(prev => ({
+                        ...prev,
+                        gameScores: updatedScores
+                    }));
+                }
+
+                // Carregar scores consolidados
+                const savedScores = localStorage.getItem(STORAGE_KEYS.GAME_SHOW_SCORES);
                 if (savedScores) {
                     const parsed = JSON.parse(savedScores);
                     if (parsed.gameScores) {
@@ -81,6 +93,23 @@ export const useGameState = () => {
         if (Object.keys(gameState.gameScores).length > 0) {
             localStorage.setItem(STORAGE_KEYS.GAME_SCORES, JSON.stringify({
                 gameScores: gameState.gameScores
+            }));
+        }
+    }, [gameState.gameScores]);
+
+    // Sincronizar pontos dos times automaticamente quando gameScores mudar
+    useEffect(() => {
+        if (Object.keys(gameState.gameScores).length > 0) {
+            const totalScoreA = Object.values(gameState.gameScores).reduce((sum, game) => sum + game.teamA, 0);
+            const totalScoreB = Object.values(gameState.gameScores).reduce((sum, game) => sum + game.teamB, 0);
+            
+            setGameState(prev => ({
+                ...prev,
+                teams: {
+                    ...prev.teams,
+                    teamA: { ...prev.teams.teamA, score: totalScoreA },
+                    teamB: { ...prev.teams.teamB, score: totalScoreB }
+                }
             }));
         }
     }, [gameState.gameScores]);
@@ -263,6 +292,36 @@ export const useGameState = () => {
         }
     };
 
+    // Função para sincronizar pontos do localStorage
+    const syncPoints = async () => {
+        try {
+            const syncResult = await syncGameScores();
+            if (syncResult.success && syncResult.updatedScores) {
+                const updatedScores = syncResult.updatedScores;
+                
+                setGameState(prev => ({
+                    ...prev,
+                    gameScores: updatedScores
+                }));
+                
+                // Atualizar scores dos times baseado nos gameScores
+                const totalScoreA = Object.values(updatedScores).reduce((sum, game) => sum + game.teamA, 0);
+                const totalScoreB = Object.values(updatedScores).reduce((sum, game) => sum + game.teamB, 0);
+                
+                setGameState(prev => ({
+                    ...prev,
+                    teams: {
+                        ...prev.teams,
+                        teamA: { ...prev.teams.teamA, score: totalScoreA },
+                        teamB: { ...prev.teams.teamB, score: totalScoreB }
+                    }
+                }));
+            }
+        } catch (error) {
+            console.error('❌ Erro ao sincronizar pontos:', error);
+        }
+    };
+
     return {
         gameState,
         addPoints,
@@ -272,6 +331,7 @@ export const useGameState = () => {
         updateTeamMembers,
         updateTeamConfig,
         saveConfig,
-        reloadConfig
+        reloadConfig,
+        syncPoints
     };
 }; 

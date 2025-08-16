@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextoModal } from '../components/TextoModal';
 import { carregarVerdadesAbsurdas } from '../utils/verdadesAbsurdasLoader';
-import { appendVerdadesAbsurdasScore } from '../utils/scoreStorage';
+import { appendVerdadesAbsurdasScore, removeVerdadesAbsurdasScore } from '../utils/scoreStorage';
 import type { VerdadeAbsurda, TextoEstado } from '../types/verdadesAbsurdas';
 import type { Team } from '../types';
 import { STORAGE_KEYS } from '../constants';
@@ -14,6 +14,7 @@ interface VerdadesAbsurdasProps {
             teamA: Team;
             teamB: Team;
         };
+        syncPoints: () => void;
     };
     addGamePoints: (gameId: string, teamId: 'A' | 'B', points: number) => void;
     addPoints: (teamId: 'A' | 'B', points: number) => void;
@@ -170,6 +171,20 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
         handleUpdateEstado(novoEstado);
     };
 
+    const handleResetarPontuacao = (textoId: string) => {
+        // Remover pontuação específica do localStorage
+        removeVerdadesAbsurdasScore(textoId);
+        
+        // Sincronizar pontos para atualizar o placar geral
+        if (gameState.syncPoints) {
+            gameState.syncPoints();
+        }
+        
+        // Nota: Para remover pontos dos placares, seria necessário
+        // armazenar os pontos no estado ou buscar do localStorage
+        // Por enquanto, apenas removemos a pontuação específica
+    };
+
     // Próximo texto removido por design atual; fechamento via handleCloseModal
 
     const handleCloseModal = () => {
@@ -251,6 +266,7 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
                 estado={estadoAtual}
                 onUpdateEstado={handleUpdateEstado}
                 onSalvarPontuacao={handleSalvarPontuacao}
+                onResetarPontuacao={handleResetarPontuacao}
                 teams={gameState.teams}
             />
         </div>

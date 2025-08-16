@@ -14,7 +14,7 @@ import './styles/SettingsModal.css';
 function App() {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const { gameState, updateTeamConfig, addPoints, addGamePoints, resetScores } = useGameState();
+  const { gameState, updateTeamConfig, addPoints, addGamePoints, resetScores, syncPoints } = useGameState();
   const [renderKey] = useState(0);
 
   const handleOpenScoreboard = () => {
@@ -72,7 +72,7 @@ function App() {
               onClearLocalStorage={handleClearLocalStorage}
             />
           } />
-          <Route path="/verdades-absurdas" element={<VerdadesAbsurdas key={renderKey} gameState={gameState} addGamePoints={addGamePoints} addPoints={addPoints} />} />
+          <Route path="/verdades-absurdas" element={<VerdadesAbsurdas key={renderKey} gameState={{...gameState, syncPoints}} addGamePoints={addGamePoints} addPoints={addPoints} />} />
           <Route path="/dicionario-surreal" element={<DicionarioSurreal key={renderKey} gameState={gameState} addGamePoints={addGamePoints} addPoints={addPoints} />} />
           <Route path="/placar-detalhado" element={<PlacarDetalhado key={renderKey} />} />
           <Route path="/painelistas-excentricos" element={<Painelistas key={renderKey} gameState={gameState} addGamePoints={addGamePoints} addPoints={addPoints} />} />
