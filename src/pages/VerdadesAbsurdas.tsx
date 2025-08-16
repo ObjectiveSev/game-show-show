@@ -174,12 +174,12 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
     const handleResetarPontuacao = (textoId: string) => {
         // Remover pontuação específica do localStorage
         removeVerdadesAbsurdasScore(textoId);
-        
+
         // Sincronizar pontos para atualizar o placar geral
         if (gameState.syncPoints) {
             gameState.syncPoints();
         }
-        
+
         // Nota: Para remover pontos dos placares, seria necessário
         // armazenar os pontos no estado ou buscar do localStorage
         // Por enquanto, apenas removemos a pontuação específica

@@ -73,11 +73,31 @@ export const syncGameScores = async (): Promise<ScoreSyncResult> => {
             )
             : { A: 0, B: 0 };
 
+        // Carregar punições de Painelistas Excêntricos
+        const pePunicoesRaw = localStorage.getItem(STORAGE_KEYS.PAINELISTAS_PUNICOES);
+        const pePunicoes = pePunicoesRaw ? JSON.parse(pePunicoesRaw) : [];
+        const pePunicoesTotals = Array.isArray(pePunicoes)
+            ? pePunicoes.reduce(
+                (acc: { A: number; B: number }, e: { time: 'A' | 'B'; pontos: number }) => {
+                    if (e.time === 'A') acc.A += e.pontos || 0;
+                    if (e.time === 'B') acc.B += e.pontos || 0;
+                    return acc;
+                },
+                { A: 0, B: 0 }
+            )
+            : { A: 0, B: 0 };
+
+        // Combinar scores normais com punições
+        const peCompleto = {
+            A: peTotals.A + pePunicoesTotals.A,
+            B: peTotals.B + pePunicoesTotals.B
+        };
+
         // Criar objeto de scores consolidado
         const consolidatedScores: GameScores = {
             'verdades-absurdas': { teamA: vaTotals.A, teamB: vaTotals.B },
             'dicionario-surreal': { teamA: dsTotals.A, teamB: dsTotals.B },
-            'painelistas-excentricos': { teamA: peTotals.A, teamB: peTotals.B }
+            'painelistas-excentricos': { teamA: peCompleto.A, teamB: peCompleto.B }
         };
 
         // Salvar no localStorage principal
