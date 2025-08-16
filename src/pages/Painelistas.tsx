@@ -147,17 +147,17 @@ export const Painelistas: React.FC<Props> = ({ gameState, addGamePoints, addPoin
             const jogador = dados.jogadores.find(j => j.participanteId === participanteId);
             if (jogador) {
                 const time = gameState.teams.teamA.members.includes(participanteId) ? 'A' : 'B';
-                
+
                 // 1. Resetar todos os fatos lidos deste participante
-                setEstados(prev => prev.map(estado => 
-                    estado.id.startsWith(participanteId + ':') 
+                setEstados(prev => prev.map(estado =>
+                    estado.id.startsWith(participanteId + ':')
                         ? { ...estado, verificado: false }
                         : estado
                 ));
 
                 // 2. Remover pontuações deste participante do placar detalhado
                 const scoresExistentes = loadPainelistasScores();
-                const scoresFiltrados = scoresExistentes.filter((score: PainelistasScoreEntry) => 
+                const scoresFiltrados = scoresExistentes.filter((score: PainelistasScoreEntry) =>
                     score.participanteId !== participanteId
                 );
                 localStorage.setItem(STORAGE_KEYS.PAINELISTAS_SCORES, JSON.stringify(scoresFiltrados));
@@ -171,7 +171,7 @@ export const Painelistas: React.FC<Props> = ({ gameState, addGamePoints, addPoin
                 const pontosExistentes = scoresExistentes
                     .filter((score: PainelistasScoreEntry) => score.participanteId === participanteId)
                     .reduce((sum: number, score: PainelistasScoreEntry) => sum + (score.pontos || 0), 0);
-                
+
                 if (pontosExistentes !== 0) {
                     addGamePoints('painelistas-excentricos', time, -pontosExistentes);
                     addPoints(time, -pontosExistentes);
@@ -229,8 +229,14 @@ export const Painelistas: React.FC<Props> = ({ gameState, addGamePoints, addPoin
                                         <span className="fatos-status">
                                             {fatosVerificados}/{fatosEsperados} fatos
                                         </span>
+                                        {temPunicao && (
+                                            <div className="punicao-info">
+                                                <span className="punicao-badge">⚠️ Punido</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
+
 
                                 {jogadorConfigurado && jogadorConfigurado.fatos.length > 0 ? (
                                     <div className="fatos-container">
@@ -253,13 +259,6 @@ export const Painelistas: React.FC<Props> = ({ gameState, addGamePoints, addPoin
                                 ) : (
                                     <div className="sem-fatos">
                                         <p>📝 Este jogador não tem fatos configurados</p>
-                                    </div>
-                                )}
-
-                                {/* Tag de punição movida para baixo dos fatos */}
-                                {temPunicao && (
-                                    <div className="punicao-info">
-                                        <span className="punicao-badge">⚠️ Punido</span>
                                     </div>
                                 )}
 
@@ -307,13 +306,6 @@ export const Painelistas: React.FC<Props> = ({ gameState, addGamePoints, addPoin
 
             <main className="main-content">
                 {renderTimeSection(gameState.teams.teamA)}
-
-                <div className="time-divider">
-                    <div className="divider-line"></div>
-                    <div className="divider-text">VS</div>
-                    <div className="divider-line"></div>
-                </div>
-
                 {renderTimeSection(gameState.teams.teamB)}
             </main>
 

@@ -26,7 +26,8 @@
 }
 
 .painelistas .main-content {
-    max-width: 1400px;
+    max-width: 1600px;
+    /* Aumentado de 1400px para 1600px */
     margin: 0 auto;
     padding: 0 20px 40px;
 }
@@ -83,6 +84,14 @@
     padding: 20px;
     text-align: center;
     margin: 15px 0;
+    height: 80px;
+    /* Altura fixa em vez de min-height */
+    /* Altura fixa para manter consistência */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    /* Ocupa o espaço disponível */
 }
 
 .sem-fatos p {
@@ -108,38 +117,44 @@
     font-style: italic;
 }
 
+/* Grid de jogadores */
 .jogadores-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 25px;
-    max-width: 1200px;
-    margin: 0 auto;
+    grid-template-columns: repeat(4, 1fr);
+    /* Força 4 colunas fixas */
+    gap: 20px;
+    margin-top: 20px;
 }
 
-/* Cards de jogadores */
+/* Card de jogador com tamanho padronizado */
 .jogador-card {
     background: white;
     border-radius: 20px;
     padding: 25px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    border: 2px solid transparent;
-    max-width: 500px;
-    margin: 0 auto;
+    height: 360px;
+    /* Altura fixa para todos os cards */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* Alinha tudo no topo */
 }
 
 .jogador-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
+/* Header com altura fixa */
 .jogador-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #f0f0f0;
+    height: 70px;
+    /* Altura fixa em vez de min-height */
+    /* Altura fixa para o header */
 }
 
 .jogador-header h3 {
@@ -147,36 +162,56 @@
     font-size: 1.4rem;
     color: #333;
     font-weight: 600;
+    flex: 1;
 }
 
-.status-info {
-    display: flex;
-    flex-direction: column;
+/* Estilos específicos para o card de jogador */
+.jogador-card .status-info {
+    display: flex !important;
+    flex-direction: column !important;
     align-items: flex-end;
     gap: 5px;
 }
 
-.fatos-status {
+.jogador-card .fatos-status {
     font-size: 0.9rem;
     color: #666;
     font-weight: 500;
 }
 
-.punicao-badge {
-    background: #ff6b6b;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 600;
+/* Container da tag de punição - forçar linha separada */
+.jogador-card .punicao-info {
+    text-align: center;
+    margin: 8px 0 0 0;
+    width: 100%;
+    display: block;
 }
 
-/* Container de fatos */
+.jogador-card .punicao-badge {
+    display: inline-block;
+    background: #ff6b6b;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+    margin: 0 auto;
+}
+
+/* Container de fatos com posição fixa */
 .fatos-container {
     display: flex;
     gap: 12px;
     margin-bottom: 20px;
     flex-wrap: wrap;
+    height: 80px;
+    /* Altura fixa em vez de min-height */
+    /* Altura fixa para o container de fatos */
+    align-items: center;
+    /* Centraliza verticalmente */
+    justify-content: center;
+    /* Centraliza horizontalmente */
 }
 
 .fato-card {
@@ -259,16 +294,21 @@
     font-weight: 400;
 }
 
+/* Container de multas com altura fixa */
 .multas-container {
     display: flex;
     flex-direction: column;
     gap: 8px;
     margin-top: 10px;
+    height: 60px;
+    /* Altura fixa para o container de multas */
+    justify-content: center;
 }
 
-.remover-punicao-btn {
+/* Botão de resetar pontuação sempre na mesma posição */
+.resetar-pontuacao-btn {
     width: 100%;
-    background: #4ecdc4;
+    background: #ff9800;
     color: white;
     border: none;
     padding: 12px 20px;
@@ -277,12 +317,14 @@
     font-size: 1rem;
     font-weight: 600;
     transition: all 0.2s ease;
+    margin-top: auto;
+    /* Empurra o botão para baixo */
 }
 
-.remover-punicao-btn:hover {
-    background: #44a08d;
+.resetar-pontuacao-btn:hover {
+    background: #f57c00;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
 }
 
 .painelistas .loading {
