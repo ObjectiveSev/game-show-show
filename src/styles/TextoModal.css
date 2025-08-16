@@ -125,20 +125,24 @@
 }
 
 .controles-host {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
+    margin-top: 20px;
     padding: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .status-info {
-    display: flex;
+    display: flex !important;
+    flex-direction: row !important;
     justify-content: space-between;
+    /* Change center to space-between */
     align-items: center;
     margin-bottom: 20px;
     color: white;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 20px;
+    /* Optionally reduce gap since space-between handles spacing */
 }
 
 .team-selector,
@@ -147,8 +151,24 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    flex: 1;
-    justify-content: center;
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    min-width: 0;
+}
+
+.team-selector {
+    min-width: 200px;
+}
+
+.verdades-info,
+.erros-info {
+    min-width: 150px;
+}
+
+.erros-info .valor {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #fecaca;
 }
 
 .team-dropdown {
@@ -187,16 +207,22 @@
 }
 
 .botoes-controle {
-    display: flex;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
     justify-content: center;
-    flex-wrap: wrap;
     align-items: center;
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Botões em grid 2x2 */
 .btn-erro,
-.btn-resetar,
 .btn-revelar,
+.btn-resetar,
 .btn-salvar {
     padding: 12px 24px;
     border: none;
@@ -205,6 +231,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    width: 100%;
     min-width: 140px;
     backdrop-filter: blur(10px);
 }
@@ -285,35 +312,44 @@
     gap: 8px;
     background: rgba(255, 255, 255, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
-    padding: 6px 10px;
+    border-radius: 8px;
+    padding: 4px;
 }
 
 .extras-buttons {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
 }
 
 .extras-btn {
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 6px;
-    padding: 2px 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    color: white;
+    width: 24px;
+    height: 20px;
+    border-radius: 4px;
     cursor: pointer;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.2s ease;
 }
 
 .extras-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.5);
 }
 
 .extras-value {
-    min-width: 28px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    min-width: 30px;
     text-align: center;
-    font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 /* Dicionário - definição item */
@@ -423,9 +459,13 @@
     }
 
     .status-info {
-        flex-direction: column;
-        gap: 10px;
+        flex-direction: row;
+        /* Manter horizontal mesmo em telas pequenas */
+        gap: 15px;
+        /* Reduzir gap para telas pequenas */
         align-items: center;
+        flex-wrap: wrap;
+        /* Permitir quebra se necessário */
     }
 
     .botoes-controle {

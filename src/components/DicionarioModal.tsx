@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { DicionarioPalavra, PalavraEstado } from '../types/dicionarioSurreal';
 import type { Team } from '../types';
 import { TeamSelector } from './common/TeamSelector';
@@ -25,10 +25,16 @@ export const DicionarioModal: React.FC<Props> = ({ isOpen, onClose, palavra, est
     // Fechar com ESC
     useEffect(() => {
         if (!isOpen) return;
-        const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-        window.addEventListener('keydown', onKey);
-        return () => window.removeEventListener('keydown', onKey);
-    }, [isOpen, onClose]);
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                onClose();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen, onClose, estado]);
 
     useEffect(() => {
         if (!palavra || !estado) return;
@@ -40,7 +46,7 @@ export const DicionarioModal: React.FC<Props> = ({ isOpen, onClose, palavra, est
         } else {
             setPontosAtuais(base);
         }
-    }, [palavra, estado?.dicasAbertas, pontuacao, verificado, acertou]);
+    }, [palavra, estado, pontuacao, verificado, acertou]);
 
     if (!isOpen || !palavra || !estado) return null;
 

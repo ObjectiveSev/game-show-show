@@ -1,8 +1,8 @@
 import React from 'react';
-import type { Game } from '../types';
+import type { GameConfig } from '../types/games';
 
 interface GamesListProps {
-    games: Game[];
+    games: GameConfig[];
     onGameClick: (gameId: string) => void;
 }
 
@@ -14,16 +14,14 @@ export const GamesList: React.FC<GamesListProps> = ({ games, onGameClick }) => {
                 {games.map((game) => (
                     <a
                         key={game.id}
-                        className={`game-card ${game.status}`}
-                        href={game.id === 'verdades-absurdas' ? '/verdades-absurdas' : game.id === 'dicionario-surreal' ? '/dicionario-surreal' : '#'}
+                        className="game-card completed"
+                        href={`/${game.id}`}
                         onClick={(e) => {
-                            if (game.id !== 'verdades-absurdas' && game.id !== 'dicionario-surreal') {
-                                e.preventDefault();
-                                onGameClick(game.id);
-                            }
+                            e.preventDefault();
+                            onGameClick(game.id);
                         }}
                     >
-                        <div className="game-icon">{game.icon}</div>
+                        <div className="game-icon">{game.emoji}</div>
                         <h4>{game.name}</h4>
                         <p>{game.description}</p>
                     </a>

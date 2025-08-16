@@ -11,6 +11,14 @@ export const games: Game[] = [
         status: 'completed'
     },
     {
+        id: 'painelistas-excentricos',
+        name: 'Painelistas Excêntricos',
+        icon: '🎭',
+        description: 'Fatos pessoais: verdade ou mentira?',
+        points: '+4 pontos',
+        status: 'pending'
+    },
+    {
         id: 'dicionario-surreal',
         name: 'Dicionário Surreal',
         icon: '📚',

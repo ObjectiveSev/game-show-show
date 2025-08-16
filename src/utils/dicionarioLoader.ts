@@ -1,25 +1,23 @@
-import type { DicionarioData, DicionarioPontuacaoConfig } from '../types/dicionarioSurreal';
+import type { DicionarioData } from '../types/dicionarioSurreal';
+import { API_ENDPOINTS, TIMEOUT_CONFIG } from '../constants';
 
 export const carregarDicionarioSurreal = async (): Promise<DicionarioData> => {
-    try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_CONFIG.API_REQUEST);
 
-        const response = await fetch('/config/dicionario-surreal.json', { signal: controller.signal });
+    try {
+        const response = await fetch(API_ENDPOINTS.DICIONARIO_SURREAL, { signal: controller.signal });
         clearTimeout(timeoutId);
 
-        if (!response.ok) throw new Error(`Erro ao carregar dicionario: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`Erro ao carregar dicionário surreal: ${response.status}`);
+        }
 
-        const raw = await response.json();
-        const defaults: DicionarioPontuacaoConfig = { baseAcerto: 3, pontosPorDica: 1 };
-        const data: DicionarioData = {
-            palavras: raw.palavras || [],
-            pontuacao: raw.pontuacao ?? defaults
-        };
+        const data = await response.json();
         return data;
     } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') {
-            throw new Error('Timeout ao carregar dicionário');
+            throw new Error('Timeout ao carregar dicionário surreal');
         }
         throw err;
     }

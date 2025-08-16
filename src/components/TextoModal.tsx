@@ -4,7 +4,6 @@ import type { Team } from '../types';
 import { extrairTextoVerdade, encontrarIndiceVerdade } from '../utils/verdadesAbsurdasLoader';
 import '../styles/TextoModal.css';
 import { TeamSelector } from './common/TeamSelector';
-import { HostControls } from './common/HostControls';
 
 interface TextoModalProps {
     isOpen: boolean;
@@ -28,7 +27,7 @@ export const TextoModal: React.FC<TextoModalProps> = ({
     const [textoRenderizado, setTextoRenderizado] = useState<string>('');
     const [erros, setErros] = useState(0);
     const [verdadesReveladas, setVerdadesReveladas] = useState(false);
-    const [timeSelecionado, setTimeSelecionado] = useState<string>('');
+    const [timeSelecionado, setTimeSelecionado] = useState<'A' | 'B' | ''>('');
 
 
 
@@ -190,7 +189,7 @@ export const TextoModal: React.FC<TextoModalProps> = ({
 
                     <div className="controles-host">
                         <div className="status-info">
-                            <TeamSelector teams={teams} value={timeSelecionado as any} onChange={(v) => setTimeSelecionado(v)} />
+                            <TeamSelector teams={teams} value={timeSelecionado} onChange={(v: 'A' | 'B' | '') => setTimeSelecionado(v)} />
                             <div className="verdades-info">
                                 <span className="label">Verdades encontradas:</span>
                                 <span className="valor">{verdadesEncontradas}/{totalVerdades}</span>
@@ -204,7 +203,8 @@ export const TextoModal: React.FC<TextoModalProps> = ({
                         <div className="botoes-controle">
                             <button className="btn-erro" onClick={handleAdicionarErro}>❌ +1 Erro</button>
                             <button className="btn-revelar" onClick={handleRevelarVerdades} disabled={verdadesReveladas}>🔍 Revelar Verdades</button>
-                            <HostControls onReset={handleResetarPontuacao} onSave={() => { if (!estado || !timeSelecionado) return; onSalvarPontuacao(timeSelecionado as 'A' | 'B'); }} canSave={!!timeSelecionado && !estado.pontuacaoSalva} saveLabel={estado.pontuacaoSalva ? '✅ Pontuação Salva' : '💾 Salvar Pontuação'} />
+                            <button className="btn-resetar" onClick={handleResetarPontuacao}>🔄 Resetar Pontuação</button>
+                            <button className="btn-salvar" onClick={() => { if (!estado || !timeSelecionado) return; onSalvarPontuacao(timeSelecionado as 'A' | 'B'); }} disabled={!timeSelecionado || estado.pontuacaoSalva}>{estado.pontuacaoSalva ? '✅ Pontuação Salva' : '💾 Salvar Pontuação'}</button>
                         </div>
                     </div>
                 </div>

@@ -12,7 +12,7 @@ export const TeamSelector: React.FC<TeamSelectorProps> = ({ teams, value, onChan
     return (
         <div className="team-selector">
             <span className="label">{label}</span>
-            <select className="team-dropdown" value={value} onChange={(e) => onChange(e.target.value as any)}>
+            <select className="team-dropdown" value={value} onChange={(e) => onChange(e.target.value as 'A' | 'B' | '')}>
                 <option value="">Selecionar o time</option>
                 <option value="A">{teams.teamA?.name || 'Time A'}</option>
                 <option value="B">{teams.teamB?.name || 'Time B'}</option>

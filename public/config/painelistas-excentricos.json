@@ -1,0 +1,50 @@
+{
+    "pontuacao": {
+        "acerto": 4,
+        "erro": 0,
+        "fatoNaoFornecido": -2,
+        "fatosEsperadosPorJogador": 2
+    },
+    "jogadores": [
+        {
+            "participanteId": "p1",
+            "fatos": [
+                {
+                    "id": "f1",
+                    "texto": "Já morei em três países diferentes.",
+                    "verdadeiro": true
+                },
+                {
+                    "id": "f2",
+                    "texto": "Coleciono pedras que encontro na rua.",
+                    "verdadeiro": false
+                }
+            ]
+        },
+        {
+            "participanteId": "p2",
+            "fatos": [
+                {
+                    "id": "f1",
+                    "texto": "Sou faixa preta em judô.",
+                    "verdadeiro": false
+                },
+                {
+                    "id": "f2",
+                    "texto": "Toquei bateria em uma banda na escola.",
+                    "verdadeiro": true
+                }
+            ]
+        },
+        {
+            "participanteId": "p3",
+            "fatos": [
+                {
+                    "id": "f1",
+                    "texto": "Tenho um canal de receitas veganas.",
+                    "verdadeiro": true
+                }
+            ]
+        }
+    ]
+}

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { Team } from '../types';
+import { carregarParticipantes } from '../utils/participantesLoader';
 
 interface ScoreDisplayProps {
     teamA: Team;
@@ -14,6 +15,21 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
     onOpenScoreboard,
     onOpenSettings
 }) => {
+    const [map, setMap] = React.useState<Record<string, string>>({});
+    React.useEffect(() => {
+        let mounted = true;
+        carregarParticipantes().then(list => {
+            if (!mounted) return;
+            const m: Record<string, string> = {};
+            list.forEach(p => { m[p.id] = p.nome; });
+            setMap(m);
+        }).catch(() => { });
+        return () => { mounted = false; };
+    }, []);
+    const membersA = useMemo(() => teamA.members.map(id => map[id] || id), [teamA.members, map]);
+    const membersB = useMemo(() => teamB.members.map(id => map[id] || id), [teamB.members, map]);
+    const captainA = map[teamA.captain] || teamA.captain;
+    const captainB = map[teamB.captain] || teamB.captain;
     return (
         <div className="score-display">
             <h3>🏆 Placar Atual</h3>
@@ -24,9 +40,9 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
                 >
                     <div className="team-name">{teamA.name || 'Time A'}</div>
                     <div className="team-score">{teamA.score}</div>
-                    <div className="team-captain">Capitão: {teamA.captain || 'Não definido'}</div>
+                    <div className="team-captain">Capitão: {captainA || 'Não definido'}</div>
                     <div className="team-members">
-                        {teamA.members.length > 0 ? teamA.members.join(', ') : 'Nenhum membro'}
+                        {membersA.length > 0 ? membersA.join(', ') : 'Nenhum membro'}
                     </div>
                 </div>
 
@@ -38,9 +54,9 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
                 >
                     <div className="team-name">{teamB.name || 'Time B'}</div>
                     <div className="team-score">{teamB.score}</div>
-                    <div className="team-captain">Capitão: {teamB.captain || 'Não definido'}</div>
+                    <div className="team-captain">Capitão: {captainB || 'Não definido'}</div>
                     <div className="team-members">
-                        {teamB.members.length > 0 ? teamB.members.join(', ') : 'Nenhum membro'}
+                        {membersB.length > 0 ? membersB.join(', ') : 'Nenhum membro'}
                     </div>
                 </div>
             </div>

@@ -1,46 +1,43 @@
 import { useState, useEffect } from 'react';
-import type { Team, GameScores } from '../types';
+import type { Team, AppState } from '../types';
 import { loadGameConfig, saveGameConfig } from '../config/gameConfig';
+import { STORAGE_KEYS } from '../constants';
 
-
-interface GameState {
+// Estado inicial padrão
+const initialState: AppState = {
     teams: {
-        teamA: Team;
-        teamB: Team;
-    };
-    gameScores: GameScores;
-}
-
-const SCORES_STORAGE_KEY = 'gameShowScores';
+        teamA: {
+            id: 'A',
+            name: 'Time A',
+            captain: '',
+            members: [],
+            color: '#ff6b6b',
+            gradient: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+            score: 0
+        },
+        teamB: {
+            id: 'B',
+            name: 'Time B',
+            captain: '',
+            members: [],
+            color: '#4ecdc4',
+            gradient: 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+            score: 0
+        }
+    },
+    gameScores: {},
+    buzzer: {
+        active: false,
+        winner: null,
+        timer: null,
+        timeLeft: 0
+    }
+};
 
 export const useGameState = () => {
-    const [gameState, setGameState] = useState<GameState>({
-        teams: {
-            teamA: {
-                id: 'A',
-                name: '',
-                captain: '',
-                members: [],
-                color: '#ff6b6b',
-                gradient: 'linear-gradient(145deg, #ff6b6b, #ee5a52)',
-                score: 0
-            },
-            teamB: {
-                id: 'B',
-                name: '',
-                captain: '',
-                members: [],
-                color: '#4ecdc4',
-                gradient: 'linear-gradient(145deg, #4ecdc4, #44a08d)',
-                score: 0
-            }
-        },
-        gameScores: {}
-    });
+    const [gameState, setGameState] = useState<AppState>(initialState);
 
-
-
-    // Carregar configuração inicial do localStorage
+    // Carregar configuração inicial
     useEffect(() => {
         const loadInitialConfig = async () => {
             try {
@@ -50,103 +47,43 @@ export const useGameState = () => {
                     teams: config.teams
                 }));
             } catch (error) {
-                console.error('❌ Erro ao carregar configuração inicial:', error);
+                console.warn('❌ Failed to load initial config, using defaults:', error);
             }
         };
 
         loadInitialConfig();
     }, []);
 
-    // Carregar scores salvos do localStorage
+    // Carregar scores salvos
     useEffect(() => {
-        const savedScores = localStorage.getItem(SCORES_STORAGE_KEY);
-        if (savedScores) {
+        const loadSavedScores = async () => {
             try {
-                const parsed = JSON.parse(savedScores);
-                setGameState(prev => ({
-                    ...prev,
-                    gameScores: parsed.gameScores || {}
-                }));
-            } catch (error) {
-                console.error('❌ Erro ao carregar scores:', error);
-            }
-        }
-    }, []);
-
-    // Agregar a partir do histórico detalhado (autoridade) e refletir nos gameScores ao carregar
-    useEffect(() => {
-        try {
-            // Verdades Absurdas
-            const vaRaw = localStorage.getItem('verdadesAbsurdasScores');
-            const vaEntries = vaRaw ? JSON.parse(vaRaw) : [];
-            const vaTotals = Array.isArray(vaEntries)
-                ? vaEntries.reduce(
-                    (acc: { A: number; B: number }, e: any) => {
-                        acc.A += (e.timeLeitor === 'A' ? e.pontosLeitor || 0 : 0) + (e.timeAdivinhador === 'A' ? e.pontosAdivinhador || 0 : 0);
-                        acc.B += (e.timeLeitor === 'B' ? e.pontosLeitor || 0 : 0) + (e.timeAdivinhador === 'B' ? e.pontosAdivinhador || 0 : 0);
-                        return acc;
-                    },
-                    { A: 0, B: 0 }
-                )
-                : { A: 0, B: 0 };
-
-            // Dicionário Surreal
-            const dsRaw = localStorage.getItem('dicionarioSurrealScores');
-            const dsEntries = dsRaw ? JSON.parse(dsRaw) : [];
-            const dsTotals = Array.isArray(dsEntries)
-                ? dsEntries.reduce(
-                    (acc: { A: number; B: number }, e: any) => {
-                        if (e.timeAdivinhador === 'A') acc.A += e.pontos || 0;
-                        if (e.timeAdivinhador === 'B') acc.B += e.pontos || 0;
-                        return acc;
-                    },
-                    { A: 0, B: 0 }
-                )
-                : { A: 0, B: 0 };
-
-            setGameState(prev => ({
-                ...prev,
-                gameScores: {
-                    ...prev.gameScores,
-                    ['verdades-absurdas']: { teamA: vaTotals.A, teamB: vaTotals.B },
-                    ['dicionario-surreal']: { teamA: dsTotals.A, teamB: dsTotals.B }
+                const savedScores = localStorage.getItem(STORAGE_KEYS.GAME_SCORES);
+                if (savedScores) {
+                    const parsed = JSON.parse(savedScores);
+                    if (parsed.gameScores) {
+                        setGameState(prev => ({
+                            ...prev,
+                            gameScores: parsed.gameScores
+                        }));
+                    }
                 }
-            }));
-        } catch {
-            // ignore
-        }
+            } catch (error) {
+                console.warn('❌ Failed to load saved scores:', error);
+            }
+        };
+
+        loadSavedScores();
     }, []);
 
-    // Salvar scores no localStorage sempre que mudar
+    // Salvar scores automaticamente quando mudarem
     useEffect(() => {
-        localStorage.setItem(SCORES_STORAGE_KEY, JSON.stringify({
-            gameScores: gameState.gameScores
-        }));
+        if (Object.keys(gameState.gameScores).length > 0) {
+            localStorage.setItem(STORAGE_KEYS.GAME_SCORES, JSON.stringify({
+                gameScores: gameState.gameScores
+            }));
+        }
     }, [gameState.gameScores]);
-
-    // Recalcular placar total a partir dos gameScores (após carregar/somar pontos)
-    useEffect(() => {
-        const totals = Object.values(gameState.gameScores).reduce(
-            (acc, gs) => {
-                if (!gs) return acc;
-                acc.teamA += gs.teamA || 0;
-                acc.teamB += gs.teamB || 0;
-                return acc;
-            },
-            { teamA: 0, teamB: 0 }
-        );
-
-        setGameState(prev => ({
-            ...prev,
-            teams: {
-                ...prev.teams,
-                teamA: { ...prev.teams.teamA, score: totals.teamA },
-                teamB: { ...prev.teams.teamB, score: totals.teamB }
-            }
-        }));
-    }, [gameState.gameScores]);
-
-
 
     // Função para adicionar pontos a um time
     const addPoints = (teamId: 'A' | 'B', points: number) => {
@@ -162,43 +99,37 @@ export const useGameState = () => {
         }));
     };
 
-    // Função para adicionar pontos a um jogo específico
+    // Função para adicionar pontos específicos de um jogo
     const addGamePoints = (gameId: string, teamId: 'A' | 'B', points: number) => {
-        setGameState(prev => {
-            const currentGameScore = prev.gameScores[gameId] || { teamA: 0, teamB: 0 };
-            return {
-                ...prev,
-                gameScores: {
-                    ...prev.gameScores,
-                    [gameId]: {
-                        ...currentGameScore,
-                        [`team${teamId}`]: currentGameScore[`team${teamId}` as keyof typeof currentGameScore] + points
-                    }
+        setGameState(prev => ({
+            ...prev,
+            gameScores: {
+                ...prev.gameScores,
+                [gameId]: {
+                    ...prev.gameScores[gameId],
+                    [`team${teamId}`]: (prev.gameScores[gameId]?.[`team${teamId}`] || 0) + points
                 }
-            };
-        });
+            }
+        }));
     };
 
-    // Função para resetar pontuação
+    // Função para resetar todos os scores
     const resetScores = () => {
         setGameState(prev => ({
             ...prev,
+            gameScores: {},
             teams: {
                 ...prev.teams,
                 teamA: { ...prev.teams.teamA, score: 0 },
                 teamB: { ...prev.teams.teamB, score: 0 }
-            },
-            gameScores: {}
+            }
         }));
 
-        // Limpar persistência de pontuação no localStorage
-        try {
-            localStorage.removeItem(SCORES_STORAGE_KEY);
-            localStorage.removeItem('verdadesAbsurdasScores');
-            localStorage.removeItem('dicionarioSurrealScores');
-        } catch {
-            // ignore
-        }
+        // Limpar localStorage
+        localStorage.removeItem(STORAGE_KEYS.GAME_SCORES);
+        localStorage.removeItem(STORAGE_KEYS.VERDADES_ABSURDAS_SCORES);
+        localStorage.removeItem(STORAGE_KEYS.DICIONARIO_SURREAL_SCORES);
+        localStorage.removeItem(STORAGE_KEYS.PAINELISTAS_SCORES);
     };
 
     // Função para atualizar nomes dos times
@@ -231,27 +162,62 @@ export const useGameState = () => {
     };
 
     // Função para atualizar configuração completa dos times
-    const updateTeamConfig = (teamId: 'A' | 'B', team: Partial<Team>) => {
-        setGameState(prev => ({
-            ...prev,
-            teams: {
-                ...prev.teams,
-                [`team${teamId}`]: {
-                    ...prev.teams[`team${teamId}` as keyof typeof prev.teams],
-                    ...team
+    const updateTeamConfig = async (teamId: 'A' | 'B', team: Partial<Team>) => {
+        setGameState(prev => {
+            const newState = {
+                ...prev,
+                teams: {
+                    ...prev.teams,
+                    [`team${teamId}`]: {
+                        ...prev.teams[`team${teamId}` as keyof typeof prev.teams],
+                        ...team
+                    }
                 }
-            }
-        }));
+            };
+
+            // Salvar automaticamente no localStorage
+            saveConfig({
+                teams: {
+                    teamA: newState.teams.teamA,
+                    teamB: newState.teams.teamB
+                }
+            }).catch(error => {
+                console.error('❌ Erro ao salvar configuração automática:', error);
+            });
+
+            return newState;
+        });
     };
 
     // Função para salvar configuração atual no localStorage
-    const saveConfig = async (customData?: any) => {
+    const saveConfig = async (customData?: Record<string, unknown>) => {
         try {
-            let configToSave;
+            let configToSave: {
+                teams: {
+                    teamA: {
+                        id: 'A' | 'B';
+                        name: string;
+                        captain: string;
+                        members: string[];
+                        color: string;
+                        gradient: string;
+                        score: number;
+                    };
+                    teamB: {
+                        id: 'A' | 'B';
+                        name: string;
+                        captain: string;
+                        members: string[];
+                        color: string;
+                        gradient: string;
+                        score: number;
+                    };
+                };
+            };
 
             if (customData) {
                 // Usar dados customizados se fornecidos
-                configToSave = customData;
+                configToSave = customData as typeof configToSave;
             } else {
                 // Usar estado atual
                 configToSave = {
@@ -260,13 +226,19 @@ export const useGameState = () => {
                             id: gameState.teams.teamA.id,
                             name: gameState.teams.teamA.name,
                             captain: gameState.teams.teamA.captain,
-                            members: gameState.teams.teamA.members
+                            members: gameState.teams.teamA.members,
+                            color: gameState.teams.teamA.color,
+                            gradient: gameState.teams.teamA.gradient,
+                            score: gameState.teams.teamA.score
                         },
                         teamB: {
                             id: gameState.teams.teamB.id,
                             name: gameState.teams.teamB.name,
                             captain: gameState.teams.teamB.captain,
-                            members: gameState.teams.teamB.members
+                            members: gameState.teams.teamB.members,
+                            color: gameState.teams.teamB.color,
+                            gradient: gameState.teams.teamB.gradient,
+                            score: gameState.teams.teamB.score
                         }
                     }
                 };

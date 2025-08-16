@@ -5,6 +5,7 @@ import { VerdadesAbsurdas } from './pages/VerdadesAbsurdas';
 import { PlacarDetalhado } from './pages/PlacarDetalhado';
 import { DicionarioSurreal } from './pages/DicionarioSurreal';
 import { SettingsModal } from './components/SettingsModal';
+import { Painelistas } from './pages/Painelistas';
 import { useGameState } from './hooks/useGameState';
 import { clearAllLocalStorage } from './utils/fileSystem';
 import './styles/Dashboard.css';
@@ -13,10 +14,8 @@ import './styles/SettingsModal.css';
 function App() {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const { gameState, updateTeamConfig, saveConfig, reloadConfig, addPoints, addGamePoints, resetScores } = useGameState();
-  const [renderKey, setRenderKey] = useState(0);
-
-
+  const { gameState, updateTeamConfig, addPoints, addGamePoints, resetScores } = useGameState();
+  const [renderKey] = useState(0);
 
   const handleOpenScoreboard = () => {
     window.location.href = '/placar-detalhado';
@@ -30,11 +29,6 @@ function App() {
     setIsSettingsOpen(true);
   };
 
-  const handleSaveConfig = async (customData?: any) => {
-    await saveConfig(customData);
-    setRenderKey(prev => prev + 1); // Força re-renderização
-  };
-
   const handleGameClick = (gameId: string) => {
     switch (gameId) {
       case 'verdades-absurdas':
@@ -42,6 +36,9 @@ function App() {
         break;
       case 'dicionario-surreal':
         window.location.href = '/dicionario-surreal';
+        break;
+      case 'painelistas-excentricos':
+        window.location.href = '/painelistas-excentricos';
         break;
       default:
         alert(`Jogo "${gameId}" será implementado em breve!`);
@@ -75,19 +72,20 @@ function App() {
               onClearLocalStorage={handleClearLocalStorage}
             />
           } />
-          <Route path="/verdades-absurdas" element={<VerdadesAbsurdas gameState={gameState} addGamePoints={addGamePoints} addPoints={addPoints} />} />
-          <Route path="/dicionario-surreal" element={<DicionarioSurreal gameState={gameState} addGamePoints={addGamePoints} addPoints={addPoints} />} />
-          <Route path="/placar-detalhado" element={<PlacarDetalhado />} />
+          <Route path="/verdades-absurdas" element={<VerdadesAbsurdas key={renderKey} gameState={gameState} addGamePoints={addGamePoints} addPoints={addPoints} />} />
+          <Route path="/dicionario-surreal" element={<DicionarioSurreal key={renderKey} gameState={gameState} addGamePoints={addGamePoints} addPoints={addPoints} />} />
+          <Route path="/placar-detalhado" element={<PlacarDetalhado key={renderKey} />} />
+          <Route path="/painelistas-excentricos" element={<Painelistas key={renderKey} gameState={gameState} addGamePoints={addGamePoints} addPoints={addPoints} />} />
         </Routes>
 
         <SettingsModal
           isOpen={isSettingsOpen}
           onClose={() => setIsSettingsOpen(false)}
-          teamA={gameState.teams.teamA}
-          teamB={gameState.teams.teamB}
-          onUpdateTeamConfig={updateTeamConfig}
-          onSaveConfig={handleSaveConfig}
-          onReloadConfig={reloadConfig}
+          teams={[gameState.teams.teamA, gameState.teams.teamB]}
+          onUpdateTeams={async (teams) => {
+            await updateTeamConfig('A', teams[0]);
+            await updateTeamConfig('B', teams[1]);
+          }}
         />
       </div>
     </Router>

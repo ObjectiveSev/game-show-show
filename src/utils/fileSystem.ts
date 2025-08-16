@@ -1,27 +1,42 @@
 // Utilitários para ler/escrever o arquivo teams.json físico
+import type { Team } from '../types';
+import { STORAGE_KEYS, TEAM_COLORS } from '../constants';
 
-const DEFAULT_TEAMS_CONFIG = {
+interface TeamsConfig {
+    teams: {
+        teamA: Team;
+        teamB: Team;
+    };
+}
+
+const DEFAULT_TEAMS_CONFIG: TeamsConfig = {
     "teams": {
         "teamA": {
             "id": "A",
             "name": "",
             "captain": "",
-            "members": []
+            "members": [],
+            "color": TEAM_COLORS.TEAM_A.color,
+            "gradient": TEAM_COLORS.TEAM_A.gradient,
+            "score": 0
         },
         "teamB": {
             "id": "B",
             "name": "",
             "captain": "",
-            "members": []
+            "members": [],
+            "color": TEAM_COLORS.TEAM_B.color,
+            "gradient": TEAM_COLORS.TEAM_B.gradient,
+            "score": 0
         }
     }
 };
 
 // Função para ler do localStorage
-export const readTeamsFile = async (): Promise<any> => {
+export const readTeamsFile = async (): Promise<TeamsConfig> => {
     try {
         // Ler do localStorage
-        const savedFile = localStorage.getItem('teamsJsonFile');
+        const savedFile = localStorage.getItem(STORAGE_KEYS.TEAMS_CONFIG);
 
         if (savedFile) {
             const data = JSON.parse(savedFile);
@@ -37,12 +52,12 @@ export const readTeamsFile = async (): Promise<any> => {
 };
 
 // Função para salvar no localStorage
-export const writeTeamsFile = async (data: any): Promise<void> => {
+export const writeTeamsFile = async (data: TeamsConfig): Promise<void> => {
     try {
         const jsonString = JSON.stringify(data, null, 4);
 
         // Salvar no localStorage
-        localStorage.setItem('teamsJsonFile', jsonString);
+        localStorage.setItem(STORAGE_KEYS.TEAMS_CONFIG, jsonString);
 
     } catch (error) {
         console.error('❌ Erro ao salvar no localStorage:', error);

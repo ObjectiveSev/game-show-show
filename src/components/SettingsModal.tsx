@@ -1,33 +1,70 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { carregarParticipantes } from '../utils/participantesLoader';
+import '../styles/SettingsModal.css';
 import type { Team } from '../types';
+import { TEAM_COLORS } from '../constants';
 
 interface SettingsModalProps {
     isOpen: boolean;
     onClose: () => void;
-    teamA: Team;
-    teamB: Team;
-    onUpdateTeamConfig: (teamId: 'A' | 'B', team: Partial<Team>) => void;
-    onSaveConfig: (customData?: any) => void;
-    onReloadConfig: () => void;
+    teams: Team[];
+    onUpdateTeams: (teams: Team[]) => void;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
     isOpen,
     onClose,
-    teamA,
-    teamB,
-    onUpdateTeamConfig,
-    onSaveConfig,
-    onReloadConfig
+    teams,
+    onUpdateTeams
 }) => {
-    const [localTeamA, setLocalTeamA] = useState<Team>(teamA);
-    const [localTeamB, setLocalTeamB] = useState<Team>(teamB);
+    const [localTeamA, setLocalTeamA] = useState<Team>(teams[0] || { id: 'A', name: 'Time A', captain: '', members: [], color: TEAM_COLORS.TEAM_A.color, gradient: TEAM_COLORS.TEAM_A.gradient, score: 0 });
+    const [localTeamB, setLocalTeamB] = useState<Team>(teams[1] || { id: 'B', name: 'Time B', captain: '', members: [], color: TEAM_COLORS.TEAM_B.color, gradient: TEAM_COLORS.TEAM_B.gradient, score: 0 });
+    const [pool, setPool] = useState<string[]>([]); // ids não alocados
+    const [participantesMap, setParticipantesMap] = useState<Record<string, string>>({});
+    const [participantesIds, setParticipantesIds] = useState<string[]>([]);
 
     // Sincronizar estado local com props quando elas mudarem
     useEffect(() => {
-        setLocalTeamA(teamA);
-        setLocalTeamB(teamB);
-    }, [teamA, teamB]);
+        if (teams.length >= 2) {
+            setLocalTeamA(teams[0]);
+            setLocalTeamB(teams[1]);
+            // reconstruir pool a partir dos participantes carregados (depois do loader)
+            setPool(prev => prev.filter(id => !teams[0].members.includes(id) && !teams[1].members.includes(id)));
+        }
+    }, [teams]);
+
+    // carregar participantes (uma vez)
+    useEffect(() => {
+        let mounted = true;
+        (async () => {
+            try {
+                const lista = await carregarParticipantes();
+                if (!mounted) return;
+                const map: Record<string, string> = {};
+                lista.forEach(p => { map[p.id] = p.nome; });
+                setParticipantesMap(map);
+                setParticipantesIds(lista.map(p => p.id));
+            } catch { /* ignore */ }
+        })();
+        return () => { mounted = false; };
+    }, []);
+
+    // Calcular pool sempre que os times mudarem
+    useEffect(() => {
+        const allIds = participantesIds.length ? participantesIds : Object.keys(participantesMap);
+        const usados = new Set([
+            ...localTeamA.members,
+            ...localTeamB.members
+        ]);
+        const naoAlocados = allIds.filter(id => !usados.has(id));
+        setPool(naoAlocados);
+    }, [localTeamA.members, localTeamB.members, participantesIds, participantesMap]);
+
+    const handleCancel = useCallback(() => {
+        setLocalTeamA(teams[0]);
+        setLocalTeamB(teams[1]);
+        onClose();
+    }, [teams, onClose]);
 
     // Fechar com ESC
     useEffect(() => {
@@ -35,41 +72,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') handleCancel(); };
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
-    }, [isOpen, teamA, teamB]);
+    }, [isOpen, handleCancel]);
 
     if (!isOpen) return null;
 
     const handleSave = async () => {
         // Aplicar todas as mudanças do estado local
-        onUpdateTeamConfig('A', localTeamA);
-        onUpdateTeamConfig('B', localTeamB);
+        onUpdateTeams([localTeamA, localTeamB]);
 
-        // Aguardar um tick para garantir que o estado foi atualizado
-        await new Promise(resolve => setTimeout(resolve, 0));
-
-        // Preparar dados para salvar
-        const dataToSave = {
-            teams: {
-                teamA: {
-                    id: localTeamA.id,
-                    name: localTeamA.name,
-                    captain: localTeamA.captain,
-                    members: localTeamA.members
-                },
-                teamB: {
-                    id: localTeamB.id,
-                    name: localTeamB.name,
-                    captain: localTeamB.captain,
-                    members: localTeamB.members
-                }
-            }
-        };
-
-        await onSaveConfig(dataToSave);
         onClose();
     };
-
-
 
     // Atualizar apenas o estado local
     const handleTeamChange = (teamId: 'A' | 'B', updates: Partial<Team>) => {
@@ -82,59 +94,64 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         }
     };
 
-    const handleCancel = () => {
-        setLocalTeamA(teamA);
-        setLocalTeamB(teamB);
-        onClose();
+    // drag & drop helpers
+    const onDragStart = (e: React.DragEvent, id: string, from: 'pool' | 'A' | 'B') => {
+        e.dataTransfer.setData('text/plain', JSON.stringify({ id, from }));
     };
 
+    const onDrop = (e: React.DragEvent, to: 'pool' | 'A' | 'B') => {
+        e.preventDefault();
+        const data = e.dataTransfer.getData('text/plain');
+        if (!data) return;
+        const { id, from } = JSON.parse(data) as { id: string; from: 'pool' | 'A' | 'B' };
+        if (from === to) return;
 
+        // remover da origem
+        if (from === 'pool') {
+            setPool(prev => prev.filter(x => x !== id));
+        }
+        if (from === 'A') {
+            setLocalTeamA(t => {
+                const members = t.members.filter(x => x !== id);
+                const captain = t.captain === id ? (members[0] || '') : t.captain;
+                return { ...t, members, captain };
+            });
+        }
+        if (from === 'B') {
+            setLocalTeamB(t => {
+                const members = t.members.filter(x => x !== id);
+                const captain = t.captain === id ? (members[0] || '') : t.captain;
+                return { ...t, members, captain };
+            });
+        }
 
-    const addMember = (teamId: 'A' | 'B') => {
-        const newMember = prompt('Nome do novo membro:');
-        if (newMember && newMember.trim()) {
-            const currentMembers = teamId === 'A' ? localTeamA.members : localTeamB.members;
-            const currentCaptain = teamId === 'A' ? localTeamA.captain : localTeamB.captain;
-            const newMembers = [...currentMembers, newMember.trim()];
-
-            // Se não há capitão, definir o primeiro membro como capitão
-            let newCaptain = currentCaptain;
-            if (!currentCaptain && newMembers.length === 1) {
-                newCaptain = newMembers[0];
-            }
-
-            if (teamId === 'A') {
-                const newTeamA = { ...localTeamA, members: newMembers, captain: newCaptain };
-                setLocalTeamA(newTeamA);
-            } else {
-                const newTeamB = { ...localTeamB, members: newMembers, captain: newCaptain };
-                setLocalTeamB(newTeamB);
-            }
-
-
+        // adicionar no destino
+        if (to === 'pool') {
+            setPool(prev => (prev.includes(id) ? prev : [...prev, id]));
+        }
+        if (to === 'A') {
+            setLocalTeamA(t => {
+                const members = [...t.members, id];
+                const captain = t.captain || members[0] || '';
+                return { ...t, members, captain };
+            });
+        }
+        if (to === 'B') {
+            setLocalTeamB(t => {
+                const members = [...t.members, id];
+                const captain = t.captain || members[0] || '';
+                return { ...t, members, captain };
+            });
         }
     };
+    const allowDrop = (e: React.DragEvent) => e.preventDefault();
 
-    const removeMember = (teamId: 'A' | 'B', index: number) => {
-        const currentMembers = teamId === 'A' ? localTeamA.members : localTeamB.members;
-        const currentCaptain = teamId === 'A' ? localTeamA.captain : localTeamB.captain;
-        const newMembers = currentMembers.filter((_, i) => i !== index);
-
-        // Se o capitão foi removido, definir o primeiro membro como capitão
-        let newCaptain = currentCaptain;
-        if (currentMembers[index] === currentCaptain && newMembers.length > 0) {
-            newCaptain = newMembers[0];
-        }
-
-        if (teamId === 'A') {
-            const newTeamA = { ...localTeamA, members: newMembers, captain: newCaptain };
-            setLocalTeamA(newTeamA);
-        } else {
-            const newTeamB = { ...localTeamB, members: newMembers, captain: newCaptain };
-            setLocalTeamB(newTeamB);
-        }
-
-
+    const handleResetTimes = () => {
+        // todos para o pool e nomes vazios (não salvar automaticamente) [[memory:5416204]]
+        const allIds = participantesIds.length ? participantesIds : Object.keys(participantesMap);
+        setPool(allIds);
+        setLocalTeamA(t => ({ ...t, name: '', captain: '', members: [] }));
+        setLocalTeamB(t => ({ ...t, name: '', captain: '', members: [] }));
     };
 
     const handleOverlayClick = (e: React.MouseEvent) => {
@@ -152,114 +169,114 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </div>
 
                 <div className="settings-content">
-                    {/* Team A Configuration */}
-                    <div className="team-config">
-                        <h3>Time A</h3>
-                        <div className="config-row">
-                            <label>Nome do Time:</label>
-                            <input
-                                type="text"
-                                value={localTeamA.name}
-                                placeholder="Digite o nome do Time A"
-                                onChange={(e) => handleTeamChange('A', { name: e.target.value })}
-                            />
+                    {/* Team columns side by side */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                        <div className="team-config">
+                            <h3>Time A</h3>
+                            <div className="config-row">
+                                <label>Nome do Time:</label>
+                                <input
+                                    type="text"
+                                    value={localTeamA.name}
+                                    placeholder="Digite o nome do Time A"
+                                    onChange={(e) => handleTeamChange('A', { name: e.target.value })}
+                                />
+                            </div>
+                            <div className="config-row">
+                                <label>Capitão:</label>
+                                <select
+                                    value={localTeamA.captain}
+                                    onChange={(e) => handleTeamChange('A', { captain: e.target.value })}
+                                    disabled={localTeamA.members.length === 0}
+                                >
+                                    <option value="">Selecione um capitão</option>
+                                    {localTeamA.members.map((memberId, index) => (
+                                        <option key={index} value={memberId}>
+                                            {participantesMap[memberId] || memberId}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="config-row">
+                                <label>Membros (arraste da lista à esquerda):</label>
+                                <div className="members-list droppable" onDragOver={allowDrop} onDrop={(e) => onDrop(e, 'A')}>
+                                    {localTeamA.members.length === 0 ? (
+                                        <div className="no-members">Arraste participantes para cá</div>
+                                    ) : (
+                                        localTeamA.members.map((id) => (
+                                            <div key={id} className="member-item" draggable onDragStart={(e) => onDragStart(e, id, 'A')}>
+                                                <span>{participantesMap[id] || id}</span>
+                                                <button className="remove-member" onClick={() => setLocalTeamA(t => { const members = t.members.filter(x => x !== id); const captain = t.captain === id ? (members[0] || '') : t.captain; setPool(prev => prev.includes(id) ? prev : [...prev, id]); return { ...t, members, captain }; })}>×</button>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
                         </div>
-                        <div className="config-row">
-                            <label>Capitão:</label>
-                            <select
-                                value={localTeamA.captain}
-                                onChange={(e) => handleTeamChange('A', { captain: e.target.value })}
-                                disabled={localTeamA.members.length === 0}
-                            >
-                                <option value="">Selecione um capitão</option>
-                                {localTeamA.members.map((member, index) => (
-                                    <option key={index} value={member}>
-                                        {member}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="config-row">
-                            <label>Membros:</label>
-                            <div className="members-list">
-                                {localTeamA.members.length === 0 ? (
-                                    <div className="no-members">Nenhum membro adicionado</div>
-                                ) : (
-                                    localTeamA.members.map((member, index) => (
-                                        <div key={index} className="member-item">
-                                            <span>{member}</span>
-                                            <button
-                                                className="remove-member"
-                                                onClick={() => removeMember('A', index)}
-                                            >
-                                                ×
-                                            </button>
-                                        </div>
-                                    ))
-                                )}
-                                <button className="add-member" onClick={() => addMember('A')}>
-                                    + Adicionar Membro
-                                </button>
+                        <div className="team-config">
+                            <h3>Time B</h3>
+                            <div className="config-row">
+                                <label>Nome do Time:</label>
+                                <input
+                                    type="text"
+                                    value={localTeamB.name}
+                                    placeholder="Digite o nome do Time B"
+                                    onChange={(e) => handleTeamChange('B', { name: e.target.value })}
+                                />
+                            </div>
+                            <div className="config-row">
+                                <label>Capitão:</label>
+                                <select
+                                    value={localTeamB.captain}
+                                    onChange={(e) => handleTeamChange('B', { captain: e.target.value })}
+                                    disabled={localTeamB.members.length === 0}
+                                >
+                                    <option value="">Selecione um capitão</option>
+                                    {localTeamB.members.map((memberId, index) => (
+                                        <option key={index} value={memberId}>
+                                            {participantesMap[memberId] || memberId}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="config-row">
+                                <label>Membros (arraste da lista à esquerda):</label>
+                                <div className="members-list droppable" onDragOver={allowDrop} onDrop={(e) => onDrop(e, 'B')}>
+                                    {localTeamB.members.length === 0 ? (
+                                        <div className="no-members">Arraste participantes para cá</div>
+                                    ) : (
+                                        localTeamB.members.map((id) => (
+                                            <div key={id} className="member-item" draggable onDragStart={(e) => onDragStart(e, id, 'B')}>
+                                                <span>{participantesMap[id] || id}</span>
+                                                <button className="remove-member" onClick={() => setLocalTeamB(t => { const members = t.members.filter(x => x !== id); const captain = t.captain === id ? (members[0] || '') : t.captain; setPool(prev => prev.includes(id) ? prev : [...prev, id]); return { ...t, members, captain }; })}>×</button>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Team B Configuration */}
-                    <div className="team-config">
-                        <h3>Time B</h3>
-                        <div className="config-row">
-                            <label>Nome do Time:</label>
-                            <input
-                                type="text"
-                                value={localTeamB.name}
-                                placeholder="Digite o nome do Time B"
-                                onChange={(e) => handleTeamChange('B', { name: e.target.value })}
-                            />
-                        </div>
-                        <div className="config-row">
-                            <label>Capitão:</label>
-                            <select
-                                value={localTeamB.captain}
-                                onChange={(e) => handleTeamChange('B', { captain: e.target.value })}
-                                disabled={localTeamB.members.length === 0}
-                            >
-                                <option value="">Selecione um capitão</option>
-                                {localTeamB.members.map((member, index) => (
-                                    <option key={index} value={member}>
-                                        {member}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="config-row">
-                            <label>Membros:</label>
-                            <div className="members-list">
-                                {localTeamB.members.length === 0 ? (
-                                    <div className="no-members">Nenhum membro adicionado</div>
-                                ) : (
-                                    localTeamB.members.map((member, index) => (
-                                        <div key={index} className="member-item">
-                                            <span>{member}</span>
-                                            <button
-                                                className="remove-member"
-                                                onClick={() => removeMember('B', index)}
-                                            >
-                                                ×
-                                            </button>
+                    {pool.length > 0 && (
+                        <div className="team-config">
+                            <h3>Participantes</h3>
+                            <div className="config-row">
+                                <label>Não alocados (arraste para um time):</label>
+                                <div className="members-list droppable" onDragOver={allowDrop} onDrop={(e) => onDrop(e, 'pool')}>
+                                    {pool.map((id) => (
+                                        <div key={id} className="member-item" draggable onDragStart={(e) => onDragStart(e, id, 'pool')}>
+                                            <span>{participantesMap[id] || id}</span>
                                         </div>
-                                    ))
-                                )}
-                                <button className="add-member" onClick={() => addMember('B')}>
-                                    + Adicionar Membro
-                                </button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
 
                     {/* Action Buttons */}
                     <div className="settings-actions">
-                        <button className="btn-secondary" onClick={onReloadConfig}>
-                            🔄 Recarregar Configuração
+                        <button className="btn-secondary" onClick={handleResetTimes}>
+                            🧹 Resetar Times
                         </button>
                         <div className="action-buttons">
                             <button className="btn-cancel" onClick={handleCancel}>

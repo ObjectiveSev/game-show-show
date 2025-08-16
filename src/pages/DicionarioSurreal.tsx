@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import type { DicionarioPalavra, DicionarioData, PalavraEstado } from '../types/dicionarioSurreal';
-import { carregarDicionarioSurreal } from '../utils/dicionarioLoader';
-import { useNavigate } from 'react-router-dom';
-import '../styles/VerdadesAbsurdas.css';
-import type { AppState } from '../types';
+import React, { useState, useEffect } from 'react';
+import { BackButton } from '../components/common/BackButton';
 import { DicionarioModal } from '../components/DicionarioModal';
+import { carregarDicionarioSurreal } from '../utils/dicionarioLoader';
 import { appendDicionarioSurrealScore } from '../utils/scoreStorage';
+import type { DicionarioPalavra, PalavraEstado, DicionarioData } from '../types/dicionarioSurreal';
+import type { AppState } from '../types';
+import { STORAGE_KEYS } from '../constants';
+import '../styles/TextoModal.css';
 
 interface Props {
     gameState: AppState;
@@ -14,28 +15,33 @@ interface Props {
 }
 
 export const DicionarioSurreal: React.FC<Props> = ({ gameState, addGamePoints, addPoints }) => {
-    const navigate = useNavigate();
     const [dados, setDados] = useState<DicionarioData | null>(null);
     const [estados, setEstados] = useState<PalavraEstado[]>([]);
     const [loading, setLoading] = useState(true);
     const [modalAberto, setModalAberto] = useState(false);
     const [palavraAtual, setPalavraAtual] = useState<DicionarioPalavra | null>(null);
     const [estadoAtual, setEstadoAtual] = useState<PalavraEstado | null>(null);
-    const ESTADOS_KEY = 'dicionarioSurrealEstados';
 
     useEffect(() => {
         let mounted = true;
-        (async () => {
+
+        const carregarDados = async () => {
             try {
                 const data = await carregarDicionarioSurreal();
                 if (!mounted) return;
                 setDados(data);
-                const base = data.palavras.map((p) => ({ id: p.id, dicasAbertas: p.definicoes.map(() => false), respostaSelecionada: undefined, extras: 0, lido: false }));
+                const base = data.palavras.map((p: DicionarioPalavra) => ({
+                    id: p.id,
+                    dicasAbertas: p.definicoes.map(() => false),
+                    respostaSelecionada: undefined,
+                    extras: 0,
+                    lido: false
+                }));
                 try {
-                    const raw = localStorage.getItem(ESTADOS_KEY);
+                    const raw = localStorage.getItem(STORAGE_KEYS.DICIONARIO_SURREAL_ESTADOS);
                     if (raw) {
                         const saved: PalavraEstado[] = JSON.parse(raw);
-                        const merged = base.map((b) => saved.find((s) => s.id === b.id) || b);
+                        const merged = base.map((b: PalavraEstado) => saved.find((s) => s.id === b.id) || b);
                         setEstados(merged);
                     } else {
                         setEstados(base);
@@ -43,21 +49,23 @@ export const DicionarioSurreal: React.FC<Props> = ({ gameState, addGamePoints, a
                 } catch {
                     setEstados(base);
                 }
-            } finally {
+                setLoading(false);
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
                 if (mounted) setLoading(false);
             }
-        })();
+        };
+
+        carregarDados();
         return () => { mounted = false; };
     }, []);
 
     useEffect(() => {
-        if (estados.length) localStorage.setItem(ESTADOS_KEY, JSON.stringify(estados));
+        if (estados.length) localStorage.setItem(STORAGE_KEYS.DICIONARIO_SURREAL_ESTADOS, JSON.stringify(estados));
     }, [estados]);
 
     if (loading) return <div className="verdades-absurdas"><div className="loading"><h2>Carregando Dicionário...</h2></div></div>;
     if (!dados) return null;
-
-    const handleVoltar = () => setTimeout(() => navigate('/'), 0);
 
     const handleCardClick = (p: DicionarioPalavra) => {
         const st = estados.find((e) => e.id === p.id);
@@ -75,8 +83,8 @@ export const DicionarioSurreal: React.FC<Props> = ({ gameState, addGamePoints, a
 
     return (
         <div className="verdades-absurdas">
+            <BackButton />
             <header className="header">
-                <button className="voltar-button" onClick={handleVoltar}>← Voltar ao Dashboard</button>
                 <h1>📚 Dicionário Surreal</h1>
                 <p>Escolha a definição correta para palavras raras</p>
             </header>

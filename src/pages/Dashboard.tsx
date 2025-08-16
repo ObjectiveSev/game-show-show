@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { ScoreDisplay } from '../components/ScoreDisplay';
 import { GamesList } from '../components/GamesList';
 import { ToolsSection } from '../components/ToolsSection';
-import { games } from '../data/gameData';
+import { carregarConfiguracaoJogos } from '../utils/gamesLoader';
+import type { GamesConfig } from '../types/games';
+import type { Team } from '../types';
 
 interface DashboardProps {
     onOpenScoreboard: () => void;
@@ -12,8 +14,8 @@ interface DashboardProps {
     onGameClick: (gameId: string) => void;
     gameState: {
         teams: {
-            teamA: any;
-            teamB: any;
+            teamA: Team;
+            teamB: Team;
         };
     };
     addPoints: (teamId: 'A' | 'B', points: number) => void;
@@ -31,6 +33,24 @@ export const Dashboard: React.FC<DashboardProps> = ({
     resetScores,
     onClearLocalStorage
 }) => {
+    const [gamesConfig, setGamesConfig] = useState<GamesConfig | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    // Carregar configuração dos jogos
+    useEffect(() => {
+        const carregarJogos = async () => {
+            try {
+                const config = await carregarConfiguracaoJogos();
+                setGamesConfig(config);
+            } catch (error) {
+                console.error('Erro ao carregar configuração dos jogos:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        carregarJogos();
+    }, []);
 
 
     // Atalhos de teclado
@@ -93,10 +113,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     onOpenSettings={onOpenSettings}
                 />
 
-                <GamesList
-                    games={games}
-                    onGameClick={onGameClick}
-                />
+                {loading ? (
+                    <div className="games-section">
+                        <h3>🎮 Jogos Disponíveis</h3>
+                        <div className="loading-games">
+                            <p>Carregando jogos...</p>
+                        </div>
+                    </div>
+                ) : (
+                    <GamesList
+                        games={gamesConfig?.games || []}
+                        onGameClick={onGameClick}
+                    />
+                )}
 
                 <ToolsSection
                     onOpenBuzzer={onOpenBuzzer}

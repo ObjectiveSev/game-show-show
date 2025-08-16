@@ -1,42 +1,27 @@
-import type { VerdadesAbsurdasData, Verdade, PontuacaoConfig } from '../types/verdadesAbsurdas';
+import type { VerdadesAbsurdasData, Verdade } from '../types/verdadesAbsurdas';
+import { API_ENDPOINTS, TIMEOUT_CONFIG } from '../constants';
 
 export const carregarVerdadesAbsurdas = async (): Promise<VerdadesAbsurdasData> => {
-    try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_CONFIG.API_REQUEST);
 
-        const response = await fetch('/config/verdades-absurdas.json', {
+    try {
+        const response = await fetch(API_ENDPOINTS.VERDADES_ABSURDAS, {
             signal: controller.signal
         });
-
         clearTimeout(timeoutId);
 
         if (!response.ok) {
             throw new Error(`Erro ao carregar verdades absurdas: ${response.status}`);
         }
 
-        const raw = await response.json();
-
-        // Defaults de pontuação caso não venham no JSON
-        const defaultPontuacao: PontuacaoConfig = {
-            acertoVerdade: 1,
-            erroFalso: 1,
-            verdadeNaoEncontradaPeloRival: 1
-        };
-
-        const data: VerdadesAbsurdasData = {
-            verdadesAbsurdas: raw.verdadesAbsurdas,
-            pontuacao: raw.pontuacao ?? defaultPontuacao
-        };
-
+        const data = await response.json();
         return data;
-    } catch (error) {
-        if (error instanceof Error && error.name === 'AbortError') {
-            console.error('❌ Timeout ao carregar verdades absurdas');
-            throw new Error('Timeout ao carregar dados');
+    } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') {
+            throw new Error('Timeout ao carregar verdades absurdas');
         }
-        console.error('❌ Erro ao carregar verdades absurdas:', error);
-        throw error;
+        throw err;
     }
 };
 

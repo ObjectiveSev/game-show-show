@@ -1,0 +1,174 @@
+/* Estilos específicos para o modal dos Painelistas */
+.fato-info {
+    margin-bottom: 24px;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.fato-info h3 {
+    margin: 0 0 12px 0;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.fato-texto {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #555;
+    margin: 0 0 12px 0;
+    font-style: italic;
+}
+
+.time-adversario {
+    margin: 0;
+    color: #666;
+    font-weight: 500;
+}
+
+.palpite-section {
+    margin-bottom: 24px;
+}
+
+.palpite-section h4 {
+    margin: 0 0 16px 0;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.palpite-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.palpite-btn {
+    padding: 12px 24px;
+    border: 2px solid #ddd;
+    background: white;
+    color: #333;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    min-width: 120px;
+}
+
+.palpite-btn:hover {
+    border-color: #667eea;
+    background-color: #f8f9ff;
+}
+
+.resultado-section {
+    margin-bottom: 24px;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.resultado-section h4 {
+    margin: 0 0 16px 0;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.resultado {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 12px;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.resultado.acerto {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.resultado.erro {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.pontos-section {
+    margin-top: 16px;
+}
+
+.pontos-section h4 {
+    margin: 0 0 8px 0;
+    color: #333;
+    font-size: 1rem;
+}
+
+.pontos-display {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #667eea;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 24px;
+}
+
+.reset-btn,
+.save-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    min-width: 140px;
+}
+
+.reset-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.reset-btn:hover {
+    background-color: #5a6268;
+}
+
+.save-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #218838;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .palpite-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .palpite-btn {
+        width: 100%;
+        max-width: 200px;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .reset-btn,
+    .save-btn {
+        width: 100%;
+        max-width: 200px;
+    }
+}

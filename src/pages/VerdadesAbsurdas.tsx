@@ -1,32 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { VerdadeAbsurda, TextoEstado, PontuacaoConfig } from '../types/verdadesAbsurdas';
+import { TextoModal } from '../components/TextoModal';
 import { carregarVerdadesAbsurdas } from '../utils/verdadesAbsurdasLoader';
 import { appendVerdadesAbsurdasScore } from '../utils/scoreStorage';
-import { TextoModal } from '../components/TextoModal';
-import type { AppState } from '../types';
+import type { VerdadeAbsurda, TextoEstado } from '../types/verdadesAbsurdas';
+import type { Team } from '../types';
+import { STORAGE_KEYS } from '../constants';
 import '../styles/VerdadesAbsurdas.css';
 
 interface VerdadesAbsurdasProps {
-    gameState: AppState;
+    gameState: {
+        teams: {
+            teamA: Team;
+            teamB: Team;
+        };
+    };
     addGamePoints: (gameId: string, teamId: 'A' | 'B', points: number) => void;
     addPoints: (teamId: 'A' | 'B', points: number) => void;
 }
 
-export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({ gameState, addGamePoints, addPoints }) => {
+export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
+    gameState,
+    addGamePoints,
+    addPoints
+}) => {
     const [verdadesAbsurdas, setVerdadesAbsurdas] = useState<VerdadeAbsurda[]>([]);
     const [estadosTextos, setEstadosTextos] = useState<TextoEstado[]>([]);
     const [loading, setLoading] = useState(true);
     const [modalAberto, setModalAberto] = useState(false);
     const [textoAtual, setTextoAtual] = useState<VerdadeAbsurda | null>(null);
     const [estadoAtual, setEstadoAtual] = useState<TextoEstado | null>(null);
-    const [pontuacaoConfig, setPontuacaoConfig] = useState<PontuacaoConfig>({
+    const [pontuacaoConfig] = useState({
         acertoVerdade: 1,
         erroFalso: 1,
         verdadeNaoEncontradaPeloRival: 1
     });
     const navigate = useNavigate();
-    const ESTADOS_STORAGE_KEY = 'verdadesAbsurdasEstados';
 
     // Carregar dados do jogo
     useEffect(() => {
@@ -40,7 +49,6 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({ gameState, a
                 if (!isMounted) return;
 
                 setVerdadesAbsurdas(data.verdadesAbsurdas);
-                setPontuacaoConfig(data.pontuacao);
 
                 // Inicializar estados dos textos (default)
                 const estadosIniciais: TextoEstado[] = data.verdadesAbsurdas.map(texto => ({
@@ -53,7 +61,7 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({ gameState, a
 
                 // Tentar carregar estados salvos do localStorage e mesclar por id
                 try {
-                    const salvo = localStorage.getItem(ESTADOS_STORAGE_KEY);
+                    const salvo = localStorage.getItem(STORAGE_KEYS.VERDADES_ABSURDAS_ESTADOS);
                     if (salvo) {
                         const estadosSalvos: TextoEstado[] = JSON.parse(salvo);
                         const mesclados = estadosIniciais.map((estado) => {
@@ -89,8 +97,10 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({ gameState, a
     useEffect(() => {
         if (estadosTextos.length === 0) return;
         try {
-            localStorage.setItem(ESTADOS_STORAGE_KEY, JSON.stringify(estadosTextos));
-        } catch { }
+            localStorage.setItem(STORAGE_KEYS.VERDADES_ABSURDAS_ESTADOS, JSON.stringify(estadosTextos));
+        } catch {
+            // Ignorar erros de localStorage
+        }
     }, [estadosTextos]);
 
     const handleCardClick = (texto: VerdadeAbsurda) => {

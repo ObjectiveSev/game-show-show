@@ -1,0 +1,350 @@
+/* Estilos da página principal */
+.painelistas {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.painelistas .header {
+    text-align: center;
+    padding: 40px 20px;
+    color: white;
+}
+
+.painelistas .header h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
+}
+
+.painelistas .header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+.painelistas .main-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+}
+
+/* Seções de times */
+.time-section {
+    margin-bottom: 60px;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 25px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.time-section:first-child {
+    background: rgba(255, 107, 107, 0.1);
+    border-color: rgba(255, 107, 107, 0.3);
+}
+
+.time-section:last-child {
+    background: rgba(78, 205, 196, 0.1);
+    border-color: rgba(78, 205, 196, 0.3);
+}
+
+.time-title {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+/* Mensagem para time vazio */
+.time-vazio {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Jogadores sem fatos */
+.sem-fatos {
+    background: rgba(255, 193, 7, 0.1);
+    border: 2px dashed rgba(255, 193, 7, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    margin: 15px 0;
+}
+
+.sem-fatos p {
+    color: #f57c00;
+    font-weight: 600;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.time-vazio p {
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.time-vazio p:last-child {
+    margin-bottom: 0;
+}
+
+.time-vazio-subtitle {
+    font-size: 1rem !important;
+    color: #999 !important;
+    font-style: italic;
+}
+
+.jogadores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Cards de jogadores */
+.jogador-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.jogador-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+.jogador-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.jogador-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.status-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+}
+
+.fatos-status {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.punicao-badge {
+    background: #ff6b6b;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Container de fatos */
+.fatos-container {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.fato-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 120px;
+    text-align: center;
+    position: relative;
+}
+
+.fato-card:hover {
+    border-color: #667eea;
+    background-color: #f0f4ff;
+    transform: translateY(-2px);
+}
+
+.fato-card.verificado {
+    background-color: #e8f5e8;
+    border-color: #4caf50;
+}
+
+.fato-card h4 {
+    margin: 0 0 8px 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.status-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Botões de punição */
+.punicao-btn {
+    width: 100%;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.punicao-btn:last-child {
+    margin-bottom: 0;
+}
+
+.punicao-btn:hover {
+    background: #ff5252;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.punicao-detalhes {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+.multas-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.remover-punicao-btn {
+    width: 100%;
+    background: #4ecdc4;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.remover-punicao-btn:hover {
+    background: #44a08d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
+}
+
+.painelistas .loading {
+    text-align: center;
+    padding: 100px 20px;
+    color: white;
+}
+
+.painelistas .loading h2 {
+    font-size: 2rem;
+    margin: 0;
+}
+
+/* Divisória entre times */
+.time-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 40px 0;
+    gap: 20px;
+}
+
+.divider-line {
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    flex: 1;
+    max-width: 200px;
+}
+
+.divider-text {
+    color: white;
+    font-size: 2rem;
+    font-weight: 800;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .jogadores-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .jogador-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .status-info {
+        align-items: flex-start;
+    }
+
+    .fatos-container {
+        justify-content: center;
+    }
+
+    .fato-card {
+        min-width: 100px;
+    }
+}

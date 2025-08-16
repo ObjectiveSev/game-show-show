@@ -1,23 +1,25 @@
-import type { Team } from '../types';
 import { readTeamsFile, writeTeamsFile } from '../utils/fileSystem';
+import type { Team } from '../types';
+import { TEAM_COLORS } from '../constants';
 
-export interface GameConfig {
+// Interface para configuração dos times
+interface TeamsConfig {
     teams: {
         teamA: Team;
         teamB: Team;
     };
 }
 
-// Default configuration - this can be easily modified for different game sessions
-export const defaultGameConfig: GameConfig = {
+// Configuração padrão do jogo
+const defaultGameConfig: TeamsConfig = {
     teams: {
         teamA: {
             id: 'A',
             name: 'Time A',
             captain: 'Baby',
             members: ['Baby', 'João', 'Álan', 'Matheus'],
-            color: '#ff6b6b',
-            gradient: 'linear-gradient(145deg, #ff6b6b, #ee5a52)',
+            color: TEAM_COLORS.TEAM_A.color,
+            gradient: TEAM_COLORS.TEAM_A.gradient,
             score: 0
         },
         teamB: {
@@ -25,31 +27,31 @@ export const defaultGameConfig: GameConfig = {
             name: 'Time B',
             captain: 'Victor',
             members: ['Victor', 'Átila', 'Bruno', 'Sand'],
-            color: '#4ecdc4',
-            gradient: 'linear-gradient(145deg, #4ecdc4, #44a08d)',
+            color: TEAM_COLORS.TEAM_B.color,
+            gradient: TEAM_COLORS.TEAM_B.gradient,
             score: 0
         }
     }
 };
 
 // Function to load custom config from teams.json file
-export const loadGameConfig = async (): Promise<GameConfig> => {
+export const loadGameConfig = async (): Promise<TeamsConfig> => {
     try {
         const fileConfig = await readTeamsFile();
 
-        // Converte a estrutura do arquivo para o formato do GameConfig
-        const config: GameConfig = {
+        // Converte a estrutura do arquivo para o formato do TeamsConfig
+        const config: TeamsConfig = {
             teams: {
                 teamA: {
                     ...fileConfig.teams.teamA,
-                    color: '#ff6b6b',
-                    gradient: 'linear-gradient(145deg, #ff6b6b, #ee5a52)',
+                    color: TEAM_COLORS.TEAM_A.color,
+                    gradient: TEAM_COLORS.TEAM_A.gradient,
                     score: 0 // Score sempre começa em 0
                 },
                 teamB: {
                     ...fileConfig.teams.teamB,
-                    color: '#4ecdc4',
-                    gradient: 'linear-gradient(145deg, #4ecdc4, #44a08d)',
+                    color: TEAM_COLORS.TEAM_B.color,
+                    gradient: TEAM_COLORS.TEAM_B.gradient,
                     score: 0 // Score sempre começa em 0
                 }
             }
@@ -64,10 +66,13 @@ export const loadGameConfig = async (): Promise<GameConfig> => {
 
 // Interface para dados básicos do time (sem cores e scores)
 interface TeamBasicData {
-    id: string;
+    id: 'A' | 'B';
     name: string;
     captain: string;
     members: string[];
+    color: string;
+    gradient: string;
+    score: number;
 }
 
 interface TeamsBasicConfig {
@@ -96,13 +101,19 @@ export const resetGameConfig = async (): Promise<void> => {
                     id: 'A',
                     name: 'Time A',
                     captain: 'Baby',
-                    members: ['Baby', 'João', 'Álan', 'Matheus']
+                    members: ['Baby', 'João', 'Álan', 'Matheus'],
+                    color: TEAM_COLORS.TEAM_A.color,
+                    gradient: TEAM_COLORS.TEAM_A.gradient,
+                    score: 0
                 },
                 teamB: {
                     id: 'B',
                     name: 'Time B',
                     captain: 'Victor',
-                    members: ['Victor', 'Átila', 'Bruno', 'Sand']
+                    members: ['Victor', 'Átila', 'Bruno', 'Sand'],
+                    color: TEAM_COLORS.TEAM_B.color,
+                    gradient: TEAM_COLORS.TEAM_B.gradient,
+                    score: 0
                 }
             }
         });

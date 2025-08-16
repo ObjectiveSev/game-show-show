@@ -1,0 +1,67 @@
+{
+    "games": [
+        {
+            "id": "verdades-absurdas",
+            "name": "Verdades Absurdas",
+            "emoji": "🤯",
+            "description": "Encontre as 5 verdades escondidas no texto",
+            "configFile": "verdades-absurdas.json"
+        },
+        {
+            "id": "painelistas-excentricos",
+            "name": "Painelistas Excêntricos",
+            "emoji": "🎭",
+            "description": "Fatos pessoais: verdade ou mentira?",
+            "configFile": "painelistas-excentricos.json"
+        },
+        {
+            "id": "dicionario-surreal",
+            "name": "Dicionário Surreal",
+            "emoji": "📚",
+            "description": "Escolha a definição correta para palavras raras",
+            "configFile": "dicionario-surreal.json"
+        },
+        {
+            "id": "noticias-extraordinarias",
+            "name": "Notícias Extraordinárias",
+            "emoji": "📰",
+            "description": "Manchetes reais vs falsas",
+            "configFile": "noticias-extraordinarias.json"
+        },
+        {
+            "id": "caro-pra-chuchu",
+            "name": "Caro Pra Chuchu",
+            "emoji": "💰",
+            "description": "Adivinhe preços históricos",
+            "configFile": "caro-pra-chuchu.json"
+        },
+        {
+            "id": "ovo-ou-galinha",
+            "name": "O Ovo ou a Galinha",
+            "emoji": "🥚",
+            "description": "Ordenação cronológica",
+            "configFile": "ovo-ou-galinha.json"
+        },
+        {
+            "id": "maestro-billy",
+            "name": "Maestro Billy",
+            "emoji": "🎵",
+            "description": "Jogo musical com buzzer",
+            "configFile": "maestro-billy.json"
+        },
+        {
+            "id": "pokemon-impossivel",
+            "name": "Quem É Esse Pokémon",
+            "emoji": "⚡",
+            "description": "Versão impossível",
+            "configFile": "pokemon-impossivel.json"
+        },
+        {
+            "id": "qual-comida",
+            "name": "Reginaldo Hora do Lanche",
+            "emoji": "🍕",
+            "description": "Adivinhe pratos por descrição",
+            "configFile": "qual-comida.json"
+        }
+    ]
+}

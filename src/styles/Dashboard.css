@@ -154,6 +154,20 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+.loading-games {
+    text-align: center;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.loading-games p {
+    color: #666;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
 .games-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
