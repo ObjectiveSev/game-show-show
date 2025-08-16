@@ -318,6 +318,8 @@ export const Painelistas: React.FC<Props> = ({ gameState, addGamePoints, addPoin
                     (gameState.teams.teamA.members.includes(participanteSelecionado) ? 'B' : 'A') : 'A'}
                 onSavePoints={handleSavePoints}
                 onReset={handleReset}
+                estadoFato={fatoSelecionado && participanteSelecionado ?
+                    estados.find(e => e.id === `${participanteSelecionado}:${fatoSelecionado.id}`) : undefined}
             />
         </div>
     );

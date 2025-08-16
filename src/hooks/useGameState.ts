@@ -60,23 +60,20 @@ export const useGameState = () => {
         const loadSavedScores = async () => {
             try {
                 // Sincronizar scores dos jogos individuais
-                const syncResult = await syncGameScores();
-                if (syncResult.success && syncResult.updatedScores) {
-                    const updatedScores = syncResult.updatedScores;
-                    setGameState(prev => ({
-                        ...prev,
-                        gameScores: updatedScores
-                    }));
-                }
+                const updatedScores = syncGameScores();
+                setGameState(prev => ({
+                    ...prev,
+                    gameScores: updatedScores
+                }));
 
                 // Carregar scores consolidados
-                const savedScores = localStorage.getItem(STORAGE_KEYS.GAME_SHOW_SCORES);
+                const savedScores = localStorage.getItem(STORAGE_KEYS.GAME_SCORES);
                 if (savedScores) {
                     const parsed = JSON.parse(savedScores);
-                    if (parsed.gameScores) {
+                    if (parsed) {
                         setGameState(prev => ({
                             ...prev,
-                            gameScores: parsed.gameScores
+                            gameScores: parsed
                         }));
                     }
                 }
@@ -102,7 +99,7 @@ export const useGameState = () => {
         if (Object.keys(gameState.gameScores).length > 0) {
             const totalScoreA = Object.values(gameState.gameScores).reduce((sum, game) => sum + game.teamA, 0);
             const totalScoreB = Object.values(gameState.gameScores).reduce((sum, game) => sum + game.teamB, 0);
-            
+
             setGameState(prev => ({
                 ...prev,
                 teams: {
@@ -295,28 +292,25 @@ export const useGameState = () => {
     // Função para sincronizar pontos do localStorage
     const syncPoints = async () => {
         try {
-            const syncResult = await syncGameScores();
-            if (syncResult.success && syncResult.updatedScores) {
-                const updatedScores = syncResult.updatedScores;
-                
-                setGameState(prev => ({
-                    ...prev,
-                    gameScores: updatedScores
-                }));
-                
-                // Atualizar scores dos times baseado nos gameScores
-                const totalScoreA = Object.values(updatedScores).reduce((sum, game) => sum + game.teamA, 0);
-                const totalScoreB = Object.values(updatedScores).reduce((sum, game) => sum + game.teamB, 0);
-                
-                setGameState(prev => ({
-                    ...prev,
-                    teams: {
-                        ...prev.teams,
-                        teamA: { ...prev.teams.teamA, score: totalScoreA },
-                        teamB: { ...prev.teams.teamB, score: totalScoreB }
-                    }
-                }));
-            }
+            const updatedScores = syncGameScores();
+
+            setGameState(prev => ({
+                ...prev,
+                gameScores: updatedScores
+            }));
+
+            // Atualizar scores dos times baseado nos gameScores
+            const totalScoreA = Object.values(updatedScores).reduce((sum, game) => sum + game.teamA, 0);
+            const totalScoreB = Object.values(updatedScores).reduce((sum, game) => sum + game.teamB, 0);
+
+            setGameState(prev => ({
+                ...prev,
+                teams: {
+                    ...prev.teams,
+                    teamA: { ...prev.teams.teamA, score: totalScoreA },
+                    teamB: { ...prev.teams.teamB, score: totalScoreB }
+                }
+            }));
         } catch (error) {
             console.error('❌ Erro ao sincronizar pontos:', error);
         }

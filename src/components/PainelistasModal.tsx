@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import type { FatoPainelista } from '../types/painelistas';
 import { BaseModal } from './common/BaseModal';
+import { VerdadeButton } from './common/VerdadeButton';
+import { MentiraButton } from './common/MentiraButton';
+import { ResultadoStatus } from './common/ResultadoStatus';
 import '../styles/PainelistasModal.css';
 
 interface PainelistasModalProps {
@@ -11,6 +14,11 @@ interface PainelistasModalProps {
     timeAdversario: 'A' | 'B';
     onSavePoints: (points: number) => void;
     onReset: () => void;
+    estadoFato?: {
+        verificado: boolean;
+        acertou?: boolean;
+        pontuacaoSalva?: boolean;
+    };
 }
 
 export const PainelistasModal: React.FC<PainelistasModalProps> = ({
@@ -20,7 +28,8 @@ export const PainelistasModal: React.FC<PainelistasModalProps> = ({
     participanteNome,
     timeAdversario,
     onSavePoints,
-    onReset
+    onReset,
+    estadoFato
 }) => {
     const [palpite, setPalpite] = useState<'verdade' | 'mentira' | null>(null);
     const [resultado, setResultado] = useState<'acerto' | 'erro' | null>(null);
@@ -28,11 +37,19 @@ export const PainelistasModal: React.FC<PainelistasModalProps> = ({
 
     useEffect(() => {
         if (isOpen) {
-            setPalpite(null);
-            setResultado(null);
-            setPontosCalculados(0);
+            if (estadoFato?.verificado && estadoFato.acertou !== undefined) {
+                // Fato já verificado - carregar estado salvo
+                setPalpite(estadoFato.acertou ? 'verdade' : 'mentira');
+                setResultado(estadoFato.acertou ? 'acerto' : 'erro');
+                setPontosCalculados(estadoFato.acertou ? 4 : 0);
+            } else {
+                // Novo fato - resetar estados
+                setPalpite(null);
+                setResultado(null);
+                setPontosCalculados(0);
+            }
         }
-    }, [isOpen]);
+    }, [isOpen, estadoFato]);
 
     const handlePalpite = (tipo: 'verdade' | 'mentira') => {
         setPalpite(tipo);
@@ -71,40 +88,21 @@ export const PainelistasModal: React.FC<PainelistasModalProps> = ({
                 <p className="time-adversario">Time {timeAdversario} deve adivinhar se é verdade ou mentira</p>
             </div>
 
-            {!palpite && (
+            {!palpite && !estadoFato?.verificado && (
                 <div className="palpite-section">
                     <h4>Qual é o seu palpite?</h4>
                     <div className="palpite-buttons">
-                        <button
-                            className="palpite-btn"
-                            onClick={() => handlePalpite('verdade')}
-                        >
-                            ✅ Verdade
-                        </button>
-                        <button
-                            className="palpite-btn"
-                            onClick={() => handlePalpite('mentira')}
-                        >
-                            ❌ Mentira
-                        </button>
+                        <VerdadeButton onClick={() => handlePalpite('verdade')} />
+                        <MentiraButton onClick={() => handlePalpite('mentira')} />
                     </div>
                 </div>
             )}
 
             {resultado && (
-                <div className="resultado-section">
-                    <h4>Resultado:</h4>
-                    <div className={`resultado ${resultado}`}>
-                        {resultado === 'acerto' ? '🎉 Acertou!' : '😔 Errou!'}
-                    </div>
-
-                    <div className="pontos-section">
-                        <h4>Pontuação:</h4>
-                        <div className="pontos-display">
-                            {pontosCalculados > 0 ? `+${pontosCalculados} pontos` : `${pontosCalculados} pontos`}
-                        </div>
-                    </div>
-                </div>
+                <ResultadoStatus
+                    resultado={resultado}
+                    pontos={pontosCalculados}
+                />
             )}
 
             <div className="modal-actions">
@@ -113,9 +111,11 @@ export const PainelistasModal: React.FC<PainelistasModalProps> = ({
                         <button className="reset-btn" onClick={handleReset}>
                             🔄 Resetar
                         </button>
-                        <button className="save-btn" onClick={handleSalvar}>
-                            💾 Salvar Pontos
-                        </button>
+                        {!estadoFato?.pontuacaoSalva && (
+                            <button className="save-btn" onClick={handleSalvar}>
+                                💾 Salvar Pontos
+                            </button>
+                        )}
                     </>
                 )}
             </div>

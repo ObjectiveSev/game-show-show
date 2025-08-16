@@ -129,6 +129,11 @@ export const DicionarioSurreal: React.FC<Props> = ({ gameState, addGamePoints, a
                             timestamp: Date.now()
                         });
                     }
+
+                    // Fechar modal após salvar
+                    setModalAberto(false);
+                    setPalavraAtual(null);
+                    setEstadoAtual(null);
                 }}
             />
         </div>

@@ -204,6 +204,16 @@
     text-align: right;
 }
 
+.pd-table .center {
+    text-align: center;
+}
+
+.pd-table .fato-cell {
+    max-width: 300px;
+    word-wrap: break-word;
+    text-align: left;
+}
+
 /* Seção principal do histórico */
 .historico-principal-section {
     background: rgba(255, 255, 255, 0.05);

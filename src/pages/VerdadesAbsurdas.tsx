@@ -169,6 +169,11 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
             pontuacaoSalva: true
         };
         handleUpdateEstado(novoEstado);
+
+        // Fechar modal após salvar
+        setModalAberto(false);
+        setTextoAtual(null);
+        setEstadoAtual(null);
     };
 
     const handleResetarPontuacao = (textoId: string) => {

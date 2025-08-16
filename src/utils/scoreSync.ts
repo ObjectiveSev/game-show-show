@@ -2,223 +2,96 @@
 
 import type { GameScores } from '../types';
 import { STORAGE_KEYS } from '../constants';
-
-interface VerdadesAbsurdasEntry {
-    timeLeitor: 'A' | 'B';
-    timeAdivinhador: 'A' | 'B';
-    pontosLeitor?: number;
-    pontosAdivinhador?: number;
-}
-
-interface DicionarioEntry {
-    timeAdivinhador: 'A' | 'B';
-    pontos?: number;
-}
-
-interface PainelistasEntry {
-    timeAdivinhador: 'A' | 'B';
-    pontos?: number;
-}
-
-export interface ScoreSyncResult {
-    success: boolean;
-    message: string;
-    updatedScores?: GameScores;
-}
+import {
+    loadVerdadesAbsurdasScores,
+    loadDicionarioSurrealScores,
+    loadPainelistasScores,
+    loadPainelistasPunicoes,
+    loadNoticiasExtraordinariasScores
+} from './scoreStorage';
 
 /**
  * Sincroniza os scores dos jogos individuais com o estado principal
  */
-export const syncGameScores = async (): Promise<ScoreSyncResult> => {
+export const syncGameScores = (): GameScores => {
     try {
-        // Carregar scores de Verdades Absurdas
-        const vaRaw = localStorage.getItem(STORAGE_KEYS.VERDADES_ABSURDAS_SCORES);
-        const vaEntries = vaRaw ? JSON.parse(vaRaw) : [];
-        const vaTotals = Array.isArray(vaEntries)
-            ? vaEntries.reduce(
-                (acc: { A: number; B: number }, e: VerdadesAbsurdasEntry) => {
-                    acc.A += (e.timeLeitor === 'A' ? e.pontosLeitor || 0 : 0) + (e.timeAdivinhador === 'A' ? e.pontosAdivinhador || 0 : 0);
-                    acc.B += (e.timeLeitor === 'B' ? e.pontosLeitor || 0 : 0) + (e.timeAdivinhador === 'B' ? e.pontosAdivinhador || 0 : 0);
-                    return acc;
-                },
-                { A: 0, B: 0 }
-            )
-            : { A: 0, B: 0 };
+        // Carregar pontuações de todos os jogos
+        const verdadesAbsurdasScores = loadVerdadesAbsurdasScores();
+        const dicionarioScores = loadDicionarioSurrealScores();
+        const painelistasScores = loadPainelistasScores();
+        const noticiasExtraordinariasScores = loadNoticiasExtraordinariasScores();
 
-        // Carregar scores de Dicionário Surreal
-        const dsRaw = localStorage.getItem(STORAGE_KEYS.DICIONARIO_SURREAL_SCORES);
-        const dsEntries = dsRaw ? JSON.parse(dsRaw) : [];
-        const dsTotals = Array.isArray(dsEntries)
-            ? dsEntries.reduce(
-                (acc: { A: number; B: number }, e: DicionarioEntry) => {
-                    if (e.timeAdivinhador === 'A') acc.A += e.pontos || 0;
-                    if (e.timeAdivinhador === 'B') acc.B += e.pontos || 0;
-                    return acc;
-                },
-                { A: 0, B: 0 }
-            )
-            : { A: 0, B: 0 };
+        // Carregar punições do Painelistas
+        const painelistasPunicoes = loadPainelistasPunicoes();
 
-        // Carregar scores de Painelistas Excêntricos
-        const peRaw = localStorage.getItem(STORAGE_KEYS.PAINELISTAS_SCORES);
-        const peEntries = peRaw ? JSON.parse(peRaw) : [];
-        const peTotals = Array.isArray(peEntries)
-            ? peEntries.reduce(
-                (acc: { A: number; B: number }, e: PainelistasEntry) => {
-                    if (e.timeAdivinhador === 'A') acc.A += e.pontos || 0;
-                    if (e.timeAdivinhador === 'B') acc.B += e.pontos || 0;
-                    return acc;
-                },
-                { A: 0, B: 0 }
-            )
-            : { A: 0, B: 0 };
+        // Calcular pontos por time para cada jogo
+        const verdadesAbsurdas = verdadesAbsurdasScores.reduce((acc: { [key: string]: number }, entry) => {
+            if (entry.timeLeitor === 'A') acc.A = (acc.A || 0) + (entry.pontosLeitor || 0);
+            if (entry.timeLeitor === 'B') acc.B = (acc.B || 0) + (entry.pontosLeitor || 0);
+            if (entry.timeAdivinhador === 'A') acc.A = (acc.A || 0) + (entry.pontosAdivinhador || 0);
+            if (entry.timeAdivinhador === 'B') acc.B = (acc.B || 0) + (entry.pontosAdivinhador || 0);
+            return acc;
+        }, {} as { A: number; B: number });
 
-        // Carregar punições de Painelistas Excêntricos
-        const pePunicoesRaw = localStorage.getItem(STORAGE_KEYS.PAINELISTAS_PUNICOES);
-        const pePunicoes = pePunicoesRaw ? JSON.parse(pePunicoesRaw) : [];
-        const pePunicoesTotals = Array.isArray(pePunicoes)
-            ? pePunicoes.reduce(
-                (acc: { A: number; B: number }, e: { time: 'A' | 'B'; pontos: number }) => {
-                    if (e.time === 'A') acc.A += e.pontos || 0;
-                    if (e.time === 'B') acc.B += e.pontos || 0;
-                    return acc;
-                },
-                { A: 0, B: 0 }
-            )
-            : { A: 0, B: 0 };
+        const dicionario = dicionarioScores.reduce((acc: { [key: string]: number }, entry) => {
+            if (entry.timeAdivinhador === 'A') acc.A = (acc.A || 0) + (entry.pontos || 0);
+            if (entry.timeAdivinhador === 'B') acc.B = (acc.B || 0) + (entry.pontos || 0);
+            return acc;
+        }, {} as { A: number; B: number });
 
-        // Combinar scores normais com punições
-        const peCompleto = {
-            A: peTotals.A + pePunicoesTotals.A,
-            B: peTotals.B + pePunicoesTotals.B
+        const painelistas = painelistasScores.reduce((acc: { [key: string]: number }, entry) => {
+            if (entry.timeAdivinhador === 'A') acc.A = (acc.A || 0) + (entry.pontos || 0);
+            if (entry.timeAdivinhador === 'B') acc.B = (acc.B || 0) + (entry.pontos || 0);
+            return acc;
+        }, {} as { A: number; B: number });
+
+        const noticiasExtraordinarias = noticiasExtraordinariasScores.reduce((acc: { [key: string]: number }, entry) => {
+            if (entry.timeAdivinhador === 'A') acc.A = (acc.A || 0) + entry.pontos;
+            if (entry.timeAdivinhador === 'B') acc.B = (acc.B || 0) + entry.pontos;
+            return acc;
+        }, {} as { A: number; B: number });
+
+        // Calcular pontos das punições
+        const punicoes = painelistasPunicoes.reduce((acc: { [key: string]: number }, entry) => {
+            if (entry.time === 'A') acc.A = (acc.A || 0) + entry.pontos;
+            if (entry.time === 'B') acc.B = (acc.B || 0) + entry.pontos;
+            return acc;
+        }, {} as { A: number; B: number });
+
+        // Combinar pontuações do Painelistas (scores + punições)
+        const painelistasCompleto = {
+            teamA: (painelistas.A || 0) + (punicoes.A || 0),
+            teamB: (painelistas.B || 0) + (punicoes.B || 0)
         };
 
-        // Criar objeto de scores consolidado
+        // Consolidar todas as pontuações
         const consolidatedScores: GameScores = {
-            'verdades-absurdas': { teamA: vaTotals.A, teamB: vaTotals.B },
-            'dicionario-surreal': { teamA: dsTotals.A, teamB: dsTotals.B },
-            'painelistas-excentricos': { teamA: peCompleto.A, teamB: peCompleto.B }
+            'verdades-absurdas': {
+                teamA: verdadesAbsurdas.A || 0,
+                teamB: verdadesAbsurdas.B || 0
+            },
+            'dicionario-surreal': {
+                teamA: dicionario.A || 0,
+                teamB: dicionario.B || 0
+            },
+            'painelistas-excentricos': painelistasCompleto,
+            'noticias-extraordinarias': {
+                teamA: noticiasExtraordinarias.A || 0,
+                teamB: noticiasExtraordinarias.B || 0
+            }
         };
 
-        // Salvar no localStorage principal
-        localStorage.setItem(STORAGE_KEYS.GAME_SHOW_SCORES, JSON.stringify({
-            gameScores: consolidatedScores
-        }));
+        // Salvar no localStorage consolidado
+        localStorage.setItem(STORAGE_KEYS.GAME_SCORES, JSON.stringify(consolidatedScores));
 
-        return {
-            success: true,
-            message: 'Scores sincronizados com sucesso!',
-            updatedScores: consolidatedScores
-        };
-
+        return consolidatedScores;
     } catch (error) {
-        console.error('❌ Erro ao sincronizar scores:', error);
+        console.error('Erro ao sincronizar pontuações dos jogos:', error);
         return {
-            success: false,
-            message: 'Erro ao sincronizar scores: ' + (error as Error).message
-        };
-    }
-};
-
-/**
- * Verifica se há inconsistências entre os scores dos jogos individuais e o estado principal
- */
-export const checkScoreConsistency = (): {
-    isConsistent: boolean;
-    inconsistencies: string[];
-    details: Record<string, { individual: number; consolidated: number }>;
-} => {
-    try {
-        const consolidatedRaw = localStorage.getItem(STORAGE_KEYS.GAME_SHOW_SCORES);
-        const consolidated = consolidatedRaw ? JSON.parse(consolidatedRaw) : { gameScores: {} };
-
-        const inconsistencies: string[] = [];
-        const details: Record<string, { individual: number; consolidated: number }> = {};
-
-        // Verificar Verdades Absurdas
-        const vaRaw = localStorage.getItem(STORAGE_KEYS.VERDADES_ABSURDAS_SCORES);
-        const vaEntries = vaRaw ? JSON.parse(vaRaw) : [];
-        const vaIndividual = Array.isArray(vaEntries)
-            ? vaEntries.reduce(
-                (acc: { A: number; B: number }, e: VerdadesAbsurdasEntry) => {
-                    acc.A += (e.timeLeitor === 'A' ? e.pontosLeitor || 0 : 0) + (e.timeAdivinhador === 'A' ? e.pontosAdivinhador || 0 : 0);
-                    acc.B += (e.timeLeitor === 'B' ? e.pontosLeitor || 0 : 0) + (e.timeAdivinhador === 'B' ? e.pontosAdivinhador || 0 : 0);
-                    return acc;
-                },
-                { A: 0, B: 0 }
-            )
-            : { A: 0, B: 0 };
-
-        const vaConsolidated = consolidated.gameScores['verdades-absurdas'] || { teamA: 0, teamB: 0 };
-
-        if (vaIndividual.A !== vaConsolidated.teamA || vaIndividual.B !== vaConsolidated.teamB) {
-            inconsistencies.push('Verdades Absurdas');
-            details['verdades-absurdas'] = {
-                individual: vaIndividual.A + vaIndividual.B,
-                consolidated: vaConsolidated.teamA + vaConsolidated.teamB
-            };
-        }
-
-        // Verificar Dicionário Surreal
-        const dsRaw = localStorage.getItem(STORAGE_KEYS.DICIONARIO_SURREAL_SCORES);
-        const dsEntries = dsRaw ? JSON.parse(dsRaw) : [];
-        const dsIndividual = Array.isArray(dsEntries)
-            ? dsEntries.reduce(
-                (acc: { A: number; B: number }, e: DicionarioEntry) => {
-                    if (e.timeAdivinhador === 'A') acc.A += e.pontos || 0;
-                    if (e.timeAdivinhador === 'B') acc.B += e.pontos || 0;
-                    return acc;
-                },
-                { A: 0, B: 0 }
-            )
-            : { A: 0, B: 0 };
-
-        const dsConsolidated = consolidated.gameScores['dicionario-surreal'] || { teamA: 0, teamB: 0 };
-
-        if (dsIndividual.A !== dsConsolidated.teamA || dsIndividual.B !== dsConsolidated.teamB) {
-            inconsistencies.push('Dicionário Surreal');
-            details['dicionario-surreal'] = {
-                individual: dsIndividual.A + dsIndividual.B,
-                consolidated: dsConsolidated.teamA + dsConsolidated.teamB
-            };
-        }
-
-        // Verificar Painelistas Excêntricos
-        const peRaw = localStorage.getItem(STORAGE_KEYS.PAINELISTAS_SCORES);
-        const peEntries = peRaw ? JSON.parse(peRaw) : [];
-        const peIndividual = Array.isArray(peEntries)
-            ? peEntries.reduce(
-                (acc: { A: number; B: number }, e: PainelistasEntry) => {
-                    if (e.timeAdivinhador === 'A') acc.A += e.pontos || 0;
-                    if (e.timeAdivinhador === 'B') acc.B += e.pontos || 0;
-                    return acc;
-                },
-                { A: 0, B: 0 }
-            )
-            : { A: 0, B: 0 };
-
-        const peConsolidated = consolidated.gameScores['painelistas-excentricos'] || { teamA: 0, teamB: 0 };
-
-        if (peIndividual.A !== peConsolidated.teamA || peIndividual.B !== peConsolidated.teamB) {
-            inconsistencies.push('Painelistas Excêntricos');
-            details['painelistas-excentricos'] = {
-                individual: peIndividual.A + peIndividual.B,
-                consolidated: peConsolidated.teamA + peConsolidated.teamB
-            };
-        }
-
-        return {
-            isConsistent: inconsistencies.length === 0,
-            inconsistencies,
-            details
-        };
-
-    } catch (error) {
-        console.error('❌ Erro ao verificar consistência:', error);
-        return {
-            isConsistent: false,
-            inconsistencies: ['Erro na verificação'],
-            details: {}
+            'verdades-absurdas': { teamA: 0, teamB: 0 },
+            'dicionario-surreal': { teamA: 0, teamB: 0 },
+            'painelistas-excentricos': { teamA: 0, teamB: 0 },
+            'noticias-extraordinarias': { teamA: 0, teamB: 0 }
         };
     }
 };
@@ -228,9 +101,9 @@ export const checkScoreConsistency = (): {
  */
 export const clearConsolidatedScores = (): void => {
     try {
-        localStorage.removeItem(STORAGE_KEYS.GAME_SHOW_SCORES);
-        console.log('🗑️ Scores consolidados limpos!');
+        localStorage.removeItem(STORAGE_KEYS.GAME_SCORES);
+        console.log('Scores consolidados limpos!');
     } catch (error) {
-        console.error('❌ Erro ao limpar scores consolidados:', error);
+        console.error('Erro ao limpar scores consolidados:', error);
     }
 }; 

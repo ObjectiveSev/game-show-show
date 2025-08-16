@@ -1,6 +1,7 @@
 import type { VerdadesAbsurdasScoreEntry } from '../types/verdadesAbsurdas';
 import type { DicionarioScoreEntry } from '../types/dicionarioSurreal';
 import type { PainelistasScoreEntry, PainelistasPunicaoEntry } from '../types/painelistas';
+import type { NoticiasExtraordinariasScoreEntry } from '../types/noticiasExtraordinarias';
 import { STORAGE_KEYS } from '../constants';
 
 export const loadVerdadesAbsurdasScores = (): VerdadesAbsurdasScoreEntry[] => {
@@ -125,6 +126,37 @@ export const removePainelistasPunicao = (participanteId: string): void => {
 export const clearPainelistasPunicoes = (): void => {
     try { localStorage.removeItem(STORAGE_KEYS.PAINELISTAS_PUNICOES); } catch {
         // Ignorar erros de localStorage
+    }
+};
+
+// Notícias Extraordinárias
+export const saveNoticiasExtraordinariasScore = (entry: NoticiasExtraordinariasScoreEntry): void => {
+    try {
+        const existing = loadNoticiasExtraordinariasScores();
+        const updated = [...existing, entry];
+        localStorage.setItem(STORAGE_KEYS.NOTICIAS_EXTRAORDINARIAS_SCORES, JSON.stringify(updated));
+    } catch (error) {
+        console.error('Erro ao salvar pontuação das Notícias Extraordinárias:', error);
+    }
+};
+
+export const loadNoticiasExtraordinariasScores = (): NoticiasExtraordinariasScoreEntry[] => {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEYS.NOTICIAS_EXTRAORDINARIAS_SCORES);
+        return raw ? JSON.parse(raw) : [];
+    } catch (error) {
+        console.error('Erro ao carregar pontuações das Notícias Extraordinárias:', error);
+        return [];
+    }
+};
+
+export const removeNoticiasExtraordinariasScore = (noticiaId: string): void => {
+    try {
+        const existing = loadNoticiasExtraordinariasScores();
+        const updated = existing.filter(entry => entry.noticiaId !== noticiaId);
+        localStorage.setItem(STORAGE_KEYS.NOTICIAS_EXTRAORDINARIAS_SCORES, JSON.stringify(updated));
+    } catch (error) {
+        console.error('Erro ao remover pontuação das Notícias Extraordinárias:', error);
     }
 };
 

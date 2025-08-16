@@ -1,263 +1,241 @@
-import React, { useMemo, useEffect, useState } from 'react';
-import { loadVerdadesAbsurdasScores, loadDicionarioSurrealScores, loadPainelistasScores, loadPainelistasPunicoes } from '../utils/scoreStorage';
-import { useGameState } from '../hooks/useGameState';
-import { BackButton } from '../components/common/BackButton';
+import React, { useEffect, useState } from 'react';
+import type { AppState } from '../types';
+import type { VerdadesAbsurdasScoreEntry } from '../types/verdadesAbsurdas';
+import type { DicionarioScoreEntry } from '../types/dicionarioSurreal';
+import type { PainelistasScoreEntry } from '../types/painelistas';
+import type { NoticiasExtraordinariasScoreEntry } from '../types/noticiasExtraordinarias';
+import { loadVerdadesAbsurdasScores, loadDicionarioSurrealScores, loadPainelistasScores, loadNoticiasExtraordinariasScores } from '../utils/scoreStorage';
 import { carregarVerdadesAbsurdas } from '../utils/verdadesAbsurdasLoader';
 import { carregarDicionarioSurreal } from '../utils/dicionarioLoader';
-import { carregarParticipantes } from '../utils/participantesLoader';
-import type { GamesConfig, GameConfig } from '../types/games';
-import type { DicionarioScoreEntry } from '../types/dicionarioSurreal';
-import { API_ENDPOINTS } from '../constants';
+import { carregarNoticiasExtraordinarias } from '../utils/noticiasExtraordinariasLoader';
+import { carregarConfiguracaoJogos } from '../utils/gamesLoader';
+import { BackButton } from '../components/common/BackButton';
 import '../styles/PlacarDetalhado.css';
 
-export const PlacarDetalhado: React.FC = () => {
-    const { gameState } = useGameState();
+interface Props {
+    gameState: AppState;
+}
 
-    const verdadesEntries = loadVerdadesAbsurdasScores();
-    const dicionarioEntries = loadDicionarioSurrealScores();
-    const painelistasEntries = loadPainelistasScores();
-    const punicoes = loadPainelistasPunicoes();
-    const [gamesConfig, setGamesConfig] = useState<GamesConfig>({ games: [] });
-    const [participantes, setParticipantes] = useState<Record<string, string>>({});
+export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
+    const [verdadesAbsurdasScores, setVerdadesAbsurdasScores] = useState<VerdadesAbsurdasScoreEntry[]>([]);
+    const [dicionarioSurrealScores, setDicionarioSurrealScores] = useState<DicionarioScoreEntry[]>([]);
+    const [painelistasScores, setPainelistasScores] = useState<PainelistasScoreEntry[]>([]);
+    const [noticiasExtraordinariasScores, setNoticiasExtraordinariasScores] = useState<NoticiasExtraordinariasScoreEntry[]>([]);
     const [titulosVerdades, setTitulosVerdades] = useState<Record<string, string>>({});
     const [palavrasDicionario, setPalavrasDicionario] = useState<Record<string, string>>({});
+    const [manchetesNoticias, setManchetesNoticias] = useState<Record<string, string>>({});
+    const [gamesConfig, setGamesConfig] = useState<any>(null);
 
     useEffect(() => {
-        let isMounted = true;
+        // Carregar scores
+        setVerdadesAbsurdasScores(loadVerdadesAbsurdasScores());
+        setDicionarioSurrealScores(loadDicionarioSurrealScores());
+        setPainelistasScores(loadPainelistasScores());
+        setNoticiasExtraordinariasScores(loadNoticiasExtraordinariasScores());
 
-        fetch(API_ENDPOINTS.GAMES_CONFIG)
-            .then(res => res.json())
-            .then((data: GamesConfig) => {
-                if (!isMounted) return;
-                setGamesConfig(data);
-            })
-            .catch((error) => {
-                console.error('❌ Erro ao carregar games.json:', error);
-            });
+        // Carregar dados para mapear IDs para nomes
+        (async () => {
+            try {
+                const verdades = await carregarVerdadesAbsurdas();
+                const titulos = verdades.verdadesAbsurdas.reduce((acc: Record<string, string>, texto: any) => {
+                    acc[texto.id] = texto.titulo;
+                    return acc;
+                }, {});
+                setTitulosVerdades(titulos);
+            } catch (error) {
+                console.error('Erro ao carregar verdades absurdas:', error);
+            }
 
-        carregarParticipantes()
-            .then(ps => {
-                if (!isMounted) return;
-                const map: Record<string, string> = {};
-                ps.forEach(p => { map[p.id] = p.nome; });
-                setParticipantes(map);
-            })
-            .catch(() => { });
+            try {
+                const dicionario = await carregarDicionarioSurreal();
+                const palavras = dicionario.palavras.reduce((acc: Record<string, string>, palavra: any) => {
+                    acc[palavra.id] = palavra.palavra;
+                    return acc;
+                }, {});
+                setPalavrasDicionario(palavras);
+            } catch (error) {
+                console.error('Erro ao carregar dicionário surreal:', error);
+            }
 
-        carregarVerdadesAbsurdas()
-            .then(data => {
-                if (!isMounted) return;
-                const map: Record<string, string> = {};
-                data.verdadesAbsurdas.forEach(t => { map[t.id] = t.titulo; });
-                setTitulosVerdades(map);
-            })
-            .catch(() => { });
+            try {
+                const noticias = await carregarNoticiasExtraordinarias();
+                const manchetes = noticias.noticias.reduce((acc: Record<string, string>, noticia: any) => {
+                    acc[noticia.id] = noticia.manchete;
+                    return acc;
+                }, {});
+                setManchetesNoticias(manchetes);
+            } catch (error) {
+                console.error('Erro ao carregar notícias extraordinárias:', error);
+            }
 
-        carregarDicionarioSurreal()
-            .then(data => {
-                if (!isMounted) return;
-                const map: Record<string, string> = {};
-                data.palavras.forEach(p => { map[p.id] = p.palavra; });
-                setPalavrasDicionario(map);
-            })
-            .catch(() => { });
-
-        return () => { isMounted = false; };
+            try {
+                const games = await carregarConfiguracaoJogos();
+                setGamesConfig(games);
+            } catch (error) {
+                console.error('Erro ao carregar configuração dos jogos:', error);
+            }
+        })();
     }, []);
 
-    const totaisPorJogo = useMemo(() => {
-        return {
-            'verdades-absurdas': gameState.gameScores['verdades-absurdas'] || { teamA: 0, teamB: 0 },
-            'dicionario-surreal': gameState.gameScores['dicionario-surreal'] || { teamA: 0, teamB: 0 },
-            'painelistas-excentricos': gameState.gameScores['painelistas-excentricos'] || { teamA: 0, teamB: 0 }
-        };
-    }, [gameState.gameScores]);
-
-    const totaisGerais = useMemo(() => {
-        return {
-            A: Object.values(totaisPorJogo).reduce((acc, jogo) => acc + jogo.teamA, 0),
-            B: Object.values(totaisPorJogo).reduce((acc, jogo) => acc + jogo.teamB, 0)
-        };
-    }, [totaisPorJogo]);
-
-    const getGameConfig = (gameId: string): GameConfig | undefined => {
-        if (!gamesConfig) {
-            return undefined;
-        }
-
-        if (!gamesConfig.games) {
-            return undefined;
-        }
-
-        if (!Array.isArray(gamesConfig.games)) {
-            return undefined;
-        }
-
-        return gamesConfig.games.find(game => game.id === gameId);
+    const getGameEmoji = (gameId: string) => {
+        if (!gamesConfig) return '🎮';
+        const game = gamesConfig.games.find((g: any) => g.id === gameId);
+        return game?.emoji || '🎮';
     };
 
     return (
         <div className="placar-detalhado">
             <BackButton />
-            <header className="pd-header">
-                <h1>📊 Placar Detalhado</h1>
-                <p>Veja os registros das partidas e a soma de pontos por time</p>
-            </header>
+            <div className="pd-header">
+                <h1>🏆 Placar Detalhado</h1>
+                <p>Histórico completo de todas as pontuações</p>
+            </div>
 
-            <section className="totais-section">
+            <div className="historico-principal-section">
                 <h2>🏆 Placar Geral</h2>
                 <div className="totais-container">
                     <div className="total-card">
-                        <span className="label">{gameState.teams.teamA.name || 'Time A'}</span>
-                        <span className="valor">{totaisGerais.A}</span>
+                        <span className="label">Time A: {gameState.teams.teamA.name}</span>
+                        <span className="valor">{gameState.teams.teamA.score} pontos</span>
                     </div>
                     <div className="total-card">
-                        <span className="label">{gameState.teams.teamB.name || 'Time B'}</span>
-                        <span className="valor">{totaisGerais.B}</span>
+                        <span className="label">Time B: {gameState.teams.teamB.name}</span>
+                        <span className="valor">{gameState.teams.teamB.score} pontos</span>
                     </div>
                 </div>
-            </section>
 
-            <section className="historico-principal-section">
-                <h2>📝 Histórico Detalhado</h2>
-                <p className="historico-descricao">Registros completos de todas as partidas e pontuações</p>
+                <h2>📰 Histórico Detalhado</h2>
+                <p className="historico-descricao">Registro completo de todas as pontuações por jogo</p>
 
                 {/* Verdades Absurdas */}
                 <div className="historico-subsecao">
-                    <h3>{getGameConfig('verdades-absurdas')?.emoji || '🎭'} {getGameConfig('verdades-absurdas')?.name || 'Verdades Absurdas'}</h3>
-                    {verdadesEntries.length === 0 ? (
-                        <div className="empty">Nenhum registro salvo ainda.</div>
-                    ) : (
+                    <h3>{getGameEmoji('verdades-absurdas')} Verdades Absurdas</h3>
+                    {verdadesAbsurdasScores.length > 0 ? (
                         <div className="table-wrapper">
-                            <h4 className="tabela-subtitulo">🎯 Fatos Jogados</h4>
                             <table className="pd-table">
                                 <thead>
                                     <tr>
                                         <th>Texto</th>
                                         <th>Time Leitor</th>
+                                        <th>Pontos Leitor</th>
                                         <th>Time Adivinhador</th>
-                                        <th className="right">Verdades Encontradas</th>
-                                        <th className="right">Verdades Não Encontradas</th>
-                                        <th className="right">Erros</th>
-                                        <th className="right">Pontos Leitor</th>
-                                        <th className="right">Pontos Adivinhador</th>
+                                        <th>Pontos Adivinhador</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {verdadesEntries.map((e, idx) => (
+                                    {verdadesAbsurdasScores.map((score, idx) => (
                                         <tr key={idx}>
-                                            <td className="nome-cell">{titulosVerdades[e.textoId] || e.textoId}</td>
-                                            <td>{e.timeLeitor === 'A' ? (gameState.teams.teamA.name || 'Time A') : (gameState.teams.teamB.name || 'Time B')}</td>
-                                            <td>{e.timeAdivinhador === 'A' ? (gameState.teams.teamA.name || 'Time A') : (gameState.teams.teamB.name || 'Time B')}</td>
-                                            <td className="right">{e.verdadesEncontradas}</td>
-                                            <td className="right">{e.verdadesNaoEncontradas}</td>
-                                            <td className="right">{e.erros}</td>
-                                            <td className="right">{e.pontosLeitor}</td>
-                                            <td className="right">{e.pontosAdivinhador}</td>
+                                            <td className="nome-cell">{titulosVerdades[score.textoId] || score.textoId}</td>
+                                            <td>{gameState.teams.teamA.members.includes(score.timeLeitor) ? gameState.teams.teamA.name : gameState.teams.teamB.name}</td>
+                                            <td className="center">{score.pontosLeitor}</td>
+                                            <td>{gameState.teams.teamA.members.includes(score.timeAdivinhador) ? gameState.teams.teamA.name : gameState.teams.teamB.name}</td>
+                                            <td className="center">{score.pontosAdivinhador}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
+                    ) : (
+                        <p className="empty">Nenhum registro encontrado</p>
                     )}
                 </div>
 
                 {/* Dicionário Surreal */}
                 <div className="historico-subsecao">
-                    <h3>{getGameConfig('dicionario-surreal')?.emoji || '📚'} {getGameConfig('dicionario-surreal')?.name || 'Dicionário Surreal'}</h3>
-                    {dicionarioEntries.length === 0 ? (
-                        <div className="empty">Nenhum registro salvo ainda.</div>
-                    ) : (
+                    <h3>{getGameEmoji('dicionario-surreal')} Dicionário Surreal</h3>
+                    {dicionarioSurrealScores.length > 0 ? (
                         <div className="table-wrapper">
-                            <h4 className="tabela-subtitulo">📖 Palavras Jogadas</h4>
                             <table className="pd-table">
                                 <thead>
                                     <tr>
                                         <th>Palavra</th>
-                                        <th>Time Adivinhador</th>
-                                        <th className="right">Pontos</th>
+                                        <th>Time</th>
+                                        <th>Pontos</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {dicionarioEntries.map((e: DicionarioScoreEntry, idx: number) => (
+                                    {dicionarioSurrealScores.map((score, idx) => (
                                         <tr key={idx}>
-                                            <td className="nome-cell">{palavrasDicionario[e.palavraId] || e.palavraId}</td>
-                                            <td>{e.timeAdivinhador === 'A' ? (gameState.teams.teamA.name || 'Time A') : (gameState.teams.teamB.name || 'Time B')}</td>
-                                            <td className="right">{e.pontos}</td>
+                                            <td className="nome-cell">{palavrasDicionario[score.palavraId] || score.palavraId}</td>
+                                            <td>{gameState.teams.teamA.members.includes(score.timeAdivinhador) ? gameState.teams.teamA.name : gameState.teams.teamB.name}</td>
+                                            <td className="center">{score.pontos}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
+                    ) : (
+                        <p className="empty">Nenhum registro encontrado</p>
                     )}
                 </div>
 
                 {/* Painelistas Excêntricos */}
                 <div className="historico-subsecao">
-                    <h3>{getGameConfig('painelistas-excentricos')?.emoji || '🎪'} {getGameConfig('painelistas-excentricos')?.name || 'Painelistas Excêntricos'}</h3>
-                    {painelistasEntries.length === 0 ? (
-                        <div className="empty">Nenhum registro salvo ainda.</div>
-                    ) : (
+                    <h3>{getGameEmoji('painelistas-excentricos')} Painelistas Excêntricos</h3>
+                    {painelistasScores.length > 0 ? (
                         <div className="table-wrapper">
-                            <h4 className="tabela-subtitulo">🎯 Fatos Jogados</h4>
                             <table className="pd-table">
                                 <thead>
                                     <tr>
-                                        <th>Participante</th>
+                                        <th>Jogador</th>
                                         <th>Fato</th>
-                                        <th>Time do Participante</th>
-                                        <th>Time Adivinhador</th>
-                                        <th className="right">Acertou?</th>
-                                        <th className="right">Pontos</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {painelistasEntries.map((e, idx) => {
-                                        const fatoIndex = e.fatoId.replace('f', '');
-
-                                        return (
-                                            <tr key={idx}>
-                                                <td className="nome-cell">{e.participanteNome}</td>
-                                                <td className="fato-index">Fato {fatoIndex}</td>
-                                                <td>{e.timeParticipante === 'A' ? (gameState.teams.teamA.name || 'Time A') : (gameState.teams.teamB.name || 'Time B')}</td>
-                                                <td>{e.timeAdivinhador === 'A' ? (gameState.teams.teamA.name || 'Time A') : (gameState.teams.teamB.name || 'Time B')}</td>
-                                                <td className="right">{e.acertou ? 'Sim' : 'Não'}</td>
-                                                <td className="right">{e.pontos}</td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-
-                    {punicoes.length === 0 ? (
-                        <div className="empty">Nenhuma punição aplicada ainda.</div>
-                    ) : (
-                        <div className="table-wrapper" style={{ marginTop: '20px' }}>
-                            <h4 className="tabela-subtitulo">⚠️ Punições Aplicadas</h4>
-                            <table className="pd-table">
-                                <thead>
-                                    <tr>
-                                        <th>Participante</th>
                                         <th>Time</th>
-                                        <th className="right">Pontos Perdidos</th>
+                                        <th>Pontos</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {punicoes.map((p, idx) => (
-                                        <tr key={idx} className="punicao-row">
-                                            <td>{participantes[p.participanteId] || p.participanteId}</td>
-                                            <td>{p.time === 'A' ? (gameState.teams.teamA.name || 'Time A') : (gameState.teams.teamB.name || 'Time B')}</td>
-                                            <td className="right pontos-negativos">{p.pontos}</td>
+                                    {painelistasScores.map((score, idx) => (
+                                        <tr key={idx}>
+                                            <td className="nome-cell">{score.participanteNome}</td>
+                                            <td className="fato-cell">{score.fatoTexto}</td>
+                                            <td>{gameState.teams.teamA.members.includes(score.timeParticipante) ? gameState.teams.teamA.name : gameState.teams.teamB.name}</td>
+                                            <td className="center">{score.pontos}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
+                    ) : (
+                        <p className="empty">Nenhum registro encontrado</p>
                     )}
                 </div>
-            </section>
+
+                {/* Notícias Extraordinárias */}
+                <div className="historico-subsecao">
+                    <h3>{getGameEmoji('noticias-extraordinarias')} Notícias Extraordinárias</h3>
+                    {noticiasExtraordinariasScores.length > 0 ? (
+                        <div className="table-wrapper">
+                            <table className="pd-table">
+                                <thead>
+                                    <tr>
+                                        <th>Manchete</th>
+                                        <th>Time</th>
+                                        <th>Acertou</th>
+                                        <th>Pontos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {noticiasExtraordinariasScores.map((score, idx) => (
+                                        <tr key={idx}>
+                                            <td className="nome-cell">
+                                                {(manchetesNoticias[score.noticiaId] || score.manchete).substring(0, 40)}...
+                                            </td>
+                                            <td>{gameState.teams.teamA.members.includes(score.timeAdivinhador)
+                                                ? (gameState.teams.teamA.name || 'Time A')
+                                                : (gameState.teams.teamB.name || 'Time B')
+                                            }</td>
+                                            <td>{score.acertou ? '✔ Sim' : '❌ Não'}</td>
+                                            <td className="center">{score.pontos}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <p className="empty">Nenhum registro encontrado</p>
+                    )}
+                </div>
+            </div>
         </div>
     );
 };

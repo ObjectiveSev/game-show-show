@@ -1,21 +1,21 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useGameState } from './hooks/useGameState';
+import type { Team } from './types';
 import { Dashboard } from './pages/Dashboard';
 import { VerdadesAbsurdas } from './pages/VerdadesAbsurdas';
-import { PlacarDetalhado } from './pages/PlacarDetalhado';
 import { DicionarioSurreal } from './pages/DicionarioSurreal';
-import { SettingsModal } from './components/SettingsModal';
 import { Painelistas } from './pages/Painelistas';
-import { useGameState } from './hooks/useGameState';
+import { NoticiasExtraordinarias } from './pages/NoticiasExtraordinarias';
+import { PlacarDetalhado } from './pages/PlacarDetalhado';
+import { SettingsModal } from './components/SettingsModal';
 import { clearAllLocalStorage } from './utils/fileSystem';
 import './styles/Dashboard.css';
 import './styles/SettingsModal.css';
 
 function App() {
-
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const { gameState, updateTeamConfig, addPoints, addGamePoints, resetScores, syncPoints } = useGameState();
-  const [renderKey] = useState(0);
+  const { gameState, updateTeamConfig, addGamePoints, addPoints, resetScores, syncPoints } = useGameState();
 
   const handleOpenScoreboard = () => {
     window.location.href = '/placar-detalhado';
@@ -38,7 +38,10 @@ function App() {
         window.location.href = '/dicionario-surreal';
         break;
       case 'painelistas-excentricos':
-        window.location.href = '/painelistas-excentricos';
+        window.location.href = '/painelistas';
+        break;
+      case 'noticias-extraordinarias':
+        window.location.href = '/noticias-extraordinarias';
         break;
       default:
         alert(`Jogo "${gameId}" será implementado em breve!`);
@@ -55,13 +58,21 @@ function App() {
     }, 0);
   };
 
+  const handleUpdateTeams = async (teams: Team[]) => {
+    try {
+      await updateTeamConfig('A', teams[0]);
+      await updateTeamConfig('B', teams[1]);
+    } catch (error) {
+      console.error('Erro ao atualizar configuração dos times:', error);
+    }
+  };
+
   return (
-    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <Router>
       <div className="App">
         <Routes>
           <Route path="/" element={
             <Dashboard
-              key={renderKey}
               onOpenScoreboard={handleOpenScoreboard}
               onOpenBuzzer={handleOpenBuzzer}
               onOpenSettings={handleOpenSettings}
@@ -72,20 +83,44 @@ function App() {
               onClearLocalStorage={handleClearLocalStorage}
             />
           } />
-          <Route path="/verdades-absurdas" element={<VerdadesAbsurdas key={renderKey} gameState={{...gameState, syncPoints}} addGamePoints={addGamePoints} addPoints={addPoints} />} />
-          <Route path="/dicionario-surreal" element={<DicionarioSurreal key={renderKey} gameState={gameState} addGamePoints={addGamePoints} addPoints={addPoints} />} />
-          <Route path="/placar-detalhado" element={<PlacarDetalhado key={renderKey} />} />
-          <Route path="/painelistas-excentricos" element={<Painelistas key={renderKey} gameState={gameState} addGamePoints={addGamePoints} addPoints={addPoints} />} />
+          <Route path="/verdades-absurdas" element={
+            <VerdadesAbsurdas
+              gameState={{ ...gameState, syncPoints }}
+              addGamePoints={addGamePoints}
+              addPoints={addPoints}
+            />
+          } />
+          <Route path="/dicionario-surreal" element={
+            <DicionarioSurreal
+              gameState={gameState}
+              addGamePoints={addGamePoints}
+              addPoints={addPoints}
+            />
+          } />
+          <Route path="/painelistas" element={
+            <Painelistas
+              gameState={{ ...gameState, syncPoints }}
+              addGamePoints={addGamePoints}
+              addPoints={addPoints}
+            />
+          } />
+          <Route path="/noticias-extraordinarias" element={
+            <NoticiasExtraordinarias
+              gameState={gameState}
+              addGamePoints={addGamePoints}
+              addPoints={addPoints}
+            />
+          } />
+          <Route path="/placar-detalhado" element={
+            <PlacarDetalhado gameState={gameState} />
+          } />
         </Routes>
 
         <SettingsModal
           isOpen={isSettingsOpen}
           onClose={() => setIsSettingsOpen(false)}
           teams={[gameState.teams.teamA, gameState.teams.teamB]}
-          onUpdateTeams={async (teams) => {
-            await updateTeamConfig('A', teams[0]);
-            await updateTeamConfig('B', teams[1]);
-          }}
+          onUpdateTeams={handleUpdateTeams}
         />
       </div>
     </Router>

@@ -1,0 +1,103 @@
+{
+    "noticias": [
+        {
+            "id": "1",
+            "manchete": "Homem japonês se casa com holograma e gasta R$ 66 mil com cerimônia",
+            "subtitulo": "Akihiko Kondo se casou com Hatsune Miku (personagem virtual) em 2018, custou 2 milhões de ienes",
+            "resposta": true
+        },
+        {
+            "id": "2",
+            "manchete": "Cidade brasileira proíbe moradores de morrer por cemitério lotado",
+            "subtitulo": "Biritiba-Mirim (SP) proibiu moradores de morrer devido à lotação do cemitério e restrições ambientais",
+            "resposta": true
+        },
+        {
+            "id": "3",
+            "manchete": "Funcionária impede assalto ao trancar ladrão dentro de loja",
+            "subtitulo": "Mulher trancou ladrão dentro da loja durante assalto, ele ficou desesperado até a polícia chegar",
+            "resposta": true
+        },
+        {
+            "id": "4",
+            "manchete": "Belga recebe pizzas que nunca encomendou há 9 anos consecutivos",
+            "subtitulo": "Jean Van Landeghem, de 65 anos, em Turnhout, Bélgica, é acordado frequentemente por entregadores de pizza",
+            "resposta": true
+        },
+        {
+            "id": "5",
+            "manchete": "Mulher é presa por cavalgar um peixe-boi",
+            "subtitulo": "Ana Glória Garcia foi presa após utilizar o animal como uma prancha de bodyboard",
+            "resposta": true
+        },
+        {
+            "id": "6",
+            "manchete": "Tartarugas ninja patrulham as ruas da Austrália",
+            "subtitulo": "Esses quatro heróis foram recrutados por lideres de comunidades na Austrália para patrulhar as ruas durante à noite",
+            "resposta": true
+        },
+        {
+            "id": "7",
+            "manchete": "Cientistas comprovam que gatos conseguem falar mas fingem que não sabem",
+            "subtitulo": "Pesquisa de 10 anos revelou que felinos dominam 200 palavras humanas mas preferem ignorar os donos",
+            "resposta": false
+        },
+        {
+            "id": "8",
+            "manchete": "Empresa japonesa lança serviço de aluguel de avós por hora",
+            "subtitulo": "Idosos profissionais oferecem carinho, conselhos e receitas tradicionais para famílias ocupadas",
+            "resposta": false
+        },
+        {
+            "id": "9",
+            "manchete": "Idosa de 94 anos ganha polêmico concurso de beleza entre sobreviventes do holocausto",
+            "subtitulo": "Ela ganhou mesmo estando acima do peso que tinha quando foi liberada de Auschwitz, apenas 25 quilinhos",
+            "resposta": true
+        },
+        {
+            "id": "10",
+            "manchete": "Descoberto dois elevadores em uma ruína inca que datam do período pré-colombiano",
+            "subtitulo": "Escavações em um templo no norte do equador revelaram engrenagens rotativas de dois elevadores movidas por tração animal. Estipulam-se se um era de serviço e outro social",
+            "resposta": false
+        },
+        {
+            "id": "11",
+            "manchete": "Idoso de 66 anos descobre que não é homem",
+            "subtitulo": "O chinês descobriu ser uma mulher após ser diagnosticado com câncer de ovário",
+            "resposta": true
+        },
+        {
+            "id": "12",
+            "manchete": "Elton John exigiu quarto de hotel em Minas Gerais para hospedar seus óculos",
+            "subtitulo": "Ele também exigiu que a temperatura do quarto esteja sempre a 16Cº",
+            "resposta": true
+        },
+        {
+            "id": "13",
+            "manchete": "Depois dos médicos cubanos, governo brasileiro quer importar engenheiros norte-americanos",
+            "subtitulo": "Ambos os governos estudam o projeto e alguns estados dos Estados Unidos como o Havaí possuem o interesse de intercâmbio profissional",
+            "resposta": false
+        },
+        {
+            "id": "14",
+            "manchete": "Banda Inimigos da HP larga BMG e fecha com a Xerox",
+            "subtitulo": "A banda participará de uma séria de comerciais sobre impressoras que serão veiculados no início de 2014",
+            "resposta": false
+        },
+        {
+            "id": "15",
+            "manchete": "Centenas de pessoas se reunem para rezar em volta de uma poça de vômito",
+            "subtitulo": "Em uma manhã de domingo na frente de um bar em Long Beach, curiosos se reuniram em volta de uma poça de vômito que formava a imagem do rosto de Jesus",
+            "resposta": false
+        },
+        {
+            "id": "16",
+            "manchete": "Prefeito mata padre em disputa sobre garrafa de vinho",
+            "subtitulo": "Isso aconteceu na cidade de Lagoa da Confusão",
+            "resposta": false
+        }
+    ],
+    "pontuacao": {
+        "acerto": 4
+    }
+}
