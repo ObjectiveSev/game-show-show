@@ -97,7 +97,7 @@ export const DicionarioSurreal: React.FC<Props> = ({ gameState, addGamePoints, a
                         return (
                             <div key={p.id} className={`texto-card ${st?.lido ? 'lido' : ''}`} onClick={() => handleCardClick(p)}>
                                 <div className="card-header">
-                                    <h3>{p.palavra}</h3>
+                                    <h3>{st?.lido ? p.palavra : `Palavra #${p.id}`}</h3>
                                     <div className="status-indicator">{st?.lido ? <span className="status-lido">✅ Respondida</span> : <span className="status-pendente">⏳ Pendente</span>}</div>
                                 </div>
                             </div>

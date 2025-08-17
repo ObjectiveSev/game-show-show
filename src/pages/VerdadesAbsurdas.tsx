@@ -235,7 +235,7 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
                                 onClick={() => handleCardClick(texto)}
                             >
                                 <div className="card-header">
-                                    <h3>{texto.titulo}</h3>
+                                    <h3>{estado?.lido ? texto.titulo : `Absurdo #${texto.id}`}</h3>
                                     <div className="status-indicator">
                                         {estado?.lido ? (
                                             <span className="status-lido">✅ Lido</span>

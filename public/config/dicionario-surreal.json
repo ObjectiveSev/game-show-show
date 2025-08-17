@@ -5,7 +5,7 @@
     },
     "palavras": [
         {
-            "id": "esputacao",
+            "id": "1",
             "palavra": "Esputação",
             "definicaoCorretaId": "d1",
             "definicoes": [
@@ -27,7 +27,7 @@
             ]
         },
         {
-            "id": "baquista",
+            "id": "2",
             "palavra": "Baquista",
             "definicaoCorretaId": "d2",
             "definicoes": [
@@ -49,7 +49,7 @@
             ]
         },
         {
-            "id": "geolho",
+            "id": "3",
             "palavra": "Geolho",
             "definicaoCorretaId": "d2",
             "definicoes": [
@@ -71,7 +71,7 @@
             ]
         },
         {
-            "id": "osmar",
+            "id": "4",
             "palavra": "Osmar",
             "definicaoCorretaId": "d3",
             "definicoes": [
@@ -93,7 +93,7 @@
             ]
         },
         {
-            "id": "bulcao",
+            "id": "5",
             "palavra": "Bulcão",
             "definicaoCorretaId": "d1",
             "definicoes": [
@@ -115,7 +115,7 @@
             ]
         },
         {
-            "id": "esconso",
+            "id": "6",
             "palavra": "Esconso",
             "definicaoCorretaId": "d2",
             "definicoes": [

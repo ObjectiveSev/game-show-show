@@ -1,0 +1,82 @@
+{
+    "itens": [
+        {
+            "id": "1",
+            "nome": "Um Cavalo de Trabalho",
+            "local": "EUA",
+            "data": "1890",
+            "contexto": "Cavalo adulto, treinado para trabalho em fazenda. Era como comprar um carro hoje em dia.",
+            "precoReal": "$150 dólares",
+            "imagem": "https://www.the-leader.com/gcdn/authoring/2012/08/20/NSCA/ghows-NE-a4a15876-faed-4408-a32b-70a65f55920f-4bce9940.jpeg?width=1200&disable=upscale&format=pjpg&auto=webp"
+        },
+        {
+            "id": "2",
+            "nome": "Garrafa de Cerveja",
+            "local": "Inglaterra Medieval",
+            "data": "1350",
+            "contexto": "Uma garrafa comum de cerveja. Cerveja era mais segura que água na época, pois o processo de fermentação matava bactérias.",
+            "precoReal": "4 pence",
+            "imagem": "https://www.medieval-recipes.com/noisette/wp-content/uploads/2013/10/ale.jpg"
+        },
+        {
+            "id": "3",
+            "nome": "Ingresso de Cinema",
+            "local": "Brasil",
+            "data": "1995",
+            "contexto": "Primeira sessão de cinema no Brasil, época do Plano Real recém-lançado.",
+            "precoReal": "R$ 3,50",
+            "imagem": "https://img.freepik.com/vetores-premium/cinema-de-ingressos-antigos-ilustracao-em-vetor-bilhete_647113-270.jpg"
+        },
+        {
+            "id": "4",
+            "nome": "Walkman Sony TPS-L2",
+            "local": "EUA",
+            "data": "1979",
+            "contexto": "O primeiro Walkman portátil da história da Sony. Revolucionou como as pessoas ouviam música.",
+            "precoReal": "$150 dólares",
+            "imagem": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Original_Sony_Walkman_TPS-L2.JPG"
+        },
+        {
+            "id": "5",
+            "nome": "Bulbo de Tulipa 'Semper Augustus'",
+            "local": "Holanda",
+            "data": "1637",
+            "contexto": "Durante a famosa 'Tulipomania' holandesa, quando tulipas se tornaram investimentos especulativos absurdos.",
+            "precoReal": "10.000 florins",
+            "imagem": "https://i.pinimg.com/736x/47/83/b7/4783b75ada7a5508c8ff0a1d897e827c.jpg"
+        },
+        {
+            "id": "6",
+            "nome": "1kg de Sal",
+            "local": "Roma Antiga",
+            "data": "100 d.C.",
+            "contexto": "O sal era tão valioso que fazia parte do pagamento dos soldados romanos. Daí vem a palavra 'salário'.",
+            "precoReal": "25 denários",
+            "imagem": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPvrSPT8tfj4YaO-vnkTqI90HG8O6lZnQf-A&s"
+        },
+        {
+            "id": "7",
+            "nome": "1kg de Açúcar",
+            "local": "Inglaterra",
+            "data": "1500",
+            "contexto": "O 'ouro branco' vindo das colônias. Açúcar era um artigo de luxo extremo, vendido por gramas como se fosse joias.",
+            "precoReal": "3 libras esterlinas",
+            "imagem": "https://www.sustainweb.org/resources/images/JunkFood/SugarCloseUp.jpg"
+        },
+        {
+            "id": "8",
+            "nome": "TV 14\" P&B Philco",
+            "local": "Brasil",
+            "data": "1950",
+            "contexto": "Uma das primeiras televisões no Brasil. Móvel de madeira completo, tela pequena em preto e branco.",
+            "precoReal": "Cr$ 4.500 cruzeiros",
+            "imagem": "https://d1o6h00a1h5k7q.cloudfront.net/imagens/img_m/9818/4326090.jpg"
+        }
+    ],
+    "pontuacao": {
+        "moedaCorreta": 1,
+        "pertoSuficiente": 3,
+        "acertoLendario": 5,
+        "erro": 0
+    }
+}

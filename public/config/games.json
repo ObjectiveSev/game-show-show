@@ -3,15 +3,15 @@
         {
             "id": "verdades-absurdas",
             "name": "Verdades Absurdas",
-            "emoji": "🤯",
-            "description": "Encontre as 5 verdades escondidas no texto",
+            "emoji": "🤔",
+            "description": "Encontre as 5 verdades escondidas em cada texto",
             "configFile": "verdades-absurdas.json"
         },
         {
             "id": "painelistas-excentricos",
             "name": "Painelistas Excêntricos",
             "emoji": "🎭",
-            "description": "Fatos pessoais: verdade ou mentira?",
+            "description": "Adivinhe se os fatos são verdade ou mentira",
             "configFile": "painelistas-excentricos.json"
         },
         {
@@ -25,14 +25,14 @@
             "id": "noticias-extraordinarias",
             "name": "Notícias Extraordinárias",
             "emoji": "📰",
-            "description": "Manchetes reais vs falsas",
+            "description": "Identifique se as manchetes são verdadeiras ou falsas",
             "configFile": "noticias-extraordinarias.json"
         },
         {
             "id": "caro-pra-chuchu",
             "name": "Caro Pra Chuchu",
             "emoji": "💰",
-            "description": "Adivinhe preços históricos",
+            "description": "Adivinhe os preços históricos dos itens mais caros",
             "configFile": "caro-pra-chuchu.json"
         },
         {

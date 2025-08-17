@@ -4,7 +4,13 @@ import type { VerdadesAbsurdasScoreEntry } from '../types/verdadesAbsurdas';
 import type { DicionarioScoreEntry } from '../types/dicionarioSurreal';
 import type { PainelistasScoreEntry } from '../types/painelistas';
 import type { NoticiasExtraordinariasScoreEntry } from '../types/noticiasExtraordinarias';
-import { loadVerdadesAbsurdasScores, loadDicionarioSurrealScores, loadPainelistasScores, loadNoticiasExtraordinariasScores } from '../utils/scoreStorage';
+import type { CaroPraChuchuScoreEntry } from '../types/caroPraChuchu';
+import type { GamesConfig } from '../types/games';
+import { loadVerdadesAbsurdasScores } from '../utils/scoreStorage';
+import { loadDicionarioSurrealScores } from '../utils/scoreStorage';
+import { loadPainelistasScores } from '../utils/scoreStorage';
+import { loadNoticiasExtraordinariasScores } from '../utils/scoreStorage';
+import { loadCaroPraChuchuScores } from '../utils/scoreStorage';
 import { carregarVerdadesAbsurdas } from '../utils/verdadesAbsurdasLoader';
 import { carregarDicionarioSurreal } from '../utils/dicionarioLoader';
 import { carregarNoticiasExtraordinarias } from '../utils/noticiasExtraordinariasLoader';
@@ -21,10 +27,11 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
     const [dicionarioSurrealScores, setDicionarioSurrealScores] = useState<DicionarioScoreEntry[]>([]);
     const [painelistasScores, setPainelistasScores] = useState<PainelistasScoreEntry[]>([]);
     const [noticiasExtraordinariasScores, setNoticiasExtraordinariasScores] = useState<NoticiasExtraordinariasScoreEntry[]>([]);
+    const [caroPraChuchuScores, setCaroPraChuchuScores] = useState<CaroPraChuchuScoreEntry[]>([]);
     const [titulosVerdades, setTitulosVerdades] = useState<Record<string, string>>({});
     const [palavrasDicionario, setPalavrasDicionario] = useState<Record<string, string>>({});
     const [manchetesNoticias, setManchetesNoticias] = useState<Record<string, string>>({});
-    const [gamesConfig, setGamesConfig] = useState<any>(null);
+    const [gamesConfig, setGamesConfig] = useState<GamesConfig | null>(null);
 
     useEffect(() => {
         // Carregar scores
@@ -32,12 +39,13 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
         setDicionarioSurrealScores(loadDicionarioSurrealScores());
         setPainelistasScores(loadPainelistasScores());
         setNoticiasExtraordinariasScores(loadNoticiasExtraordinariasScores());
+        setCaroPraChuchuScores(loadCaroPraChuchuScores());
 
         // Carregar dados para mapear IDs para nomes
         (async () => {
             try {
                 const verdades = await carregarVerdadesAbsurdas();
-                const titulos = verdades.verdadesAbsurdas.reduce((acc: Record<string, string>, texto: any) => {
+                const titulos = verdades.verdadesAbsurdas.reduce((acc: Record<string, string>, texto: { id: string; titulo: string }) => {
                     acc[texto.id] = texto.titulo;
                     return acc;
                 }, {});
@@ -48,7 +56,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
 
             try {
                 const dicionario = await carregarDicionarioSurreal();
-                const palavras = dicionario.palavras.reduce((acc: Record<string, string>, palavra: any) => {
+                const palavras = dicionario.palavras.reduce((acc: Record<string, string>, palavra: { id: string; palavra: string }) => {
                     acc[palavra.id] = palavra.palavra;
                     return acc;
                 }, {});
@@ -59,7 +67,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
 
             try {
                 const noticias = await carregarNoticiasExtraordinarias();
-                const manchetes = noticias.noticias.reduce((acc: Record<string, string>, noticia: any) => {
+                const manchetes = noticias.noticias.reduce((acc: Record<string, string>, noticia: { id: string; manchete: string }) => {
                     acc[noticia.id] = noticia.manchete;
                     return acc;
                 }, {});
@@ -79,7 +87,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
 
     const getGameEmoji = (gameId: string) => {
         if (!gamesConfig) return '🎮';
-        const game = gamesConfig.games.find((g: any) => g.id === gameId);
+        const game = gamesConfig.games.find((g: { id: string; emoji: string }) => g.id === gameId);
         return game?.emoji || '🎮';
     };
 
@@ -188,7 +196,9 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                                         <tr key={idx}>
                                             <td className="nome-cell">{score.participanteNome}</td>
                                             <td className="fato-cell">{score.fatoTexto}</td>
-                                            <td>{gameState.teams.teamA.members.includes(score.timeParticipante) ? gameState.teams.teamA.name : gameState.teams.teamB.name}</td>
+                                            <td>{gameState.teams.teamA.members.includes(score.timeAdivinhador)
+                                                ? (gameState.teams.teamA.name || 'Time A')
+                                                : (gameState.teams.teamB.name || 'Time B')}</td>
                                             <td className="center">{score.pontos}</td>
                                         </tr>
                                     ))}
@@ -225,6 +235,46 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                                                 : (gameState.teams.teamB.name || 'Time B')
                                             }</td>
                                             <td>{score.acertou ? '✔ Sim' : '❌ Não'}</td>
+                                            <td className="center">{score.pontos}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <p className="empty">Nenhum registro encontrado</p>
+                    )}
+                </div>
+
+                {/* Caro Pra Chuchu */}
+                <div className="historico-subsecao">
+                    <h3>{getGameEmoji('caro-pra-chuchu')} Caro Pra Chuchu</h3>
+                    {caroPraChuchuScores.length > 0 ? (
+                        <div className="table-wrapper">
+                            <table className="pd-table">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Time</th>
+                                        <th>Tipo de Acerto</th>
+                                        <th>Pontos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {caroPraChuchuScores.map((score, idx) => (
+                                        <tr key={idx}>
+                                            <td className="nome-cell">{score.nomeItem}</td>
+                                            <td className="nome-cell">
+                                                {score.timeAdivinhador === 'A'
+                                                    ? (gameState.teams.teamA.name || 'Time A')
+                                                    : (gameState.teams.teamB.name || 'Time B')}
+                                            </td>
+                                            <td className="nome-cell">
+                                                {score.tipoAcerto === 'moedaCorreta' && '🪙 Moeda Correta'}
+                                                {score.tipoAcerto === 'pertoSuficiente' && '🎯 Perto Suficiente'}
+                                                {score.tipoAcerto === 'acertoLendario' && '⭐ Acerto Lendário'}
+                                                {score.tipoAcerto === 'erro' && '❌ Errou'}
+                                            </td>
                                             <td className="center">{score.pontos}</td>
                                         </tr>
                                     ))}

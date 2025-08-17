@@ -2,6 +2,7 @@ import type { VerdadesAbsurdasScoreEntry } from '../types/verdadesAbsurdas';
 import type { DicionarioScoreEntry } from '../types/dicionarioSurreal';
 import type { PainelistasScoreEntry, PainelistasPunicaoEntry } from '../types/painelistas';
 import type { NoticiasExtraordinariasScoreEntry } from '../types/noticiasExtraordinarias';
+import type { CaroPraChuchuScoreEntry } from '../types/caroPraChuchu';
 import { STORAGE_KEYS } from '../constants';
 
 export const loadVerdadesAbsurdasScores = (): VerdadesAbsurdasScoreEntry[] => {
@@ -157,6 +158,40 @@ export const removeNoticiasExtraordinariasScore = (noticiaId: string): void => {
         localStorage.setItem(STORAGE_KEYS.NOTICIAS_EXTRAORDINARIAS_SCORES, JSON.stringify(updated));
     } catch (error) {
         console.error('Erro ao remover pontuação das Notícias Extraordinárias:', error);
+    }
+};
+
+// ============================================================================
+// CARO PRA CHUCHU SCORES
+// ============================================================================
+
+export const saveCaroPraChuchuScore = (entry: CaroPraChuchuScoreEntry): void => {
+    try {
+        const existing = loadCaroPraChuchuScores();
+        existing.push(entry);
+        localStorage.setItem(STORAGE_KEYS.CARO_PRA_CHUCHU_SCORES, JSON.stringify(existing));
+    } catch (error) {
+        console.error('Erro ao salvar score do Caro Pra Chuchu:', error);
+    }
+};
+
+export const loadCaroPraChuchuScores = (): CaroPraChuchuScoreEntry[] => {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEYS.CARO_PRA_CHUCHU_SCORES);
+        return raw ? JSON.parse(raw) : [];
+    } catch (error) {
+        console.error('Erro ao carregar scores do Caro Pra Chuchu:', error);
+        return [];
+    }
+};
+
+export const removeCaroPraChuchuScore = (itemId: string): void => {
+    try {
+        const existing = loadCaroPraChuchuScores();
+        const filtered = existing.filter(score => score.itemId !== itemId);
+        localStorage.setItem(STORAGE_KEYS.CARO_PRA_CHUCHU_SCORES, JSON.stringify(filtered));
+    } catch (error) {
+        console.error('Erro ao remover score do Caro Pra Chuchu:', error);
     }
 };
 

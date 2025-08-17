@@ -19,7 +19,9 @@ export const STORAGE_KEYS = {
     PAINELISTAS_SCORES: 'painelistasScores',
     PAINELISTAS_PUNICOES: 'painelistasPunicoes',
     NOTICIAS_EXTRAORDINARIAS_ESTADOS: 'noticiasEstados',
-    NOTICIAS_EXTRAORDINARIAS_SCORES: 'noticiasExtraordinariasScores'
+    NOTICIAS_EXTRAORDINARIAS_SCORES: 'noticiasExtraordinariasScores',
+    CARO_PRA_CHUCHU_ESTADOS: 'caroPraChuchuEstados',
+    CARO_PRA_CHUCHU_SCORES: 'caroPraChuchuScores'
 } as const;
 
 // ============================================================================
@@ -32,7 +34,8 @@ export const API_ENDPOINTS = {
     VERDADES_ABSURDAS: '/config/verdades-absurdas.json',
     DICIONARIO_SURREAL: '/config/dicionario-surreal.json',
     PAINELISTAS_EXCENTRICOS: '/config/painelistas-excentricos.json',
-    NOTICIAS_EXTRAORDINARIAS: '/config/noticias-extraordinarias.json'
+    NOTICIAS_EXTRAORDINARIAS: '/config/noticias-extraordinarias.json',
+    CARO_PRA_CHUCHU: '/config/caro-pra-chuchu.json'
 } as const;
 
 // ============================================================================

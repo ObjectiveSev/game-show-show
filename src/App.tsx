@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useGameState } from './hooks/useGameState';
-import type { Team } from './types';
 import { Dashboard } from './pages/Dashboard';
 import { VerdadesAbsurdas } from './pages/VerdadesAbsurdas';
 import { DicionarioSurreal } from './pages/DicionarioSurreal';
 import { Painelistas } from './pages/Painelistas';
 import { NoticiasExtraordinarias } from './pages/NoticiasExtraordinarias';
+import { CaroPraChuchu } from './pages/CaroPraChuchu';
 import { PlacarDetalhado } from './pages/PlacarDetalhado';
 import { SettingsModal } from './components/SettingsModal';
 import { clearAllLocalStorage } from './utils/fileSystem';
+import type { Team } from './types';
 import './styles/Dashboard.css';
 import './styles/SettingsModal.css';
 
@@ -43,6 +44,9 @@ function App() {
       case 'noticias-extraordinarias':
         window.location.href = '/noticias-extraordinarias';
         break;
+      case 'caro-pra-chuchu':
+        window.location.href = '/caro-pra-chuchu';
+        break;
       default:
         alert(`Jogo "${gameId}" será implementado em breve!`);
     }
@@ -68,7 +72,12 @@ function App() {
   };
 
   return (
-    <Router>
+    <Router
+      future={{
+        v7_relativeSplatPath: true,
+        v7_startTransition: true
+      }}
+    >
       <div className="App">
         <Routes>
           <Route path="/" element={
@@ -106,6 +115,13 @@ function App() {
           } />
           <Route path="/noticias-extraordinarias" element={
             <NoticiasExtraordinarias
+              gameState={gameState}
+              addGamePoints={addGamePoints}
+              addPoints={addPoints}
+            />
+          } />
+          <Route path="/caro-pra-chuchu" element={
+            <CaroPraChuchu
               gameState={gameState}
               addGamePoints={addGamePoints}
               addPoints={addPoints}

@@ -33,29 +33,27 @@ export class SoundManager {
     private loadSoundConfig(): void {
         this.soundConfig = {
             success: [
-                // Sons de sucesso - Game Show e Acertos
-                { url: 'https://www.myinstants.com/media/sounds/correct.mp3' }, // correct-answer-gameshow
-                { url: 'https://www.myinstants.com/media/sounds/duolingo-correct.mp3' }, // duolingo-correct-95922
-                { url: 'https://www.myinstants.com/media/sounds/duolingo-completed-lesson.mp3' }, // duolingo-completed-lesson-48481
-                { url: 'https://www.myinstants.com/media/sounds/acertou-mizeravijk.mp3' }, // acerto-mizeravi
-                { url: 'https://www.myinstants.com/media/sounds/ninguem-acertou.mp3' }, // ninguem-acertou-faustao
-                { url: 'https://www.myinstants.com/media/sounds/acertouuu.mp3' }, // acertouuu-87771
-                { url: 'https://www.myinstants.com/media/sounds/correcto_Xgyp04B.mp3' }, // correct556-98493
-                { url: 'https://www.myinstants.com/media/sounds/correct-answer-new.mp3' }, // correct-answer-new-24687
-                { url: 'https://www.myinstants.com/media/sounds/what-bottom-text-meme-sanctuary-guardian-sound-effect-hd.mp3' }, // what-bottom-text-meme-sanctuary-guardian-s-24591
-                { url: 'https://www.myinstants.com/media/sounds/follow-the-dam-train-cj.mp3' }, // follow-the-dam-train-cj-34809
-                { url: 'https://www.myinstants.com/media/sounds/vinheta-de-gol-do-fox-sports.mp3' }, // vinheta-de-gol-do-fox-sports
+                { url: 'https://www.myinstants.com/media/sounds/correct.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/duolingo-correct.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/duolingo-completed-lesson.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/acertou-mizeravijk.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/acertouuu.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/correcto_Xgyp04B.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/correct-answer-new.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/what-bottom-text-meme-sanctuary-guardian-sound-effect-hd.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/follow-the-dam-train-cj.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/vinheta-de-gol-do-fox-sports.mp3' },
             ],
             error: [
-                // Sons de erro - Game Show e Erros
-                { url: 'https://www.myinstants.com/media/sounds/error-song.mp3' }, // error-song-32542
-                { url: 'https://www.myinstants.com/media/sounds/errada.mp3' }, // voce-errou
-                { url: 'https://www.myinstants.com/media/sounds/espanha.mp3' }, // espanha-errou
-                { url: 'https://www.myinstants.com/media/sounds/duolingo-wrong.mp3' }, // duolingo-wrong-12298
-                { url: 'https://www.myinstants.com/media/sounds/sad-trombone_CTCquhN.mp3' }, // sad-trumpet-59895
-                { url: 'https://www.myinstants.com/media/sounds/wrong_5.mp3' }, // wrong-answer-gameshow
-                { url: 'https://www.myinstants.com/media/sounds/wrong-answer-buzzer.mp3' }, // wrong-answer-buzzer-6983
-                { url: 'https://www.myinstants.com/media/sounds/windows-xp-error.mp3' }, // windows-xp-error-100000
+                { url: 'https://www.myinstants.com/media/sounds/error-song.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/errada.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/espanha.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/ninguem-acertou.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/duolingo-wrong.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/sad-trombone_CTCquhN.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/wrong_5.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/wrong-answer-buzzer.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/windows-xp-error.mp3' },
             ]
         };
     }
