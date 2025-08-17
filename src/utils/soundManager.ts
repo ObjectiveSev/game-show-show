@@ -41,7 +41,6 @@ export class SoundManager {
                 { url: 'https://www.myinstants.com/media/sounds/correcto_Xgyp04B.mp3' },
                 { url: 'https://www.myinstants.com/media/sounds/correct-answer-new.mp3' },
                 { url: 'https://www.myinstants.com/media/sounds/what-bottom-text-meme-sanctuary-guardian-sound-effect-hd.mp3' },
-                { url: 'https://www.myinstants.com/media/sounds/follow-the-dam-train-cj.mp3' },
                 { url: 'https://www.myinstants.com/media/sounds/vinheta-de-gol-do-fox-sports.mp3' },
             ],
             error: [
@@ -50,10 +49,12 @@ export class SoundManager {
                 { url: 'https://www.myinstants.com/media/sounds/espanha.mp3' },
                 { url: 'https://www.myinstants.com/media/sounds/ninguem-acertou.mp3' },
                 { url: 'https://www.myinstants.com/media/sounds/duolingo-wrong.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/follow-the-dam-train-cj.mp3' },
                 { url: 'https://www.myinstants.com/media/sounds/sad-trombone_CTCquhN.mp3' },
                 { url: 'https://www.myinstants.com/media/sounds/wrong_5.mp3' },
                 { url: 'https://www.myinstants.com/media/sounds/wrong-answer-buzzer.mp3' },
                 { url: 'https://www.myinstants.com/media/sounds/windows-xp-error.mp3' },
+                { url: 'https://www.myinstants.com/media/sounds/errou-show-do-milhao.mp3' },
             ]
         };
     }

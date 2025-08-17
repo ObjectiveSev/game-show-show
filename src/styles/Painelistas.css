@@ -84,9 +84,8 @@
     padding: 20px;
     text-align: center;
     margin: 15px 0;
-    height: 80px;
-    /* Altura fixa em vez de min-height */
-    /* Altura fixa para manter consistência */
+    min-height: 120px;
+    /* Altura mínima aumentada para ocupar mais espaço */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -133,12 +132,13 @@
     padding: 25px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    height: 360px;
-    /* Altura fixa para todos os cards */
+    height: 420px;
+    /* Altura aumentada para acomodar melhor o conteúdo */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    /* Alinha tudo no topo */
+    /* Alinha tudo no topo para melhor distribuição */
+    position: relative;
 }
 
 .jogador-card:hover {
@@ -155,6 +155,7 @@
     height: 70px;
     /* Altura fixa em vez de min-height */
     /* Altura fixa para o header */
+    flex-shrink: 0;
 }
 
 .jogador-header h3 {
@@ -171,6 +172,7 @@
     flex-direction: column !important;
     align-items: flex-end;
     gap: 5px;
+    flex-shrink: 0;
 }
 
 .jogador-card .fatos-status {
@@ -205,25 +207,32 @@
     gap: 12px;
     margin-bottom: 20px;
     flex-wrap: wrap;
-    height: 80px;
-    /* Altura fixa em vez de min-height */
-    /* Altura fixa para o container de fatos */
+    min-height: 120px;
+    /* Altura mínima aumentada para ocupar mais espaço */
     align-items: center;
     /* Centraliza verticalmente */
     justify-content: center;
     /* Centraliza horizontalmente */
+    flex-shrink: 0;
+    flex: 1;
+    /* Ocupa o espaço disponível */
 }
 
 .fato-card {
     background: #f8f9fa;
     border: 2px solid #e9ecef;
     border-radius: 12px;
-    padding: 15px;
+    padding: 20px;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-width: 120px;
+    min-width: 140px;
+    min-height: 80px;
     text-align: center;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .fato-card:hover {
@@ -294,15 +303,17 @@
     font-weight: 400;
 }
 
-/* Container de multas com altura fixa */
+/* Container de multas com altura flexível */
 .multas-container {
     display: flex;
     flex-direction: column;
     gap: 8px;
     margin-top: 10px;
-    height: 60px;
-    /* Altura fixa para o container de multas */
+    margin-bottom: 4px;
+    /* Remove altura fixa para permitir flexibilidade */
     justify-content: center;
+    flex-shrink: 0;
+    /* Ocupa apenas o espaço necessário */
 }
 
 /* Botão de resetar pontuação sempre na mesma posição */
@@ -319,6 +330,8 @@
     transition: all 0.2s ease;
     margin-top: auto;
     /* Empurra o botão para baixo */
+    flex-shrink: 0;
+    /* Remove margin-top fixo para permitir flexibilidade */
 }
 
 .resetar-pontuacao-btn:hover {

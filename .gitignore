@@ -30,6 +30,9 @@ dist-ssr
 .env.test.local
 .env.production.local
 
+# API Keys and sensitive configs
+src/config/spotify.ts
+
 # Build outputs
 build/
 out/

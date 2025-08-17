@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { BaseModal } from './common/BaseModal';
 import type { VerdadeAbsurda, TextoEstado } from '../types/verdadesAbsurdas';
 import type { Team } from '../types';
 import { extrairTextoVerdade, encontrarIndiceVerdade } from '../utils/verdadesAbsurdasLoader';
+import { soundManager } from '../utils/soundManager';
 import '../styles/TextoModal.css';
 import { TeamSelector } from './common/TeamSelector';
 
@@ -35,15 +37,7 @@ export const TextoModal: React.FC<TextoModalProps> = ({
 
 
 
-    // Fechar com ESC
-    useEffect(() => {
-        if (!isOpen) return;
-        const onKey = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onClose();
-        };
-        window.addEventListener('keydown', onKey);
-        return () => window.removeEventListener('keydown', onKey);
-    }, [isOpen, onClose]);
+
 
     // Renderizar texto com verdades marcadas
     useEffect(() => {
@@ -127,6 +121,9 @@ export const TextoModal: React.FC<TextoModalProps> = ({
     const handleRevelarVerdades = () => {
         if (!estado) return;
 
+        // Tocar som de sucesso ao revelar verdades
+        soundManager.playSuccessSound();
+
         const novoEstado: TextoEstado = {
             ...estado,
             verdadesReveladas: true
@@ -137,6 +134,9 @@ export const TextoModal: React.FC<TextoModalProps> = ({
 
     const handleAdicionarErro = () => {
         if (!estado) return;
+
+        // Tocar som de erro
+        soundManager.playErrorSound();
 
         const novoEstado: TextoEstado = {
             ...estado,
@@ -168,11 +168,7 @@ export const TextoModal: React.FC<TextoModalProps> = ({
         onUpdateEstado(novoEstado);
     };
 
-    const handleOverlayClick = (e: React.MouseEvent) => {
-        if (e.target === e.currentTarget) {
-            onClose();
-        }
-    };
+
 
     if (!isOpen || !texto || !estado) return null;
 
@@ -180,44 +176,47 @@ export const TextoModal: React.FC<TextoModalProps> = ({
     const totalVerdades = texto.verdades.length;
 
     return (
-        <div className="texto-modal-overlay" onClick={handleOverlayClick}>
-            <div className="texto-modal">
-                <div className="modal-header">
-                    <h2>{texto.titulo}</h2>
-                    <button className="close-button" onClick={onClose}>×</button>
+        <BaseModal
+            isOpen={isOpen}
+            onClose={onClose}
+            title={texto.titulo}
+            size="large"
+        >
+            <div className="modal-content">
+                <div className="texto-container">
+                    <div
+                        className="texto-completo"
+                        onClick={handleTextoClick}
+                        dangerouslySetInnerHTML={{ __html: textoRenderizado }}
+                    />
                 </div>
 
-                <div className="modal-content">
-                    <div className="texto-container">
-                        <div
-                            className="texto-completo"
-                            onClick={handleTextoClick}
-                            dangerouslySetInnerHTML={{ __html: textoRenderizado }}
+                <div className="controles-host">
+                    <div className="status-info">
+                        <TeamSelector
+                            teams={teams}
+                            value={timeSelecionado}
+                            onChange={(v: 'A' | 'B' | '') => setTimeSelecionado(v)}
+                            label="Time leitor:"
                         />
+                        <div className="verdades-info">
+                            <span className="label">Verdades encontradas:</span>
+                            <span className="valor">{verdadesEncontradas}/{totalVerdades}</span>
+                        </div>
+                        <div className="erros-info">
+                            <span className="label">Erros:</span>
+                            <span className="valor">{erros}</span>
+                        </div>
                     </div>
 
-                    <div className="controles-host">
-                        <div className="status-info">
-                            <TeamSelector teams={teams} value={timeSelecionado} onChange={(v: 'A' | 'B' | '') => setTimeSelecionado(v)} />
-                            <div className="verdades-info">
-                                <span className="label">Verdades encontradas:</span>
-                                <span className="valor">{verdadesEncontradas}/{totalVerdades}</span>
-                            </div>
-                            <div className="erros-info">
-                                <span className="label">Erros:</span>
-                                <span className="valor">{erros}</span>
-                            </div>
-                        </div>
-
-                        <div className="botoes-controle">
-                            <button className="btn-erro" onClick={handleAdicionarErro}>❌ +1 Erro</button>
-                            <button className="btn-revelar" onClick={handleRevelarVerdades} disabled={verdadesReveladas}>🔍 Revelar Verdades</button>
-                            <button className="btn-resetar" onClick={handleResetarPontuacao}>🔄 Resetar Pontuação</button>
-                            <button className="btn-salvar" onClick={() => { if (!estado || !timeSelecionado) return; onSalvarPontuacao(timeSelecionado as 'A' | 'B'); }} disabled={!timeSelecionado || estado.pontuacaoSalva}>{estado.pontuacaoSalva ? '✅ Pontuação Salva' : '💾 Salvar Pontuação'}</button>
-                        </div>
+                    <div className="botoes-controle">
+                        <button className="btn-erro" onClick={handleAdicionarErro}>❌ +1 Erro</button>
+                        <button className="btn-revelar" onClick={handleRevelarVerdades} disabled={verdadesReveladas}>🔍 Revelar Verdades</button>
+                        <button className="btn-resetar" onClick={handleResetarPontuacao}>🔄 Resetar Pontuação</button>
+                        <button className="btn-salvar" onClick={() => { if (!estado || !timeSelecionado) return; onSalvarPontuacao(timeSelecionado as 'A' | 'B'); }} disabled={!timeSelecionado || estado.pontuacaoSalva}>{estado.pontuacaoSalva ? '✅ Pontuação Salva' : '💾 Salvar Pontuação'}</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </BaseModal>
     );
 }; 

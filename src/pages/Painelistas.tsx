@@ -79,6 +79,20 @@ export const Painelistas: React.FC<Props> = ({ gameState, addGamePoints, addPoin
         if (estados.length) localStorage.setItem(STORAGE_KEYS.PAINELISTAS_ESTADOS, JSON.stringify(estados));
     }, [estados]);
 
+    // Fechar modal com ESC
+    useEffect(() => {
+        if (!modalOpen) return;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                setModalOpen(false);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [modalOpen]);
+
     const handleFatoClick = (fato: FatoPainelista, participanteId: string) => {
         setFatoSelecionado(fato);
         setParticipanteSelecionado(participanteId);

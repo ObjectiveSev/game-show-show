@@ -1,277 +1,259 @@
-/* Estilos do modal */
+/* Caro Pra Chuchu Modal Styles */
+.modal-config-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .item-info {
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    height: 100%;
 }
 
 .item-header {
     text-align: center;
-    margin-bottom: 25px;
+    padding: 20px;
+    background: transparent;
+    border-radius: 15px;
+    color: #1f2937;
 }
 
 .item-header h2 {
-    font-size: 2.5rem;
-    color: #2c3e50;
-    margin-bottom: 15px;
-    font-weight: 700;
+    margin: 0 0 15px 0;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #1f2937;
 }
 
 .local-data {
     display: flex;
-    gap: 15px;
     justify-content: center;
+    gap: 20px;
     font-size: 1.1rem;
-    color: #666;
+    opacity: 0.9;
 }
 
-.local-data .local,
-.local-data .data {
-    background: #f8f9fa;
+.local-data span {
     padding: 8px 16px;
+    background: rgba(79, 70, 229, 0.1);
+    border: 1px solid rgba(79, 70, 229, 0.3);
     border-radius: 20px;
-    font-weight: 500;
+    color: #4f46e5;
+    font-weight: 600;
 }
 
 .item-image {
     text-align: center;
-    margin-bottom: 25px;
 }
 
 .item-image img {
     max-width: 100%;
     max-height: 300px;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    border: 3px solid #e9ecef;
-    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 .contexto {
-    background: #f8f9fa;
     padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-    border-left: 4px solid #007bff;
+    background: rgba(255, 255, 255, 0.9);
+    border-left: 4px solid #4f46e5;
+    border-radius: 0 12px 12px 0;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .contexto h3 {
-    color: #007bff;
-    margin-bottom: 10px;
+    margin: 0 0 15px 0;
+    color: #374151;
     font-size: 1.3rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .contexto p {
-    color: #333;
-    line-height: 1.6;
-    font-size: 1rem;
     margin: 0;
+    color: #4b5563;
+    line-height: 1.7;
+    font-size: 1rem;
+    font-style: italic;
 }
 
 .preco-real {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    color: white;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 25px;
     text-align: center;
-    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    padding: 20px;
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Cores baseadas no tipo de acerto */
+.preco-real.preco-moedaCorreta {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+}
+
+.preco-real.preco-pertoSuficiente {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+    box-shadow: 0 8px 25px rgba(217, 119, 6, 0.3);
+}
+
+.preco-real.preco-acertoLendario {
+    background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+}
+
+.preco-real.preco-erro {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
 }
 
 .preco-real h3 {
-    margin-bottom: 10px;
+    margin: 0 0 15px 0;
     font-size: 1.3rem;
-    opacity: 0.9;
+    font-weight: 600;
 }
 
 .preco-valor {
     font-size: 2rem;
     font-weight: 700;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .controles {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    flex: 1;
 }
 
-.time-selector {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.acerto-buttons h4 {
-    text-align: center;
-    color: #2c3e50;
-    margin-bottom: 20px;
-    font-size: 1.2rem;
-}
-
-.buttons-grid {
+.acerto-buttons {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
 }
 
 .acerto-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
+    padding: 15px 20px;
     border: none;
     border-radius: 12px;
-    cursor: pointer;
     font-size: 1rem;
     font-weight: 600;
+    cursor: pointer;
     transition: all 0.3s ease;
-    gap: 8px;
-    min-height: 100px;
-    justify-content: center;
+    color: white;
+    text-align: center;
 }
 
+.acerto-btn.moeda-correta {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+}
+
+.acerto-btn.perto-suficiente {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+}
+
+.acerto-btn.acerto-lendario {
+    background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+}
+
+.acerto-btn.erro {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+}
+
+.acerto-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilos para botões desabilitados */
 .acerto-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
-}
-
-.acerto-btn:not(:disabled):hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-
-.acerto-btn .pontos {
-    font-size: 0.9rem;
-    opacity: 0.8;
-    font-weight: 500;
-}
-
-/* Estilos específicos para cada tipo de acerto */
-.acerto-btn.moeda-correta {
-    background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
-    color: #212529;
-}
-
-.acerto-btn.perto-suficiente {
-    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
-    color: white;
-}
-
-.acerto-btn.acerto-lendario {
-    background: linear-gradient(135deg, #6f42c1 0%, #5a2d91 100%);
-    color: white;
-}
-
-.acerto-btn.erro {
-    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-    color: white;
-}
-
-.resultado-section {
-    text-align: center;
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-}
-
-.resultado-section h4 {
-    color: #2c3e50;
-    margin-bottom: 15px;
-    font-size: 1.2rem;
-}
-
-.resultado {
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 8px;
-}
-
-.resultado.moedaCorreta {
-    background: #fff3cd;
-    color: #856404;
-}
-
-.resultado.pertoSuficiente {
-    background: #d1ecf1;
-    color: #0c5460;
-}
-
-.resultado.acertoLendario {
-    background: #e2d9f3;
-    color: #5a2d91;
-}
-
-.resultado.erro {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-.pontos-display {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #28a745;
+    box-shadow: none;
+    filter: grayscale(0.3);
 }
 
 .modal-actions {
     display: flex;
     gap: 15px;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: auto;
+    padding-top: 20px;
 }
 
 .reset-btn,
 .save-btn {
     padding: 12px 24px;
     border: none;
-    border-radius: 8px;
-    cursor: pointer;
+    border-radius: 25px;
     font-size: 1rem;
     font-weight: 600;
-    transition: all 0.2s;
-    min-width: 120px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 140px;
 }
 
 .reset-btn {
-    background: #6c757d;
+    background: linear-gradient(135deg, #6b7280, #4b5563);
     color: white;
 }
 
 .reset-btn:hover {
-    background: #5a6268;
+    background: linear-gradient(135deg, #4b5563, #374151);
     transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(107, 114, 128, 0.4);
 }
 
 .save-btn {
-    background: #28a745;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
     color: white;
 }
 
-.save-btn:hover {
-    background: #218838;
+.save-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #4338ca, #3730a3);
     transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
+}
+
+.save-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 /* Responsividade */
 @media (max-width: 768px) {
-    .buttons-grid {
+    .item-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .local-data {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .contexto {
+        max-height: 150px;
+    }
+
+    .acerto-buttons {
         grid-template-columns: 1fr;
     }
 
-    .acerto-btn {
-        min-height: 80px;
-        padding: 15px;
+    .modal-actions {
+        flex-direction: column;
+        gap: 10px;
     }
 
-    .item-header h2 {
-        font-size: 2rem;
-    }
-
-    .preco-valor {
-        font-size: 1.5rem;
+    .reset-btn,
+    .save-btn {
+        width: 100%;
     }
 }

@@ -18,7 +18,9 @@ export const BaseModal: React.FC<BaseModalProps> = ({
 }) => {
     useEffect(() => {
         const handleEsc = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onClose();
+            if (e.key === 'Escape') {
+                onClose();
+            }
         };
 
         if (isOpen) {
@@ -39,6 +41,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
                     <h2>{title}</h2>
                     <button className="base-modal-close-button" onClick={onClose}>×</button>
                 </div>
+
                 <div className="base-modal-body">
                     {children}
                 </div>

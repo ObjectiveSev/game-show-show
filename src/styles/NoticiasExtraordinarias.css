@@ -278,62 +278,7 @@
     gap: 20px;
 }
 
-/* Seletor de time */
-.time-selector {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.time-selector label {
-    font-weight: 600;
-    color: #333;
-    white-space: nowrap;
-}
-
-.time-selector .team-dropdown {
-    flex: 0 1 auto;
-}
-
-/* Estilos para o TeamSelector */
-.team-selector {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.team-selector .label {
-    font-weight: 600;
-    color: #333;
-    font-size: 1rem;
-}
-
-.team-selector .team-dropdown {
-    padding: 12px 16px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
-    background: white;
-    color: #333;
-    cursor: pointer;
-    transition: border-color 0.2s ease;
-}
-
-.team-selector .team-dropdown:hover {
-    border-color: #007bff;
-}
-
-.team-selector .team-dropdown:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-.team-selector .team-dropdown option {
-    padding: 8px;
-}
+/* TeamSelector styles moved to TeamSelector.css */
 
 /* Botões de jogo reutilizáveis */
 .palpite-buttons {

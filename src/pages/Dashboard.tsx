@@ -84,12 +84,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         break;
                     case 'r':
                         event.preventDefault();
-                        // Usar setTimeout para evitar problemas com message channel
-                        setTimeout(() => {
-                            if (confirm('Tem certeza que deseja resetar a pontuação?')) {
-                                resetScores();
-                            }
-                        }, 0);
+                        // Usar uma abordagem mais segura para evitar problemas com message channel
+                        const shouldReset = window.confirm('Tem certeza que deseja resetar a pontuação?');
+                        if (shouldReset) {
+                            resetScores();
+                        }
                         break;
                 }
             }
@@ -130,12 +129,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <ToolsSection
                     onOpenBuzzer={onOpenBuzzer}
                     onResetScores={() => {
-                        // Usar setTimeout para evitar problemas com message channel
-                        setTimeout(() => {
-                            if (confirm('Tem certeza que deseja resetar a pontuação?')) {
-                                resetScores();
-                            }
-                        }, 0);
+                        // Usar uma abordagem mais segura para evitar problemas com message channel
+                        const shouldReset = window.confirm('Tem certeza que deseja resetar a pontuação?');
+                        if (shouldReset) {
+                            resetScores();
+                        }
                     }}
                     onClearLocalStorage={onClearLocalStorage}
                 />

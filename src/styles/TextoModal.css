@@ -1,76 +1,9 @@
-/* TextoModal Styles */
-.texto-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    backdrop-filter: blur(5px);
-}
-
-.texto-modal {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 20px;
-    width: 90%;
-    max-width: 1200px;
-    height: 90%;
-    max-height: 800px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 30px;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 18px 18px 0 0;
-}
-
-.modal-header h2 {
-    color: white;
-    margin: 0;
-    font-size: 1.8rem;
-    font-weight: 600;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.close-button {
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
-
-.close-button:hover {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
-    transform: scale(1.1);
-}
-
+/* TextoModal Styles - Atualizado para BaseModal */
 .modal-content {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 20px;
-    overflow: hidden;
+    height: 100%;
+    gap: 20px;
 }
 
 .texto-container {
@@ -79,8 +12,9 @@
     background: rgba(255, 255, 255, 0.95);
     border-radius: 15px;
     padding: 30px;
-    margin-bottom: 20px;
     box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-height: 400px;
+    /* Limita altura para forçar scroll */
 }
 
 .texto-completo {
@@ -125,85 +59,54 @@
 }
 
 .controles-host {
-    margin-top: 20px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(102, 126, 234, 0.1);
     border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.2);
 }
 
 .status-info {
     display: flex !important;
     flex-direction: row !important;
     justify-content: space-between;
-    /* Change center to space-between */
     align-items: center;
     margin-bottom: 20px;
-    color: white;
+    color: #333;
     flex-wrap: nowrap;
     gap: 20px;
-    /* Optionally reduce gap since space-between handles spacing */
 }
 
-.team-selector,
 .verdades-info,
 .erros-info {
     display: flex;
     align-items: center;
     gap: 8px;
     flex: 0 0 auto;
-    justify-content: flex-start;
-    min-width: 0;
-}
-
-.team-selector {
-    min-width: 200px;
-}
-
-.verdades-info,
-.erros-info {
+    justify-content: center;
     min-width: 150px;
+    margin-bottom: 15px;
 }
 
 .erros-info .valor {
     background: rgba(239, 68, 68, 0.3);
     border-color: rgba(239, 68, 68, 0.5);
-    color: #fecaca;
-}
-
-.team-dropdown {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.team-dropdown:hover {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
-}
-
-.team-dropdown option {
-    background: #1f2937;
-    color: white;
+    color: #dc2626;
 }
 
 .label {
     font-size: 1rem;
     opacity: 0.9;
+    color: #333;
 }
 
 .valor {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(102, 126, 234, 0.2);
     padding: 8px 16px;
     border-radius: 20px;
     font-weight: 600;
     font-size: 1.1rem;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    color: #333;
 }
 
 .botoes-controle {
@@ -216,7 +119,7 @@
     padding: 20px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.1);
 }
 
 /* Botões em grid 2x2 */
@@ -231,65 +134,64 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    width: 100%;
-    min-width: 140px;
-    backdrop-filter: blur(10px);
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .btn-erro {
     background: linear-gradient(135deg, #ef4444, #dc2626);
     color: white;
-    border: 2px solid rgba(239, 68, 68, 0.3);
 }
 
-.btn-erro:hover {
+.btn-erro:hover:not(:disabled) {
     background: linear-gradient(135deg, #dc2626, #b91c1c);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+}
+
+.btn-revelar {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: white;
+}
+
+/* Estilo especial para dica já aberta */
+.btn-revelar[disabled] {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    cursor: default;
+}
+
+.btn-revelar:hover:not(:disabled) {
+    background: linear-gradient(135deg, #ea580c, #c2410c);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4);
 }
 
 .btn-resetar {
     background: linear-gradient(135deg, #6b7280, #4b5563);
     color: white;
-    border: 2px solid rgba(107, 114, 128, 0.3);
 }
 
-.btn-resetar:hover {
+.btn-resetar:hover:not(:disabled) {
     background: linear-gradient(135deg, #4b5563, #374151);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(107, 114, 128, 0.4);
-}
-
-.btn-revelar {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: white;
-    border: 2px solid rgba(245, 158, 11, 0.3);
-}
-
-.btn-revelar:hover:not(:disabled) {
-    background: linear-gradient(135deg, #d97706, #b45309);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
-}
-
-.btn-revelar:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
+    box-shadow: 0 8px 25px rgba(107, 114, 128, 0.4);
 }
 
 .btn-salvar {
     background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: white;
-    border: 2px solid rgba(59, 130, 246, 0.3);
-    min-width: 140px;
-    backdrop-filter: blur(10px);
 }
 
 .btn-salvar:hover:not(:disabled) {
     background: linear-gradient(135deg, #2563eb, #1d4ed8);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
 }
 
 .btn-salvar:disabled {
@@ -310,8 +212,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(102, 126, 234, 0.2);
+    border: 2px solid rgba(102, 126, 234, 0.5);
     border-radius: 8px;
     padding: 4px;
 }
@@ -323,7 +225,7 @@
 }
 
 .extras-btn {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(102, 126, 234, 0.8);
     border: none;
     color: white;
     width: 24px;
@@ -338,32 +240,35 @@
 }
 
 .extras-btn:hover {
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(102, 126, 234, 1);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 .extras-value {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
+    background: rgba(102, 126, 234, 0.3);
+    color: #1e293b;
     padding: 4px 8px;
     border-radius: 4px;
     font-weight: 600;
     min-width: 30px;
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(102, 126, 234, 0.5);
 }
 
 /* Dicionário - definição item */
 .def-item {
-    margin-bottom: 12px;
-    padding: 12px;
+    margin-bottom: 20px;
+    padding: 20px;
     background: rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
+    border-radius: 12px;
     border: 2px solid transparent;
     transition: all 0.2s ease;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .def-item:hover {
@@ -385,11 +290,32 @@
     background: rgba(239, 68, 68, 0.12);
 }
 
+/* Estilo para dicas abertas */
+.def-item .dica {
+    margin-top: 15px;
+    padding: 12px 16px;
+    background: rgba(102, 126, 234, 0.1);
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 8px;
+    color: #1e293b;
+    font-weight: 500;
+    position: relative;
+}
+
+.def-item .dica::before {
+    content: "💡 Dica:";
+    display: block;
+    font-weight: 600;
+    color: #667eea;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
 .def-content {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    gap: 12px;
+    gap: 25px;
 }
 
 .def-text {
@@ -398,6 +324,10 @@
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    flex: 1;
+    line-height: 1.6;
+    margin-right: 25px;
+    font-size: 1.05rem;
 }
 
 .def-dica {
@@ -429,70 +359,62 @@
     background: rgba(255, 255, 255, 0.5);
 }
 
-/* Responsive Design */
+/* Estilos específicos para botões do Dicionário Surreal */
+.def-content .btn-revelar,
+.def-content .btn-salvar {
+    height: 50px;
+    width: 140px;
+    flex-shrink: 0;
+}
+
+/* Container dos botões do Dicionário Surreal */
+.def-content .botoes-dicionario {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
-    .texto-modal {
-        width: 95%;
-        height: 95%;
-        border-radius: 15px;
-    }
-
-    .modal-header {
-        padding: 15px 20px;
-    }
-
-    .modal-header h2 {
-        font-size: 1.4rem;
-    }
-
-    .modal-content {
-        padding: 15px;
-    }
-
     .texto-container {
+        max-height: 300px;
         padding: 20px;
     }
 
     .texto-completo {
-        font-size: 1rem;
+        font-size: 1.1rem;
         line-height: 1.6;
     }
 
     .status-info {
-        flex-direction: row;
-        /* Manter horizontal mesmo em telas pequenas */
+        flex-direction: column !important;
         gap: 15px;
-        /* Reduzir gap para telas pequenas */
-        align-items: center;
-        flex-wrap: wrap;
-        /* Permitir quebra se necessário */
+    }
+
+    .verdades-info,
+    .erros-info {
+        min-width: auto;
+        margin-bottom: 10px;
     }
 
     .botoes-controle {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .def-content .btn-revelar,
+    .def-content .btn-salvar {
+        height: 45px;
+        width: 120px;
+    }
+
+    .def-content {
         flex-direction: column;
-        align-items: center;
+        gap: 15px;
     }
 
-    .btn-erro,
-    .btn-resetar,
-    .btn-revelar,
-    .btn-salvar {
+    .def-content .botoes-dicionario {
+        justify-content: center;
         width: 100%;
-        max-width: 200px;
-    }
-}
-
-@media (max-width: 480px) {
-    .texto-modal {
-        width: 98%;
-        height: 98%;
-    }
-
-    .modal-header h2 {
-        font-size: 1.2rem;
-    }
-
-    .texto-completo {
-        font-size: 0.9rem;
     }
 }

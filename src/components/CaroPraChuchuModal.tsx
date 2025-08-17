@@ -20,7 +20,6 @@ export const CaroPraChuchuModal: React.FC<Props> = ({
     isOpen,
     onClose,
     item,
-    pontuacao,
     teams,
     onSalvar,
     onResetar
@@ -82,77 +81,50 @@ export const CaroPraChuchuModal: React.FC<Props> = ({
                 </div>
 
                 {precoRevelado && (
-                    <div className="preco-real">
+                    <div className={`preco-real preco-${tipoAcerto}`}>
                         <h3>💎 Preço Real</h3>
                         <div className="preco-valor">{item.precoReal}</div>
                     </div>
                 )}
 
                 <div className="controles">
-                    <div className="time-selector">
-                        <TeamSelector
-                            teams={teams}
-                            value={timeSelecionado}
-                            onChange={(value) => setTimeSelecionado(value)}
-                            label="Time adivinhador:"
-                        />
-                    </div>
+                    <TeamSelector
+                        teams={teams}
+                        value={timeSelecionado}
+                        onChange={(value) => setTimeSelecionado(value)}
+                        label="Time adivinhador:"
+                    />
 
                     {!tipoAcerto && (
                         <div className="acerto-buttons">
-                            <h4>Selecione o tipo de acerto:</h4>
-                            <div className="buttons-grid">
-                                <button
-                                    className="acerto-btn moeda-correta"
-                                    onClick={() => handleAcerto('moedaCorreta')}
-                                    disabled={!timeSelecionado}
-                                >
-                                    🪙 Acertou a moeda
-                                    <span className="pontos">+{pontuacao?.moedaCorreta || 1} ponto</span>
-                                </button>
-
-                                <button
-                                    className="acerto-btn perto-suficiente"
-                                    onClick={() => handleAcerto('pertoSuficiente')}
-                                    disabled={!timeSelecionado}
-                                >
-                                    🎯 Perto o suficiente
-                                    <span className="pontos">+{pontuacao?.pertoSuficiente || 3} pontos</span>
-                                </button>
-
-                                <button
-                                    className="acerto-btn acerto-lendario"
-                                    onClick={() => handleAcerto('acertoLendario')}
-                                    disabled={!timeSelecionado}
-                                >
-                                    ⭐ Acerto lendário
-                                    <span className="pontos">+{pontuacao?.acertoLendario || 5} pontos</span>
-                                </button>
-
-                                <button
-                                    className="acerto-btn erro"
-                                    onClick={() => handleAcerto('erro')}
-                                    disabled={!timeSelecionado}
-                                >
-                                    ❌ Errou
-                                    <span className="pontos">0 pontos</span>
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {tipoAcerto && (
-                        <div className="resultado-section">
-                            <h4>Resultado selecionado:</h4>
-                            <div className={`resultado ${tipoAcerto}`}>
-                                {tipoAcerto === 'moedaCorreta' && '🪙 Acertou a moeda'}
-                                {tipoAcerto === 'pertoSuficiente' && '🎯 Perto o suficiente'}
-                                {tipoAcerto === 'acertoLendario' && '⭐ Acerto lendário'}
-                                {tipoAcerto === 'erro' && '❌ Errou'}
-                            </div>
-                            <div className="pontos-display">
-                                +{pontuacao?.[tipoAcerto] || 0} pontos
-                            </div>
+                            <button
+                                className="acerto-btn moeda-correta"
+                                onClick={() => handleAcerto('moedaCorreta')}
+                                disabled={!timeSelecionado}
+                            >
+                                Acertou a moeda<br />+1 ponto
+                            </button>
+                            <button
+                                className="acerto-btn perto-suficiente"
+                                onClick={() => handleAcerto('pertoSuficiente')}
+                                disabled={!timeSelecionado}
+                            >
+                                Perto o suficiente<br />+3 pontos
+                            </button>
+                            <button
+                                className="acerto-btn acerto-lendario"
+                                onClick={() => handleAcerto('acertoLendario')}
+                                disabled={!timeSelecionado}
+                            >
+                                Acerto lendário<br />+5 pontos
+                            </button>
+                            <button
+                                className="acerto-btn erro"
+                                onClick={() => handleAcerto('erro')}
+                                disabled={!timeSelecionado}
+                            >
+                                Errou<br />0 pontos
+                            </button>
                         </div>
                     )}
 

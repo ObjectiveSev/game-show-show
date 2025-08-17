@@ -53,13 +53,12 @@ function App() {
   };
 
   const handleClearLocalStorage = () => {
-    // Usar setTimeout para evitar problemas com message channel
-    setTimeout(() => {
-      if (confirm('Tem certeza que deseja limpar todo o localStorage? Isso irá apagar todas as configurações e pontuações.')) {
-        clearAllLocalStorage();
-        window.location.reload();
-      }
-    }, 0);
+    // Usar uma abordagem mais segura para evitar problemas com message channel
+    const shouldClear = window.confirm('Tem certeza que deseja limpar todo o localStorage? Isso irá apagar todas as configurações e pontuações.');
+    if (shouldClear) {
+      clearAllLocalStorage();
+      window.location.reload();
+    }
   };
 
   const handleUpdateTeams = async (teams: Team[]) => {

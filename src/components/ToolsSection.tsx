@@ -29,7 +29,6 @@ export const ToolsSection: React.FC<ToolsSectionProps> = ({
                     <span className="tool-icon">🗑️</span>
                     <span>Limpar LocalStorage</span>
                 </button>
-
             </div>
 
             <div className="shortcuts-info">

@@ -1,32 +1,32 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { AppState } from '../types';
 import type { Noticia, NoticiaEstado, NoticiasExtraordinariasData } from '../types/noticiasExtraordinarias';
 import { carregarNoticiasExtraordinarias } from '../utils/noticiasExtraordinariasLoader';
 import { saveNoticiasExtraordinariasScore, removeNoticiasExtraordinariasScore } from '../utils/scoreStorage';
 import { STORAGE_KEYS } from '../constants';
 import { BackButton } from '../components/common/BackButton';
-import { TeamSelector } from '../components/common/TeamSelector';
-import { VerdadeButton } from '../components/common/VerdadeButton';
-import { MentiraButton } from '../components/common/MentiraButton';
-import { ResultadoStatus } from '../components/common/ResultadoStatus';
-import { soundManager } from '../utils/soundManager';
+import { NoticiasExtraordinariasModal } from '../components/NoticiasExtraordinariasModal';
 import '../styles/NoticiasExtraordinarias.css';
 
-interface Props {
+interface NoticiasExtraordinariasProps {
     gameState: AppState & { syncPoints?: () => void };
     addGamePoints: (gameId: string, teamId: 'A' | 'B', points: number) => void;
     addPoints: (teamId: 'A' | 'B', points: number) => void;
 }
 
-export const NoticiasExtraordinarias: React.FC<Props> = ({ gameState, addGamePoints, addPoints }) => {
+export const NoticiasExtraordinarias: React.FC<NoticiasExtraordinariasProps> = ({
+    gameState,
+    addGamePoints,
+    addPoints
+}) => {
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [dados, setDados] = useState<NoticiasExtraordinariasData | null>(null);
     const [estados, setEstados] = useState<NoticiaEstado[]>([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [noticiaSelecionada, setNoticiaSelecionada] = useState<Noticia | null>(null);
-    const [timeSelecionado, setTimeSelecionado] = useState<'A' | 'B' | ''>('');
-    const [palpite, setPalpite] = useState<boolean | null>(null);
-    const [resultado, setResultado] = useState<'acerto' | 'erro' | null>(null);
+
 
     useEffect(() => {
         let mounted = true;
@@ -67,88 +67,54 @@ export const NoticiasExtraordinarias: React.FC<Props> = ({ gameState, addGamePoi
         if (estados.length) localStorage.setItem(STORAGE_KEYS.NOTICIAS_EXTRAORDINARIAS_ESTADOS, JSON.stringify(estados));
     }, [estados]);
 
+    // Lógica de ESC: se modal aberto fecha modal, senão volta ao dashboard
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                if (modalOpen) {
+                    setModalOpen(false);
+                } else {
+                    navigate('/');
+                }
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [modalOpen, navigate]);
+
     const handleCardClick = (noticia: Noticia) => {
         setNoticiaSelecionada(noticia);
-
-        // Verificar se a notícia já foi lida e carregar seu estado
-        const estadoExistente = estados.find(e => e.id === noticia.id);
-
-        if (estadoExistente?.lida) {
-            // Notícia já foi lida - carregar estado salvo
-            setTimeSelecionado(estadoExistente.timeAdivinhador || '');
-            setPalpite(estadoExistente.respostaEscolhida || null);
-            setResultado(estadoExistente.acertou ? 'acerto' : 'erro');
-        } else {
-            // Nova notícia - resetar estados
-            setTimeSelecionado('');
-            setPalpite(null);
-            setResultado(null);
-        }
-
         setModalOpen(true);
     };
 
-    const handlePalpite = (respostaEscolhida: boolean) => {
-        if (!noticiaSelecionada) return;
+    const handleSalvarPontuacao = (timeId: 'A' | 'B', pontos: number, novoEstado: NoticiaEstado) => {
+        if (!noticiaSelecionada || !dados) return;
 
-        setPalpite(respostaEscolhida);
-        const acertou = respostaEscolhida === noticiaSelecionada.resposta;
-        setResultado(acertou ? 'acerto' : 'erro');
+        // Adicionar pontos ao time
+        addGamePoints('noticias-extraordinarias', timeId, pontos);
+        addPoints(timeId, pontos);
 
-        // Tocar som apropriado
-        if (acertou) {
-            soundManager.playSuccessSound();
-        } else {
-            soundManager.playErrorSound();
-        }
-    };
-
-    const handleSalvarPontuacao = () => {
-        if (!noticiaSelecionada || !timeSelecionado || !dados || resultado === null) return;
-
-        const acertou = resultado === 'acerto';
-        const pontos = acertou ? dados.pontuacao.acerto : 0;
-
-        if (acertou) {
-            addGamePoints('noticias-extraordinarias', timeSelecionado, pontos);
-            addPoints(timeSelecionado, pontos);
-        }
-
-        // Salvar pontuação detalhada
+        // Salvar score detalhado
         const scoreEntry = {
             noticiaId: noticiaSelecionada.id,
             manchete: noticiaSelecionada.manchete,
-            timeAdivinhador: timeSelecionado,
-            respostaEscolhida: palpite!,
+            timeAdivinhador: timeId,
+            respostaEscolhida: novoEstado.respostaEscolhida!,
             respostaCorreta: noticiaSelecionada.resposta,
-            acertou,
+            acertou: novoEstado.acertou!,
             pontos,
             timestamp: Date.now()
         };
         saveNoticiasExtraordinariasScore(scoreEntry);
 
         // Atualizar estado da notícia
-        const novoEstado: NoticiaEstado = {
-            id: noticiaSelecionada.id,
-            lida: true,
-            timeAdivinhador: timeSelecionado,
-            respostaEscolhida: palpite!,
-            acertou,
-            pontuacaoSalva: true
-        };
-
         setEstados(prev => prev.map(e => e.id === noticiaSelecionada.id ? novoEstado : e));
 
-        // Sincronizar pontos
+        // Sincronizar pontos para atualizar o placar geral
         if (gameState.syncPoints) {
             gameState.syncPoints();
         }
-
-        // Limpar estados do modal
-        setPalpite(null);
-        setResultado(null);
-        setTimeSelecionado('');
-        setNoticiaSelecionada(null);
 
         // Fechar modal
         setModalOpen(false);
@@ -255,74 +221,19 @@ export const NoticiasExtraordinarias: React.FC<Props> = ({ gameState, addGamePoi
 
             {/* Modal da notícia */}
             {modalOpen && noticiaSelecionada && (
-                <div className="modal-overlay" onClick={() => setModalOpen(false)}>
-                    <div className="modal-content jornal-style" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2>📰 Manchete #{noticiaSelecionada.id}</h2>
-                            <button className="close-button" onClick={() => setModalOpen(false)}>×</button>
-                        </div>
-
-                        <div className="modal-body">
-                            <div className="manchete">
-                                <h3>{noticiaSelecionada.manchete}</h3>
-                            </div>
-
-                            <div className="subtitulo">
-                                <p>{noticiaSelecionada.subtitulo}</p>
-                            </div>
-
-                            <div className="controles">
-                                <div className="time-selector">
-                                    <TeamSelector
-                                        teams={gameState.teams}
-                                        value={timeSelecionado}
-                                        onChange={(value) => setTimeSelecionado(value)}
-                                    />
-                                </div>
-
-                                {!palpite && !resultado && (
-                                    <div className="palpite-buttons">
-                                        <VerdadeButton
-                                            onClick={() => handlePalpite(true)}
-                                            disabled={!timeSelecionado}
-                                        />
-                                        <MentiraButton
-                                            onClick={() => handlePalpite(false)}
-                                            disabled={!timeSelecionado}
-                                        />
-                                    </div>
-                                )}
-
-                                {resultado && (
-                                    <ResultadoStatus
-                                        resultado={resultado}
-                                        pontos={resultado === 'acerto' ? (dados?.pontuacao.acerto || 0) : 0}
-                                        showPontuacao={false}
-                                    />
-                                )}
-
-                                <div className="modal-actions">
-                                    {resultado && (
-                                        <>
-                                            <button className="reset-btn" onClick={() => {
-                                                setPalpite(null);
-                                                setResultado(null);
-                                                setTimeSelecionado('');
-                                            }}>
-                                                🔄 Resetar
-                                            </button>
-                                            {!estados.find(e => e.id === noticiaSelecionada.id)?.pontuacaoSalva && (
-                                                <button className="save-btn" onClick={handleSalvarPontuacao}>
-                                                    💾 Salvar Pontos
-                                                </button>
-                                            )}
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <NoticiasExtraordinariasModal
+                    isOpen={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    noticia={noticiaSelecionada}
+                    estado={estados.find(e => e.id === noticiaSelecionada.id) || null}
+                    teams={gameState.teams}
+                    pontuacao={{
+                        acerto: dados?.pontuacao.acerto || 0,
+                        erro: 0
+                    }}
+                    onSalvar={handleSalvarPontuacao}
+                    onResetar={() => handleResetarPontuacao(noticiaSelecionada.id)}
+                />
             )}
         </div>
     );

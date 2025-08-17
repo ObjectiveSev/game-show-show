@@ -1,0 +1,145 @@
+/* Noticias Extraordinarias Modal Styles */
+.modal-config-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.noticia-content {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    height: 100%;
+}
+
+.manchete {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 8px 25px rgba(30, 58, 138, 0.3);
+}
+
+.manchete h3 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    line-height: 1.3;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.subtitulo {
+    text-align: center;
+    padding: 15px 20px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    border-radius: 12px;
+    color: #1e40af;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.subtitulo p {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    font-family: 'Merriweather', serif;
+    line-height: 1.4;
+}
+
+.controles {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+}
+
+.palpite-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+.reset-btn,
+.save-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 140px;
+    backdrop-filter: blur(10px);
+}
+
+.reset-btn {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+    color: white;
+    border: 2px solid rgba(107, 114, 128, 0.3);
+}
+
+.reset-btn:hover {
+    background: linear-gradient(135deg, #4b5563, #374151);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(107, 114, 128, 0.4);
+}
+
+.save-btn {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: 2px solid rgba(59, 130, 246, 0.3);
+}
+
+.save-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+.save-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .manchete h3 {
+        font-size: 1.5rem;
+    }
+
+    .subtitulo {
+        max-height: 150px;
+    }
+
+    .subtitulo p {
+        font-size: 1rem;
+    }
+
+    .palpite-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .reset-btn,
+    .save-btn {
+        width: 100%;
+    }
+}

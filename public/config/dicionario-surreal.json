@@ -12,12 +12,12 @@
                 {
                     "id": "d1",
                     "texto": "O que o Patolino costuma fazer, salivar em excesso, cuspir",
-                    "dica": "Ônus de 2 pontos se não escolher a resposta em 10 segundos"
+                    "dica": "Bônus de 5 pontos se todos os participantes falarem que nem o Patolino até o final desse game"
                 },
                 {
                     "id": "d2",
                     "texto": "Que faz referência à meretriz, retirar ou remover recém cônjuge da zona ou ofício do meretrício",
-                    "dica": "Bônus de 5 pontos"
+                    "dica": "Ônus de 2 pontos se não escolher a resposta em 10 segundos "
                 },
                 {
                     "id": "d3",
@@ -44,7 +44,7 @@
                 {
                     "id": "d3",
                     "texto": "Gíria de origem grega para aquele que sente uma atração sexual patológica por crianças",
-                    "dica": "Ônus de 1 ponto"
+                    "dica": "Ônus de 10 ponto se não falarem que nem o bode do deu a louca na chapeuzinho até o final desse game"
                 }
             ]
         },

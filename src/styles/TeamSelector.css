@@ -1,0 +1,51 @@
+/* Team Selector Component */
+.team-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+    align-items: center;
+    justify-content: center;
+}
+
+.team-selector-label {
+    font-size: 1rem;
+    opacity: 0.9;
+    color: #333;
+    margin: 0;
+    text-align: center;
+    font-weight: normal;
+}
+
+.team-selector-dropdown {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    font-size: 0.95rem;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 200px;
+}
+
+.team-selector-dropdown:hover {
+    border-color: #bbb;
+}
+
+.team-selector-dropdown:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.team-selector-dropdown option {
+    padding: 8px;
+    background: white;
+    color: #333;
+}
+
+.team-selector-dropdown option:first-child {
+    color: #666;
+    font-style: italic;
+}
