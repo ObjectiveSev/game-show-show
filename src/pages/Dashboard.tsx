@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-
-import { ScoreDisplay } from '../components/ScoreDisplay';
 import { GamesList } from '../components/GamesList';
+import { ScoreDisplay } from '../components/ScoreDisplay';
 import { ToolsSection } from '../components/ToolsSection';
 import { carregarConfiguracaoJogos } from '../utils/gamesLoader';
 import type { GamesConfig } from '../types/games';
 import type { Team } from '../types';
+import '../styles/Dashboard.css';
 
 interface DashboardProps {
     onOpenScoreboard: () => void;

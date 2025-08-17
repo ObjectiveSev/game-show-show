@@ -9,6 +9,7 @@ import { TeamSelector } from '../components/common/TeamSelector';
 import { VerdadeButton } from '../components/common/VerdadeButton';
 import { MentiraButton } from '../components/common/MentiraButton';
 import { ResultadoStatus } from '../components/common/ResultadoStatus';
+import { soundManager } from '../utils/soundManager';
 import '../styles/NoticiasExtraordinarias.css';
 
 interface Props {
@@ -53,6 +54,8 @@ export const NoticiasExtraordinarias: React.FC<Props> = ({ gameState, addGamePoi
                 } catch {
                     setEstados(base);
                 }
+            } catch (error) {
+                console.error('❌ Erro ao carregar notícias:', error);
             } finally {
                 if (mounted) setLoading(false);
             }
@@ -91,6 +94,13 @@ export const NoticiasExtraordinarias: React.FC<Props> = ({ gameState, addGamePoi
         setPalpite(respostaEscolhida);
         const acertou = respostaEscolhida === noticiaSelecionada.resposta;
         setResultado(acertou ? 'acerto' : 'erro');
+
+        // Tocar som apropriado
+        if (acertou) {
+            soundManager.playSuccessSound();
+        } else {
+            soundManager.playErrorSound();
+        }
     };
 
     const handleSalvarPontuacao = () => {

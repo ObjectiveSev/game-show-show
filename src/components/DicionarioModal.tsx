@@ -3,6 +3,7 @@ import type { DicionarioPalavra, PalavraEstado } from '../types/dicionarioSurrea
 import type { Team } from '../types';
 import { TeamSelector } from './common/TeamSelector';
 import { HostControls } from './common/HostControls';
+import { soundManager } from '../utils/soundManager';
 import '../styles/TextoModal.css';
 
 interface Props {
@@ -128,6 +129,11 @@ export const DicionarioModal: React.FC<Props> = ({ isOpen, onClose, palavra, est
                                                     const dicasCount = estado.dicasAbertas.filter(Boolean).length;
                                                     const base = pontuacao.baseAcerto + dicasCount * pontuacao.pontosPorDica;
                                                     setPontosAtuais(ok ? base : -base);
+                                                    if (ok) {
+                                                        soundManager.playSuccessSound();
+                                                    } else {
+                                                        soundManager.playErrorSound();
+                                                    }
                                                 }}
                                             >
                                                 ✅ Selecionar

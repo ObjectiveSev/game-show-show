@@ -38,7 +38,7 @@ function App() {
         window.location.href = '/dicionario-surreal';
         break;
       case 'painelistas-excentricos':
-        window.location.href = '/painelistas';
+        window.location.href = '/painelistas-excentricos';
         break;
       case 'noticias-extraordinarias':
         window.location.href = '/noticias-extraordinarias';
@@ -97,7 +97,7 @@ function App() {
               addPoints={addPoints}
             />
           } />
-          <Route path="/painelistas" element={
+          <Route path="/painelistas-excentricos" element={
             <Painelistas
               gameState={{ ...gameState, syncPoints }}
               addGamePoints={addGamePoints}

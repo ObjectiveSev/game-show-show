@@ -7,6 +7,7 @@ import type { DicionarioPalavra, PalavraEstado, DicionarioData } from '../types/
 import type { AppState } from '../types';
 import { STORAGE_KEYS } from '../constants';
 import '../styles/TextoModal.css';
+import { soundManager } from '../utils/soundManager';
 
 interface Props {
     gameState: AppState;
@@ -129,6 +130,9 @@ export const DicionarioSurreal: React.FC<Props> = ({ gameState, addGamePoints, a
                             timestamp: Date.now()
                         });
                     }
+
+                    // Tocar som de sucesso
+                    soundManager.playSuccessSound();
 
                     // Fechar modal após salvar
                     setModalAberto(false);

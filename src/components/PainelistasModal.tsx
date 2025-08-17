@@ -4,6 +4,7 @@ import { BaseModal } from './common/BaseModal';
 import { VerdadeButton } from './common/VerdadeButton';
 import { MentiraButton } from './common/MentiraButton';
 import { ResultadoStatus } from './common/ResultadoStatus';
+import { soundManager } from '../utils/soundManager';
 import '../styles/PainelistasModal.css';
 
 interface PainelistasModalProps {
@@ -55,6 +56,13 @@ export const PainelistasModal: React.FC<PainelistasModalProps> = ({
         setPalpite(tipo);
         const acertou = tipo === (fato?.verdadeiro ? 'verdade' : 'mentira');
         setResultado(acertou ? 'acerto' : 'erro');
+
+        // Tocar som apropriado
+        if (acertou) {
+            soundManager.playSuccessSound();
+        } else {
+            soundManager.playErrorSound();
+        }
 
         // Calcular pontos baseado no resultado
         const pontos = acertou ? 4 : 0; // Pontos padrão, pode ser configurável
