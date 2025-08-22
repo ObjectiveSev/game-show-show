@@ -7,6 +7,7 @@ import { DicionarioSurreal } from './pages/DicionarioSurreal';
 import { Painelistas } from './pages/Painelistas';
 import { NoticiasExtraordinarias } from './pages/NoticiasExtraordinarias';
 import { CaroPraChuchu } from './pages/CaroPraChuchu';
+import { OvoOuGalinha } from './pages/OvoOuGalinha';
 import { PlacarDetalhado } from './pages/PlacarDetalhado';
 import { SettingsModal } from './components/SettingsModal';
 import { clearAllLocalStorage } from './utils/fileSystem';
@@ -46,6 +47,9 @@ function App() {
         break;
       case 'caro-pra-chuchu':
         window.location.href = '/caro-pra-chuchu';
+        break;
+      case 'ovo-ou-galinha':
+        window.location.href = '/ovo-ou-galinha';
         break;
       default:
         alert(`Jogo "${gameId}" será implementado em breve!`);
@@ -125,6 +129,9 @@ function App() {
               addGamePoints={addGamePoints}
               addPoints={addPoints}
             />
+          } />
+          <Route path="/ovo-ou-galinha" element={
+            <OvoOuGalinha />
           } />
           <Route path="/placar-detalhado" element={
             <PlacarDetalhado gameState={gameState} />

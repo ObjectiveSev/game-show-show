@@ -260,9 +260,9 @@
 .def-item {
     margin-bottom: 20px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.15);
+    background: white;
     border-radius: 12px;
-    border: 2px solid transparent;
+    border: 2px solid #e9ecef;
     transition: all 0.2s ease;
     user-select: none;
     -webkit-user-select: none;
@@ -272,22 +272,25 @@
 }
 
 .def-item:hover {
-    background: rgba(255, 255, 255, 0.18);
+    background: #f8f9fa;
+    border-color: #4f46e5;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .def-item.selected {
-    border-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2) inset;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) inset;
 }
 
 .def-item.def-correct {
-    border-color: rgba(34, 197, 94, 0.8);
-    background: rgba(34, 197, 94, 0.15);
+    border-color: #22c55e;
+    background: white;
 }
 
 .def-item.def-incorrect {
-    border-color: rgba(239, 68, 68, 0.8);
-    background: rgba(239, 68, 68, 0.12);
+    border-color: #ef4444;
+    background: white;
 }
 
 /* Estilo para dicas abertas */

@@ -1,0 +1,158 @@
+.ovo-ou-galinha-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    color: white;
+}
+
+.page-header {
+    position: relative;
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 40px 20px;
+}
+
+.page-header .back-button {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+}
+
+.header-content {
+    flex: 1;
+    text-align: center;
+}
+
+.header-content h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.header-content p {
+    font-size: 1.2rem;
+    margin: 0;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.trios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.trio-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    color: #1f2937;
+    position: relative;
+    overflow: hidden;
+}
+
+.trio-card:hover {
+    transform: translateY(-5px);
+    border-color: #4f46e5;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.trio-card.completado {
+    border-color: #bbf7d0;
+    background: white;
+}
+
+.trio-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.trio-header h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0 0 15px 0;
+    color: #1f2937;
+}
+
+
+
+.trio-status {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.status-respondido-tag {
+    background: #dcfce7;
+    color: #166534;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    border: 1px solid #bbf7d0;
+}
+
+.status-pendente-tag {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    border: 1px solid #fde68a;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .ovo-ou-galinha-page {
+        padding: 16px;
+    }
+
+    .page-header {
+        padding: 30px 16px;
+    }
+
+    .header-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .trios-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .trio-card {
+        padding: 20px;
+    }
+
+    .trio-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+
+}

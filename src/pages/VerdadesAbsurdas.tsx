@@ -7,7 +7,6 @@ import type { VerdadeAbsurda, TextoEstado } from '../types/verdadesAbsurdas';
 import type { Team } from '../types';
 import { STORAGE_KEYS } from '../constants';
 import '../styles/VerdadesAbsurdas.css';
-import { soundManager } from '../utils/soundManager';
 
 interface VerdadesAbsurdasProps {
     gameState: {
@@ -185,13 +184,6 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
         if (gameState.syncPoints) {
             gameState.syncPoints();
         }
-
-        // Nota: Para remover pontos dos placares, seria necessário
-        // armazenar os pontos no estado ou buscar do localStorage
-        // Por enquanto, apenas removemos a pontuação específica
-
-        // Tocar som de erro
-        soundManager.playErrorSound();
     };
 
     // Próximo texto removido por design atual; fechamento via handleCloseModal

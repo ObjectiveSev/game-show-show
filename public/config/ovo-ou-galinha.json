@@ -1,0 +1,207 @@
+{
+    "trios": [
+        {
+            "id": 1,
+            "events": [
+                {
+                    "id": "1a",
+                    "text": "Invenção da máquina de lavar roupa",
+                    "year": 1797
+                },
+                {
+                    "id": "1b",
+                    "text": "Primeiro voo dos irmãos Wright",
+                    "year": 1903
+                },
+                {
+                    "id": "1c",
+                    "text": "Invenção do abridor de latas",
+                    "year": 1858
+                }
+            ],
+            "ordem": [
+                "1a",
+                "1c",
+                "1b"
+            ]
+        },
+        {
+            "id": 2,
+            "events": [
+                {
+                    "id": "2a",
+                    "text": "Lançamento do Nintendo Game Boy",
+                    "year": 1989
+                },
+                {
+                    "id": "2b",
+                    "text": "Estreia do filme \"E.T.\"",
+                    "year": 1982
+                },
+                {
+                    "id": "2c",
+                    "text": "Estreia de \"He-Man\" na TV",
+                    "year": 1983
+                }
+            ],
+            "ordem": [
+                "2b",
+                "2c",
+                "2a"
+            ]
+        },
+        {
+            "id": 3,
+            "events": [
+                {
+                    "id": "3a",
+                    "text": "Construção da Muralha da China iniciada",
+                    "year": -220
+                },
+                {
+                    "id": "3b",
+                    "text": "Construção das Pirâmides de Gizé",
+                    "year": -2580
+                },
+                {
+                    "id": "3c",
+                    "text": "Fundação de Roma",
+                    "year": -753
+                }
+            ],
+            "ordem": [
+                "3b",
+                "3c",
+                "3a"
+            ]
+        },
+        {
+            "id": 4,
+            "events": [
+                {
+                    "id": "4a",
+                    "text": "Guerra dos Sete Anos",
+                    "year": 1756
+                },
+                {
+                    "id": "4b",
+                    "text": "Guerra Anglo-Americana",
+                    "year": 1812
+                },
+                {
+                    "id": "4c",
+                    "text": "Guerra do Paraguai",
+                    "year": 1864
+                }
+            ],
+            "ordem": [
+                "4a",
+                "4b",
+                "4c"
+            ]
+        },
+        {
+            "id": 5,
+            "events": [
+                {
+                    "id": "5a",
+                    "text": "Primeira Copa do Mundo de Futebol",
+                    "year": 1930
+                },
+                {
+                    "id": "5b",
+                    "text": "Invenção do basquete",
+                    "year": 1891
+                },
+                {
+                    "id": "5c",
+                    "text": "Criação do tênis moderno",
+                    "year": 1873
+                }
+            ],
+            "ordem": [
+                "5c",
+                "5b",
+                "5a"
+            ]
+        },
+        {
+            "id": 6,
+            "events": [
+                {
+                    "id": "6a",
+                    "text": "Magalhães chega às Filipinas",
+                    "year": 1521
+                },
+                {
+                    "id": "6b",
+                    "text": "Marco Polo chega à China",
+                    "year": 1275
+                },
+                {
+                    "id": "6c",
+                    "text": "Colombo chega às Américas",
+                    "year": 1492
+                }
+            ],
+            "ordem": [
+                "6b",
+                "6c",
+                "6a"
+            ]
+        },
+        {
+            "id": 7,
+            "events": [
+                {
+                    "id": "7a",
+                    "text": "Descoberta da penicilina",
+                    "year": 1928
+                },
+                {
+                    "id": "7b",
+                    "text": "Primeira cirurgia com anestesia",
+                    "year": 1846
+                },
+                {
+                    "id": "7c",
+                    "text": "Descoberta dos raios-X",
+                    "year": 1895
+                }
+            ],
+            "ordem": [
+                "7b",
+                "7c",
+                "7a"
+            ]
+        },
+        {
+            "id": 8,
+            "events": [
+                {
+                    "id": "8a",
+                    "text": "Invenção da roda",
+                    "year": -3500
+                },
+                {
+                    "id": "8b",
+                    "text": "Descoberta do fogo controlado",
+                    "year": -400000
+                },
+                {
+                    "id": "8c",
+                    "text": "Invenção da escrita",
+                    "year": -3200
+                }
+            ],
+            "ordem": [
+                "8b",
+                "8a",
+                "8c"
+            ]
+        }
+    ],
+    "pontuacao": {
+        "acerto": 2
+    }
+}
