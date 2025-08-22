@@ -26,7 +26,7 @@ export const DefaultCard: React.FC<DefaultCardProps> = ({
     className = ''
 }) => {
     const handleCardClick = () => {
-        if (onClick && !button?.onClick) {
+        if (onClick) {
             onClick();
         }
     };
