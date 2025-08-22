@@ -153,12 +153,12 @@ export const NoticiasExtraordinarias: React.FC<NoticiasExtraordinariasProps> = (
                             key={noticia.id}
                             title={`Notícia #${noticia.id}`}
                             tags={
-                                lida 
+                                lida
                                     ? [TagType.READ, estado?.acertou ? TagType.CORRECT : TagType.ERROR]
                                     : [TagType.PENDING]
                             }
                             body={
-                                lida 
+                                lida
                                     ? (estado?.timeAdivinhador === 'A'
                                         ? (gameState.teams.teamA.name || 'Time A')
                                         : (gameState.teams.teamB.name || 'Time B')
@@ -166,7 +166,7 @@ export const NoticiasExtraordinarias: React.FC<NoticiasExtraordinariasProps> = (
                                     : undefined
                             }
                             button={
-                                lida 
+                                lida
                                     ? {
                                         text: 'Resetar',
                                         icon: '🔄',

@@ -16,15 +16,15 @@ const TAG_CONFIGS = {
     },
     [TagType.ERROR]: {
         text: 'Errou',
-        backgroundColor: '#dc3545',
-        textColor: 'white',
+        backgroundColor: '#f8d7da',
+        textColor: '#721c24',
         icon: '❌'
     },
     [TagType.READ]: {
         text: 'Lida',
         backgroundColor: '#87ceeb',
         textColor: 'white',
-        icon: '✅'
+        icon: '📖'
     },
     [TagType.CORRECT]: {
         text: 'Acertou',
@@ -39,7 +39,7 @@ export const Tag: React.FC<TagProps> = ({
     className = ''
 }) => {
     const config = TAG_CONFIGS[type];
-    
+
     return (
         <span
             className={`tag ${className}`}
