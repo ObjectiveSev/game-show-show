@@ -87,37 +87,7 @@
     justify-content: center;
 }
 
-.status-lida,
-.status-acerto,
-.status-erro,
-.status-pendente {
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-align: center;
-    min-width: 80px;
-}
 
-.status-lida {
-    background: #28a745;
-    color: white;
-}
-
-.status-acerto {
-    background: #28a745;
-    color: white;
-}
-
-.status-erro {
-    background: #dc3545;
-    color: white;
-}
-
-.status-pendente {
-    background: #ffc107;
-    color: #333;
-}
 
 /* Informações do resultado */
 .status-indicator {

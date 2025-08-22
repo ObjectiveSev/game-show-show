@@ -84,4 +84,21 @@ export interface GameConfig {
         allowNegative: boolean;
         maxPoints: number;
     };
+}
+
+export const TagType = {
+    PENDING: 'pending',
+    ERROR: 'error',
+    READ: 'read',
+    CORRECT: 'correct'
+} as const;
+
+export type TagType = typeof TagType[keyof typeof TagType];
+
+export interface TagConfig {
+    type: TagType;
+    text: string;
+    backgroundColor: string;
+    textColor: string;
+    icon: string;
 } 

@@ -1,0 +1,74 @@
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+    min-width: 80px;
+    transition: all 0.2s ease;
+    cursor: default;
+    user-select: none;
+}
+
+.tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.tag-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+.tag-text {
+    white-space: nowrap;
+}
+
+/* Variantes de cores comuns */
+.tag.tag-success {
+    background: #28a745 !important;
+    color: white !important;
+}
+
+.tag.tag-error {
+    background: #dc3545 !important;
+    color: white !important;
+}
+
+.tag.tag-warning {
+    background: #ffc107 !important;
+    color: #333 !important;
+}
+
+.tag.tag-info {
+    background: #17a2b8 !important;
+    color: white !important;
+}
+
+.tag.tag-primary {
+    background: #007bff !important;
+    color: white !important;
+}
+
+.tag.tag-secondary {
+    background: #6c757d !important;
+    color: white !important;
+}
+
+/* Responsividade */
+@media (max-width: 640px) {
+    .tag {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+        min-width: 70px;
+    }
+
+    .tag-icon {
+        font-size: 0.8rem;
+    }
+}

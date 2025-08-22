@@ -7,6 +7,8 @@ import { saveNoticiasExtraordinariasScore, removeNoticiasExtraordinariasScore } 
 import { STORAGE_KEYS } from '../constants';
 import { BackButton } from '../components/common/BackButton';
 import { NoticiasExtraordinariasModal } from '../components/NoticiasExtraordinariasModal';
+import { DefaultCard } from '../components/common/DefaultCard';
+import { TagType } from '../types';
 import '../styles/NoticiasExtraordinarias.css';
 
 interface NoticiasExtraordinariasProps {
@@ -147,50 +149,36 @@ export const NoticiasExtraordinarias: React.FC<NoticiasExtraordinariasProps> = (
                     const lida = estado?.lida || false;
 
                     return (
-                        <div
+                        <DefaultCard
                             key={noticia.id}
-                            className={`noticia-card ${lida ? 'lida' : ''}`}
-                            onClick={() => handleCardClick(noticia)}
-                        >
-                            <div className="card-header">
-                                <h3>Notícia #{noticia.id}</h3>
-                                <div className="status-indicator">
-                                    {lida ? (
-                                        <>
-                                            <span className="status-lida">✅ Lida</span>
-                                            <span className={`status-${estado?.acertou ? 'acerto' : 'erro'}`}>
-                                                {estado?.acertou ? '✅ Acertou' : '❌ Errou'}
-                                            </span>
-                                        </>
-                                    ) : (
-                                        <span className="status-pendente">⏳ Pendente</span>
-                                    )}
-                                </div>
-                            </div>
-
-                            {lida && (
-                                <div className="time-info">
-                                    <span>
-                                        {estado?.timeAdivinhador === 'A'
-                                            ? (gameState.teams.teamA.name || 'Time A')
-                                            : (gameState.teams.teamB.name || 'Time B')
+                            title={`Notícia #${noticia.id}`}
+                            tags={
+                                lida 
+                                    ? [TagType.READ, estado?.acertou ? TagType.CORRECT : TagType.ERROR]
+                                    : [TagType.PENDING]
+                            }
+                            body={
+                                lida 
+                                    ? (estado?.timeAdivinhador === 'A'
+                                        ? (gameState.teams.teamA.name || 'Time A')
+                                        : (gameState.teams.teamB.name || 'Time B')
+                                    )
+                                    : undefined
+                            }
+                            button={
+                                lida 
+                                    ? {
+                                        text: 'Resetar',
+                                        icon: '🔄',
+                                        onClick: (e) => {
+                                            e.stopPropagation();
+                                            handleResetarPontuacao(noticia.id);
                                         }
-                                    </span>
-                                </div>
-                            )}
-
-                            {lida && (
-                                <button
-                                    className="resetar-btn"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleResetarPontuacao(noticia.id);
-                                    }}
-                                >
-                                    🔄 Resetar
-                                </button>
-                            )}
-                        </div>
+                                    }
+                                    : undefined
+                            }
+                            onClick={() => handleCardClick(noticia)}
+                        />
                     );
                 })}
             </div>
