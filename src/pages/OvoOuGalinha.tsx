@@ -5,7 +5,9 @@ import { OvoOuGalinhaModal } from '../components/OvoOuGalinhaModal';
 import { DefaultCard } from '../components/common/DefaultCard';
 import { useGameState } from '../hooks/useGameState';
 import { carregarOvoOuGalinha } from '../utils/ovoOuGalinhaLoader';
-import type { OvoOuGalinhaTrio, OvoOuGalinhaConfig } from '../types/ovoOuGalinha';
+import { saveOvoOuGalinhaScore, removeOvoOuGalinhaScore } from '../utils/scoreStorage';
+import { STORAGE_KEYS } from '../constants';
+import type { OvoOuGalinhaTrio, OvoOuGalinhaConfig, OvoOuGalinhaScoreEntry } from '../types/ovoOuGalinha';
 import { TagType } from '../types';
 import '../styles/OvoOuGalinha.css';
 import '../styles/OvoOuGalinhaModal.css';
@@ -16,7 +18,8 @@ export const OvoOuGalinha: React.FC = () => {
     const [config, setConfig] = useState<OvoOuGalinhaConfig | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [trioSelecionado, setTrioSelecionado] = useState<OvoOuGalinhaTrio | null>(null);
-    const [triosCompletados, setTriosCompletados] = useState<number[]>([]);
+
+    const [estadosTrios, setEstadosTrios] = useState<Map<number, { acertou: boolean; timeAdivinhador: string }>>(new Map());
 
     useEffect(() => {
         const carregarConfig = async () => {
@@ -30,7 +33,29 @@ export const OvoOuGalinha: React.FC = () => {
             }
         };
 
+        const carregarEstados = () => {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEYS.OVO_OU_GALINHA_SCORES);
+                if (raw) {
+                    const scores: OvoOuGalinhaScoreEntry[] = JSON.parse(raw);
+                    const novosEstados = new Map();
+
+                    scores.forEach(score => {
+                        novosEstados.set(score.trioId, {
+                            acertou: score.pontos > 0,
+                            timeAdivinhador: score.timeAdivinhador
+                        });
+                    });
+
+                    setEstadosTrios(novosEstados);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estados:', error);
+            }
+        };
+
         carregarConfig();
+        carregarEstados();
     }, []);
 
     useEffect(() => {
@@ -51,8 +76,6 @@ export const OvoOuGalinha: React.FC = () => {
 
     const handleTrioClick = (trio: OvoOuGalinhaTrio) => {
         try {
-            if (triosCompletados.includes(trio.id)) return;
-
             setTrioSelecionado(trio);
             setModalOpen(true);
         } catch (error) {
@@ -60,17 +83,49 @@ export const OvoOuGalinha: React.FC = () => {
         }
     };
 
-    const handleConfirmar = (trioId: number, _timeSelecionado: string, acertou: boolean) => {
+    const handleConfirmar = (trioId: number, timeSelecionado: string, acertou: boolean) => {
         try {
-            if (acertou) {
-                // Adicionar aos trios completados
-                setTriosCompletados(prev => [...prev, trioId]);
+            // Salvar score no localStorage
+            const scoreEntry: OvoOuGalinhaScoreEntry = {
+                trioId,
+                timeAdivinhador: timeSelecionado,
+                pontos: acertou ? (config?.pontuacao.acerto || 2) : 0,
+                timestamp: Date.now()
+            };
 
-                // Sincronizar pontos
-                syncPoints();
-            }
+            saveOvoOuGalinhaScore(scoreEntry);
+
+            // Atualizar estado local
+            setEstadosTrios(prev => new Map(prev).set(trioId, {
+                acertou,
+                timeAdivinhador: timeSelecionado
+            }));
+
+
+
+            // Sincronizar pontos
+            syncPoints();
         } catch (error) {
             console.error('Erro ao confirmar trio:', error);
+        }
+    };
+
+    const handleResetarTrio = (trioId: number) => {
+        try {
+            // Remover score do localStorage
+            removeOvoOuGalinhaScore(trioId);
+            
+            // Remover do estado local
+            setEstadosTrios(prev => {
+                const novosEstados = new Map(prev);
+                novosEstados.delete(trioId);
+                return novosEstados;
+            });
+            
+            // Sincronizar pontos
+            syncPoints();
+        } catch (error) {
+            console.error('Erro ao resetar trio:', error);
         }
     };
 
@@ -94,13 +149,38 @@ export const OvoOuGalinha: React.FC = () => {
 
             <div className="trios-grid">
                 {config.trios.map((trio) => {
-                    const completado = triosCompletados.includes(trio.id);
+                    const estado = estadosTrios.get(trio.id);
+                    const completado = estado !== undefined;
 
                     return (
                         <DefaultCard
                             key={trio.id}
                             title={`Trio #${trio.id}`}
-                            tags={[completado ? TagType.CORRECT : TagType.PENDING]}
+                            tags={
+                                completado
+                                    ? [TagType.READ, estado.acertou ? TagType.CORRECT : TagType.ERROR]
+                                    : [TagType.PENDING]
+                            }
+                            body={
+                                completado
+                                    ? (estado.timeAdivinhador === 'A'
+                                        ? (gameState.teams.teamA.name || 'Time A')
+                                        : (gameState.teams.teamB.name || 'Time B')
+                                    )
+                                    : undefined
+                            }
+                            button={
+                                completado
+                                    ? {
+                                        text: 'Resetar',
+                                        icon: '🔄',
+                                        onClick: (e) => {
+                                            e.stopPropagation();
+                                            handleResetarTrio(trio.id);
+                                        }
+                                    }
+                                    : undefined
+                            }
                             onClick={() => handleTrioClick(trio)}
                             className={completado ? 'completado' : ''}
                         />
@@ -118,6 +198,7 @@ export const OvoOuGalinha: React.FC = () => {
                     trio={trioSelecionado}
                     onConfirm={handleConfirmar}
                     gameState={gameState}
+                    estadoAtual={estadosTrios.get(trioSelecionado.id)}
                 />
             )}
         </div>

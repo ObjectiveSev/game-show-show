@@ -21,7 +21,9 @@ export const STORAGE_KEYS = {
     NOTICIAS_EXTRAORDINARIAS_ESTADOS: 'noticiasEstados',
     NOTICIAS_EXTRAORDINARIAS_SCORES: 'noticiasExtraordinariasScores',
     CARO_PRA_CHUCHU_ESTADOS: 'caroPraChuchuEstados',
-    CARO_PRA_CHUCHU_SCORES: 'caroPraChuchuScores'
+    CARO_PRA_CHUCHU_SCORES: 'caroPraChuchuScores',
+    OVO_OU_GALINHA_ESTADOS: 'ovoOuGalinhaEstados',
+    OVO_OU_GALINHA_SCORES: 'ovoOuGalinhaScores'
 } as const;
 
 // ============================================================================
@@ -35,7 +37,8 @@ export const API_ENDPOINTS = {
     DICIONARIO_SURREAL: '/config/dicionario-surreal.json',
     PAINELISTAS_EXCENTRICOS: '/config/painelistas-excentricos.json',
     NOTICIAS_EXTRAORDINARIAS: '/config/noticias-extraordinarias.json',
-    CARO_PRA_CHUCHU: '/config/caro-pra-chuchu.json'
+    CARO_PRA_CHUCHU: '/config/caro-pra-chuchu.json',
+    OVO_OU_GALINHA: '/config/ovo-ou-galinha.json'
 } as const;
 
 // ============================================================================

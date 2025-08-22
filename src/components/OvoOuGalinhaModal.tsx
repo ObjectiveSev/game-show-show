@@ -11,6 +11,7 @@ interface OvoOuGalinhaModalProps {
     trio: OvoOuGalinhaTrio;
     onConfirm: (trioId: number, timeSelecionado: string, acertou: boolean) => void;
     gameState: AppState;
+    estadoAtual?: { acertou: boolean; timeAdivinhador: string };
 }
 
 export const OvoOuGalinhaModal: React.FC<OvoOuGalinhaModalProps> = ({
@@ -18,7 +19,8 @@ export const OvoOuGalinhaModal: React.FC<OvoOuGalinhaModalProps> = ({
     onClose,
     trio,
     onConfirm,
-    gameState
+    gameState,
+    estadoAtual
 }) => {
     const [timeSelecionado, setTimeSelecionado] = useState<string>('');
     const [eventosOrdenados, setEventosOrdenados] = useState<OvoOuGalinhaEvent[]>([]);
@@ -37,6 +39,17 @@ export const OvoOuGalinhaModal: React.FC<OvoOuGalinhaModalProps> = ({
             setPontuacaoSalva(false);
         }
     }, [isOpen, trio]);
+
+    // Verificar se o trio já foi respondido
+    React.useEffect(() => {
+        if (isOpen && trio && estadoAtual) {
+            // Se o trio já foi respondido, mostrar o resultado
+            setTimeSelecionado(estadoAtual.timeAdivinhador);
+            setAcertou(estadoAtual.acertou);
+            setMostrarResultado(true);
+            setPontuacaoSalva(true);
+        }
+    }, [isOpen, trio, estadoAtual]);
 
     const handleDragStart = useCallback((index: number) => {
         setDragIndex(index);
@@ -88,10 +101,14 @@ export const OvoOuGalinhaModal: React.FC<OvoOuGalinhaModalProps> = ({
         try {
             onConfirm(trio.id, timeSelecionado, acertou);
             setPontuacaoSalva(true);
+            // Fechar o modal após salvar
+            setTimeout(() => {
+                onClose();
+            }, 500);
         } catch (error) {
             console.error('Erro ao salvar pontuação:', error);
         }
-    }, [trio.id, timeSelecionado, acertou, onConfirm]);
+    }, [trio.id, timeSelecionado, acertou, onConfirm, onClose]);
 
     const getEventoStyle = (index: number) => {
         let style: React.CSSProperties = {

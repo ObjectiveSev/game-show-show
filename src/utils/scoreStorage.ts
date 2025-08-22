@@ -3,6 +3,7 @@ import type { DicionarioScoreEntry } from '../types/dicionarioSurreal';
 import type { PainelistasScoreEntry, PainelistasPunicaoEntry } from '../types/painelistas';
 import type { NoticiasExtraordinariasScoreEntry } from '../types/noticiasExtraordinarias';
 import type { CaroPraChuchuScoreEntry } from '../types/caroPraChuchu';
+import type { OvoOuGalinhaScoreEntry } from '../types/ovoOuGalinha';
 import { STORAGE_KEYS } from '../constants';
 
 export const loadVerdadesAbsurdasScores = (): VerdadesAbsurdasScoreEntry[] => {
@@ -192,6 +193,48 @@ export const removeCaroPraChuchuScore = (itemId: string): void => {
         localStorage.setItem(STORAGE_KEYS.CARO_PRA_CHUCHU_SCORES, JSON.stringify(filtered));
     } catch (error) {
         console.error('Erro ao remover score do Caro Pra Chuchu:', error);
+    }
+};
+
+// ============================================================================
+// OVO OU A GALINHA SCORES
+// ============================================================================
+
+export const saveOvoOuGalinhaScore = (entry: OvoOuGalinhaScoreEntry): void => {
+    try {
+        const existing = loadOvoOuGalinhaScores();
+        existing.push(entry);
+        localStorage.setItem(STORAGE_KEYS.OVO_OU_GALINHA_SCORES, JSON.stringify(existing));
+    } catch (error) {
+        console.error('Erro ao salvar score do Ovo ou a Galinha:', error);
+    }
+};
+
+export const loadOvoOuGalinhaScores = (): OvoOuGalinhaScoreEntry[] => {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEYS.OVO_OU_GALINHA_SCORES);
+        return raw ? JSON.parse(raw) : [];
+    } catch (error) {
+        console.error('Erro ao carregar scores do Ovo ou a Galinha:', error);
+        return [];
+    }
+};
+
+export const removeOvoOuGalinhaScore = (trioId: number): void => {
+    try {
+        const existing = loadOvoOuGalinhaScores();
+        const filtered = existing.filter(score => score.trioId !== trioId);
+        localStorage.setItem(STORAGE_KEYS.OVO_OU_GALINHA_SCORES, JSON.stringify(filtered));
+    } catch (error) {
+        console.error('Erro ao remover score do Ovo ou a Galinha:', error);
+    }
+};
+
+export const clearOvoOuGalinhaScores = (): void => {
+    try {
+        localStorage.removeItem(STORAGE_KEYS.OVO_OU_GALINHA_SCORES);
+    } catch {
+        // Ignorar erros de localStorage
     }
 };
 
