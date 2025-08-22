@@ -8,6 +8,8 @@ import type { VerdadeAbsurda, TextoEstado } from '../types/verdadesAbsurdas';
 import type { Team } from '../types';
 import { TagType, ButtonType } from '../types';
 import { STORAGE_KEYS } from '../constants';
+import { loadVerdadesAbsurdasScores } from '../utils/scoreStorage';
+import { getTeamNameFromString } from '../utils/teamUtils';
 import '../styles/VerdadesAbsurdas.css';
 
 interface VerdadesAbsurdasProps {
@@ -33,6 +35,7 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
     const [modalAberto, setModalAberto] = useState(false);
     const [textoAtual, setTextoAtual] = useState<VerdadeAbsurda | null>(null);
     const [estadoAtual, setEstadoAtual] = useState<TextoEstado | null>(null);
+    const [scoresSalvos, setScoresSalvos] = useState<{ [key: string]: { timeLeitor: string; timeAdivinhador: string } }>({});
     const [pontuacaoConfig] = useState({
         acertoVerdade: 1,
         erroFalso: 1,
@@ -105,6 +108,25 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
             // Ignorar erros de localStorage
         }
     }, [estadosTextos]);
+
+    // Carregar scores salvos para mostrar quem respondeu
+    useEffect(() => {
+        try {
+            const scores = loadVerdadesAbsurdasScores();
+            const scoresMap: { [key: string]: { timeLeitor: string; timeAdivinhador: string } } = {};
+
+            scores.forEach(score => {
+                scoresMap[score.textoId] = {
+                    timeLeitor: score.timeLeitor,
+                    timeAdivinhador: score.timeAdivinhador
+                };
+            });
+
+            setScoresSalvos(scoresMap);
+        } catch (error) {
+            console.error('Erro ao carregar scores:', error);
+        }
+    }, []);
 
     const handleCardClick = (texto: VerdadeAbsurda) => {
         const estado = estadosTextos.find(e => e.id === texto.id);
@@ -226,11 +248,14 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
                         const estado = estadosTextos.find(e => e.id === texto.id);
                         const progresso = estado ? estado.verdadesEncontradas.length : 0;
 
+                        const scoreInfo = scoresSalvos[texto.id];
+
                         return (
                             <DefaultCard
                                 key={texto.id}
                                 title={estado?.lido ? texto.titulo : `Absurdo #${texto.id}`}
                                 tags={[estado?.lido ? TagType.READ : TagType.PENDING]}
+                                body={estado?.lido && scoreInfo ? `Respondido por: ${getTeamNameFromString(scoreInfo.timeLeitor, gameState.teams)}` : undefined}
                                 button={
                                     estado?.lido
                                         ? {
@@ -256,8 +281,6 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
                                         {progresso}/5 verdades encontradas
                                     </span>
                                 </div>
-
-
                             </DefaultCard>
                         );
                     })}

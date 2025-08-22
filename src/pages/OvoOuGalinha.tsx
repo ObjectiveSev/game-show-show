@@ -7,6 +7,7 @@ import { useGameState } from '../hooks/useGameState';
 import { carregarOvoOuGalinha } from '../utils/ovoOuGalinhaLoader';
 import { saveOvoOuGalinhaScore, removeOvoOuGalinhaScore } from '../utils/scoreStorage';
 import { STORAGE_KEYS } from '../constants';
+import { getTeamNameFromString } from '../utils/teamUtils';
 import type { OvoOuGalinhaTrio, OvoOuGalinhaConfig, OvoOuGalinhaScoreEntry } from '../types/ovoOuGalinha';
 import { TagType, ButtonType } from '../types';
 import '../styles/OvoOuGalinha.css';
@@ -163,10 +164,7 @@ export const OvoOuGalinha: React.FC = () => {
                             }
                             body={
                                 completado
-                                    ? (estado.timeAdivinhador === 'A'
-                                        ? (gameState.teams.teamA.name || 'Time A')
-                                        : (gameState.teams.teamB.name || 'Time B')
-                                    )
+                                    ? getTeamNameFromString(estado.timeAdivinhador, gameState.teams)
                                     : undefined
                             }
                             button={

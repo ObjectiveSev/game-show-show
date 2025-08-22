@@ -5,6 +5,7 @@ import type { Noticia, NoticiaEstado, NoticiasExtraordinariasData } from '../typ
 import { carregarNoticiasExtraordinarias } from '../utils/noticiasExtraordinariasLoader';
 import { saveNoticiasExtraordinariasScore, removeNoticiasExtraordinariasScore } from '../utils/scoreStorage';
 import { STORAGE_KEYS } from '../constants';
+import { getTeamNameFromString } from '../utils/teamUtils';
 import { BackButton } from '../components/common/BackButton';
 import { NoticiasExtraordinariasModal } from '../components/NoticiasExtraordinariasModal';
 import { DefaultCard } from '../components/common/DefaultCard';
@@ -159,10 +160,7 @@ export const NoticiasExtraordinarias: React.FC<NoticiasExtraordinariasProps> = (
                             }
                             body={
                                 lida
-                                    ? (estado?.timeAdivinhador === 'A'
-                                        ? (gameState.teams.teamA.name || 'Time A')
-                                        : (gameState.teams.teamB.name || 'Time B')
-                                    )
+                                    ? getTeamNameFromString(estado?.timeAdivinhador || '', gameState.teams)
                                     : undefined
                             }
                             button={

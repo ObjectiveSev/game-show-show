@@ -15,6 +15,7 @@ import { carregarVerdadesAbsurdas } from '../utils/verdadesAbsurdasLoader';
 import { carregarDicionarioSurreal } from '../utils/dicionarioLoader';
 import { carregarNoticiasExtraordinarias } from '../utils/noticiasExtraordinariasLoader';
 import { carregarConfiguracaoJogos } from '../utils/gamesLoader';
+import { getTeamNameFromString } from '../utils/teamUtils';
 import { BackButton } from '../components/common/BackButton';
 import '../styles/PlacarDetalhado.css';
 
@@ -103,11 +104,11 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                 <h2>🏆 Placar Geral</h2>
                 <div className="totais-container">
                     <div className="total-card">
-                        <span className="label">Time A: {gameState.teams.teamA.name}</span>
+                        <span className="label">Time A: {getTeamNameFromString('A', gameState.teams)}</span>
                         <span className="valor">{gameState.teams.teamA.score} pontos</span>
                     </div>
                     <div className="total-card">
-                        <span className="label">Time B: {gameState.teams.teamB.name}</span>
+                        <span className="label">Time B: {getTeamNameFromString('B', gameState.teams)}</span>
                         <span className="valor">{gameState.teams.teamB.score} pontos</span>
                     </div>
                 </div>
@@ -134,9 +135,9 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                                     {verdadesAbsurdasScores.map((score, idx) => (
                                         <tr key={idx}>
                                             <td className="nome-cell">{titulosVerdades[score.textoId] || score.textoId}</td>
-                                            <td>{gameState.teams.teamA.members.includes(score.timeLeitor) ? gameState.teams.teamA.name : gameState.teams.teamB.name}</td>
+                                            <td>{getTeamNameFromString(gameState.teams.teamA.members.includes(score.timeLeitor) ? 'A' : 'B', gameState.teams)}</td>
                                             <td className="center">{score.pontosLeitor}</td>
-                                            <td>{gameState.teams.teamA.members.includes(score.timeAdivinhador) ? gameState.teams.teamA.name : gameState.teams.teamB.name}</td>
+                                            <td>{getTeamNameFromString(gameState.teams.teamA.members.includes(score.timeAdivinhador) ? 'A' : 'B', gameState.teams)}</td>
                                             <td className="center">{score.pontosAdivinhador}</td>
                                         </tr>
                                     ))}
@@ -165,7 +166,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                                     {dicionarioSurrealScores.map((score, idx) => (
                                         <tr key={idx}>
                                             <td className="nome-cell">{palavrasDicionario[score.palavraId] || score.palavraId}</td>
-                                            <td>{gameState.teams.teamA.members.includes(score.timeAdivinhador) ? gameState.teams.teamA.name : gameState.teams.teamB.name}</td>
+                                            <td>{getTeamNameFromString(gameState.teams.teamA.members.includes(score.timeAdivinhador) ? 'A' : 'B', gameState.teams)}</td>
                                             <td className="center">{score.pontos}</td>
                                         </tr>
                                     ))}
@@ -196,9 +197,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                                         <tr key={idx}>
                                             <td className="nome-cell">{score.participanteNome}</td>
                                             <td className="fato-cell">{score.fatoTexto}</td>
-                                            <td>{gameState.teams.teamA.members.includes(score.timeAdivinhador)
-                                                ? (gameState.teams.teamA.name || 'Time A')
-                                                : (gameState.teams.teamB.name || 'Time B')}</td>
+                                            <td>{getTeamNameFromString(gameState.teams.teamA.members.includes(score.timeAdivinhador) ? 'A' : 'B', gameState.teams)}</td>
                                             <td className="center">{score.pontos}</td>
                                         </tr>
                                     ))}
@@ -230,10 +229,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                                             <td className="nome-cell">
                                                 {(manchetesNoticias[score.noticiaId] || score.manchete).substring(0, 40)}...
                                             </td>
-                                            <td>{gameState.teams.teamA.members.includes(score.timeAdivinhador)
-                                                ? (gameState.teams.teamA.name || 'Time A')
-                                                : (gameState.teams.teamB.name || 'Time B')
-                                            }</td>
+                                            <td>{getTeamNameFromString(gameState.teams.teamA.members.includes(score.timeAdivinhador) ? 'A' : 'B', gameState.teams)}</td>
                                             <td>{score.acertou ? '✔ Sim' : '❌ Não'}</td>
                                             <td className="center">{score.pontos}</td>
                                         </tr>
@@ -265,9 +261,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                                         <tr key={idx}>
                                             <td className="nome-cell">{score.nomeItem}</td>
                                             <td className="nome-cell">
-                                                {score.timeAdivinhador === 'A'
-                                                    ? (gameState.teams.teamA.name || 'Time A')
-                                                    : (gameState.teams.teamB.name || 'Time B')}
+                                                {getTeamNameFromString(score.timeAdivinhador, gameState.teams)}
                                             </td>
                                             <td className="nome-cell">
                                                 {score.tipoAcerto === 'moedaCorreta' && '🪙 Moeda Correta'}

@@ -7,6 +7,8 @@ interface ButtonProps {
     onClick: (e: React.MouseEvent) => void;
     disabled?: boolean;
     className?: string;
+    text?: string; // Optional text to override default
+    icon?: string; // Optional icon to override default
 }
 
 const BUTTON_CONFIGS = {
@@ -37,6 +39,20 @@ const BUTTON_CONFIGS = {
         backgroundColor: '#28a745',
         textColor: 'white',
         hoverBackground: '#218838'
+    },
+    [ButtonType.HINT]: {
+        text: 'Abrir Dica',
+        icon: '💡',
+        backgroundColor: '#ffc107',
+        textColor: '#333',
+        hoverBackground: '#e0a800'
+    },
+    [ButtonType.SELECT]: {
+        text: 'Selecionar',
+        icon: '✅',
+        backgroundColor: '#17a2b8',
+        textColor: 'white',
+        hoverBackground: '#138496'
     }
 };
 
@@ -44,9 +60,13 @@ export const Button: React.FC<ButtonProps> = ({
     type,
     onClick,
     disabled = false,
-    className = ''
+    className = '',
+    text,
+    icon
 }) => {
     const config = BUTTON_CONFIGS[type];
+    const buttonText = text !== undefined ? text : config.text;
+    const buttonIcon = icon !== undefined ? icon : config.icon;
 
     return (
         <button
@@ -58,8 +78,8 @@ export const Button: React.FC<ButtonProps> = ({
                 color: config.textColor
             }}
         >
-            <span className="button-icon">{config.icon}</span>
-            <span className="button-text">{config.text}</span>
+            <span className="button-icon">{buttonIcon}</span>
+            <span className="button-text">{buttonText}</span>
         </button>
     );
 }; 

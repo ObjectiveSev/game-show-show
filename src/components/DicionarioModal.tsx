@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { BaseModal } from './common/BaseModal';
 import type { DicionarioPalavra, PalavraEstado } from '../types/dicionarioSurreal';
 import type { Team } from '../types';
+import { ButtonType } from '../types';
 import { TeamSelector } from './common/TeamSelector';
-import { HostControls } from './common/HostControls';
+import { Button } from './common/Button';
 import { soundManager } from '../utils/soundManager';
 import '../styles/TextoModal.css';
 
@@ -56,7 +57,7 @@ export const DicionarioModal: React.FC<Props> = ({ isOpen, onClose, palavra, est
         onUpdateEstado({ ...estado, extras: val });
     };
 
-    const canSave = !!time && !!estado.respostaSelecionada && !estado.pontuacaoSalva && verificado;
+    const canSave = !!time && !!estado.respostaSelecionada && !estado.pontuacaoSalva;
 
     const handleSave = () => {
         if (!canSave) return;
@@ -101,11 +102,20 @@ export const DicionarioModal: React.FC<Props> = ({ isOpen, onClose, palavra, est
                                 <div className="def-content">
                                     <div className="def-text">{d.texto}</div>
                                     <div style={{ display: 'flex', gap: 8 }}>
-                                        <button className="btn-revelar" disabled={estado.dicasAbertas[idx]} onClick={(e) => { e.stopPropagation(); toggleDica(idx); }}>
-                                            {estado.dicasAbertas[idx] ? '✅ Dica aberta' : '💡 Abrir Dica'}
-                                        </button>
-                                        <button
-                                            className="btn-salvar"
+                                        <Button
+                                            type={ButtonType.HINT}
+                                            text={estado.dicasAbertas[idx] ? 'Dica aberta' : 'Abrir Dica'}
+                                            icon={estado.dicasAbertas[idx] ? '✅' : '💡'}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (!estado.dicasAbertas[idx]) {
+                                                    toggleDica(idx);
+                                                }
+                                            }}
+                                            disabled={estado.dicasAbertas[idx]}
+                                        />
+                                        <Button
+                                            type={ButtonType.SELECT}
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setResposta(d.id);
@@ -122,9 +132,7 @@ export const DicionarioModal: React.FC<Props> = ({ isOpen, onClose, palavra, est
                                                     soundManager.playErrorSound();
                                                 }
                                             }}
-                                        >
-                                            ✅ Selecionar
-                                        </button>
+                                        />
                                     </div>
                                 </div>
                                 {estado.dicasAbertas[idx] && (
@@ -135,17 +143,25 @@ export const DicionarioModal: React.FC<Props> = ({ isOpen, onClose, palavra, est
                     </div>
                 </div>
 
-                <HostControls
-                    onReset={() => {
-                        const novo: PalavraEstado = { ...estado, dicasAbertas: palavra.definicoes.map(() => false), respostaSelecionada: undefined, extras: 0, lido: false, pontuacaoSalva: false };
-                        onUpdateEstado(novo);
-                        setPontosAtuais(pontuacao.baseAcerto);
-                        setVerificado(false);
-                        setAcertou(null);
-                    }}
-                    onSave={handleSave}
-                    canSave={canSave}
-                />
+                <div className="botoes-controle">
+                    <Button
+                        type={ButtonType.RESET}
+                        onClick={() => {
+                            const novo: PalavraEstado = { ...estado, dicasAbertas: palavra.definicoes.map(() => false), respostaSelecionada: undefined, extras: 0, lido: false, pontuacaoSalva: false };
+                            onUpdateEstado(novo);
+                            setPontosAtuais(pontuacao.baseAcerto);
+                            setVerificado(false);
+                            setAcertou(null);
+                            setTime(''); // Resetar time adivinhador
+                        }}
+                        disabled={estado.lido}
+                    />
+                    <Button
+                        type={ButtonType.SAVE}
+                        onClick={handleSave}
+                        disabled={!canSave}
+                    />
+                </div>
             </div>
         </BaseModal>
     );
