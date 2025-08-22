@@ -7,6 +7,7 @@ interface DefaultCardProps {
     title: string;
     tags: TagType[];
     body?: string;
+    children?: React.ReactNode;
     button?: {
         text: string;
         icon: string;
@@ -21,6 +22,7 @@ export const DefaultCard: React.FC<DefaultCardProps> = ({
     title,
     tags,
     body,
+    children,
     button,
     onClick,
     className = ''
@@ -58,6 +60,12 @@ export const DefaultCard: React.FC<DefaultCardProps> = ({
             {body && (
                 <div className="card-body">
                     <span>{body}</span>
+                </div>
+            )}
+
+            {children && (
+                <div className="card-content">
+                    {children}
                 </div>
             )}
 

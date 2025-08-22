@@ -56,6 +56,11 @@
     font-style: italic;
 }
 
+.default-card .card-content {
+    margin: auto 0;
+    padding: 10px 0;
+}
+
 .default-card .card-button {
     background: #6c757d;
     color: white;

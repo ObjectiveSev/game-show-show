@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { TextoModal } from '../components/TextoModal';
+import { DefaultCard } from '../components/common/DefaultCard';
+import { BackButton } from '../components/common/BackButton';
 import { carregarVerdadesAbsurdas } from '../utils/verdadesAbsurdasLoader';
 import { appendVerdadesAbsurdasScore, removeVerdadesAbsurdasScore } from '../utils/scoreStorage';
 import type { VerdadeAbsurda, TextoEstado } from '../types/verdadesAbsurdas';
 import type { Team } from '../types';
+import { TagType } from '../types';
 import { STORAGE_KEYS } from '../constants';
 import '../styles/VerdadesAbsurdas.css';
 
@@ -36,7 +38,7 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
         erroFalso: 1,
         verdadeNaoEncontradaPeloRival: 1
     });
-    const navigate = useNavigate();
+
 
     // Carregar dados do jogo
     useEffect(() => {
@@ -113,12 +115,7 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
         }
     };
 
-    const handleVoltarDashboard = () => {
-        // Usar setTimeout para evitar problemas com message channel
-        setTimeout(() => {
-            navigate('/');
-        }, 0);
-    };
+
 
     const handleUpdateEstado = (novoEstado: TextoEstado) => {
         setEstadosTextos(prev =>
@@ -180,6 +177,15 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
         // Remover pontuação específica do localStorage
         removeVerdadesAbsurdasScore(textoId);
 
+        // Resetar estado local
+        setEstadosTextos(prev =>
+            prev.map(estado =>
+                estado.id === textoId
+                    ? { ...estado, lido: false, verdadesEncontradas: [], erros: 0, verdadesReveladas: false, pontuacaoSalva: false }
+                    : estado
+            )
+        );
+
         // Sincronizar pontos para atualizar o placar geral
         if (gameState.syncPoints) {
             gameState.syncPoints();
@@ -206,13 +212,13 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
 
     return (
         <div className="verdades-absurdas">
-            <header className="header">
-                <button className="voltar-button" onClick={handleVoltarDashboard}>
-                    ← Voltar ao Dashboard
-                </button>
-                <h1>🤔 Verdades Absurdas</h1>
-                <p>Encontre as 5 verdades escondidas em cada texto</p>
-            </header>
+            <div className="page-header">
+                <BackButton />
+                <div className="header-content">
+                    <h1>🤔 Verdades Absurdas</h1>
+                    <p>Encontre as 5 verdades escondidas em cada texto</p>
+                </div>
+            </div>
 
             <main className="main-content">
                 <div className="textos-grid">
@@ -221,22 +227,25 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
                         const progresso = estado ? estado.verdadesEncontradas.length : 0;
 
                         return (
-                            <div
+                            <DefaultCard
                                 key={texto.id}
-                                className={`texto-card ${estado?.lido ? 'lido' : ''}`}
+                                title={estado?.lido ? texto.titulo : `Absurdo #${texto.id}`}
+                                tags={[estado?.lido ? TagType.READ : TagType.PENDING]}
+                                button={
+                                    estado?.lido
+                                        ? {
+                                            text: 'Resetar',
+                                            icon: '🔄',
+                                            onClick: (e) => {
+                                                e.stopPropagation();
+                                                handleResetarPontuacao(texto.id);
+                                            }
+                                        }
+                                        : undefined
+                                }
                                 onClick={() => handleCardClick(texto)}
+                                className={estado?.lido ? 'lido' : ''}
                             >
-                                <div className="card-header">
-                                    <h3>{estado?.lido ? texto.titulo : `Absurdo #${texto.id}`}</h3>
-                                    <div className="status-indicator">
-                                        {estado?.lido ? (
-                                            <span className="status-lido">✅ Lido</span>
-                                        ) : (
-                                            <span className="status-pendente">⏳ Pendente</span>
-                                        )}
-                                    </div>
-                                </div>
-
                                 <div className="progress-info">
                                     <div className="progress-bar">
                                         <div
@@ -254,7 +263,7 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
                                         <span className="erros-count">❌ {estado.erros} erros</span>
                                     </div>
                                 )}
-                            </div>
+                            </DefaultCard>
                         );
                     })}
                 </div>
