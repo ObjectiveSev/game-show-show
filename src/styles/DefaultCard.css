@@ -17,6 +17,14 @@
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
+/* Garantir que o hover funcione mesmo com classes adicionais */
+.default-card:hover,
+.default-card.completado:hover,
+.default-card.lido:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
 .default-card .card-header {
     text-align: center;
     margin-bottom: 15px;

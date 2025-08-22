@@ -48,12 +48,6 @@
 .default-card.completado {
     border-color: #bbf7d0;
     background: white;
-    cursor: default;
-}
-
-.default-card.completado:hover {
-    transform: none;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .loading {
