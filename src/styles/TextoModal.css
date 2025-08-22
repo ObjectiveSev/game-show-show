@@ -122,83 +122,17 @@
     border: 1px solid rgba(102, 126, 234, 0.1);
 }
 
-/* Botões em grid 2x2 */
-.btn-erro,
-.btn-revelar,
-.btn-resetar,
-.btn-salvar {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 25px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+/* Botões de controle usando novo componente Button */
+.botoes-controle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.botoes-controle .custom-button {
     min-height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.btn-erro {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-}
-
-.btn-erro:hover:not(:disabled) {
-    background: linear-gradient(135deg, #dc2626, #b91c1c);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
-}
-
-.btn-revelar {
-    background: linear-gradient(135deg, #f97316, #ea580c);
-    color: white;
-}
-
-/* Estilo especial para dica já aberta */
-.btn-revelar[disabled] {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
-    cursor: default;
-}
-
-.btn-revelar:hover:not(:disabled) {
-    background: linear-gradient(135deg, #ea580c, #c2410c);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4);
-}
-
-.btn-resetar {
-    background: linear-gradient(135deg, #6b7280, #4b5563);
-    color: white;
-}
-
-.btn-resetar:hover:not(:disabled) {
-    background: linear-gradient(135deg, #4b5563, #374151);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(107, 114, 128, 0.4);
-}
-
-.btn-salvar {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: white;
-}
-
-.btn-salvar:hover:not(:disabled) {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-}
-
-.btn-salvar:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+    font-size: 0.9rem;
 }
 
 /* Extras stepper */

@@ -6,7 +6,7 @@ import { carregarVerdadesAbsurdas } from '../utils/verdadesAbsurdasLoader';
 import { appendVerdadesAbsurdasScore, removeVerdadesAbsurdasScore } from '../utils/scoreStorage';
 import type { VerdadeAbsurda, TextoEstado } from '../types/verdadesAbsurdas';
 import type { Team } from '../types';
-import { TagType } from '../types';
+import { TagType, ButtonType } from '../types';
 import { STORAGE_KEYS } from '../constants';
 import '../styles/VerdadesAbsurdas.css';
 
@@ -234,8 +234,7 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
                                 button={
                                     estado?.lido
                                         ? {
-                                            text: 'Resetar',
-                                            icon: '🔄',
+                                            type: ButtonType.RESET,
                                             onClick: (e) => {
                                                 e.stopPropagation();
                                                 handleResetarPontuacao(texto.id);
@@ -258,11 +257,7 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
                                     </span>
                                 </div>
 
-                                {estado && estado.erros > 0 && (
-                                    <div className="erros-info">
-                                        <span className="erros-count">❌ {estado.erros} erros</span>
-                                    </div>
-                                )}
+
                             </DefaultCard>
                         );
                     })}

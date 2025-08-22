@@ -8,7 +8,7 @@ import { carregarOvoOuGalinha } from '../utils/ovoOuGalinhaLoader';
 import { saveOvoOuGalinhaScore, removeOvoOuGalinhaScore } from '../utils/scoreStorage';
 import { STORAGE_KEYS } from '../constants';
 import type { OvoOuGalinhaTrio, OvoOuGalinhaConfig, OvoOuGalinhaScoreEntry } from '../types/ovoOuGalinha';
-import { TagType } from '../types';
+import { TagType, ButtonType } from '../types';
 import '../styles/OvoOuGalinha.css';
 import '../styles/OvoOuGalinhaModal.css';
 
@@ -114,14 +114,14 @@ export const OvoOuGalinha: React.FC = () => {
         try {
             // Remover score do localStorage
             removeOvoOuGalinhaScore(trioId);
-            
+
             // Remover do estado local
             setEstadosTrios(prev => {
                 const novosEstados = new Map(prev);
                 novosEstados.delete(trioId);
                 return novosEstados;
             });
-            
+
             // Sincronizar pontos
             syncPoints();
         } catch (error) {
@@ -172,8 +172,7 @@ export const OvoOuGalinha: React.FC = () => {
                             button={
                                 completado
                                     ? {
-                                        text: 'Resetar',
-                                        icon: '🔄',
+                                        type: ButtonType.RESET,
                                         onClick: (e) => {
                                             e.stopPropagation();
                                             handleResetarTrio(trio.id);

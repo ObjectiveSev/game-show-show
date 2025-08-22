@@ -7,13 +7,15 @@ interface TeamSelectorProps {
     value: 'A' | 'B' | '';
     onChange: (val: 'A' | 'B' | '') => void;
     label?: string;
+    disabled?: boolean;
 }
 
 export const TeamSelector: React.FC<TeamSelectorProps> = ({
     teams,
     value,
     onChange,
-    label = 'Time leitor:'
+    label = 'Time leitor:',
+    disabled = false
 }) => {
     return (
         <div className="team-selector">
@@ -22,6 +24,7 @@ export const TeamSelector: React.FC<TeamSelectorProps> = ({
                 className="team-selector-dropdown"
                 value={value}
                 onChange={(e) => onChange(e.target.value as 'A' | 'B' | '')}
+                disabled={disabled}
             >
                 <option value="">Selecionar o time</option>
                 <option value="A">{teams.teamA?.name || 'Time A'}</option>

@@ -95,6 +95,15 @@ export const TagType = {
 
 export type TagType = typeof TagType[keyof typeof TagType];
 
+export const ButtonType = {
+    RESET: 'reset',
+    ERROR: 'error',
+    REVEAL_TRUTH: 'reveal_truth',
+    SAVE: 'save'
+} as const;
+
+export type ButtonType = typeof ButtonType[keyof typeof ButtonType];
+
 export interface TagConfig {
     type: TagType;
     text: string;

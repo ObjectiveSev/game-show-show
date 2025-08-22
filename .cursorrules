@@ -1,0 +1,32 @@
+# Cursor Rules - Game Show Show Project
+
+## 🚫 GIT COMMIT RULES
+- **NEVER** execute `git commit` without explicit user permission
+- **NEVER** execute `git add .` without explicit user permission  
+- **NEVER** execute any git commands that modify the repository without explicit user permission
+- **ALWAYS** ask for permission before committing changes
+- **ALWAYS** wait for user to explicitly request git operations
+
+## 📝 CODE CHANGES
+- Make code changes as requested
+- Test builds with `npm run build` when needed
+- Fix linter errors when clear how to fix
+- Document changes clearly in responses
+
+## 🔧 DEVELOPMENT WORKFLOW
+- Use `npm run dev` to start development server when needed
+- Use `npm run build` to verify no compilation errors
+- Fix build errors before proceeding
+- Test functionality when possible
+
+## 💬 COMMUNICATION
+- Always explain what you're doing before doing it
+- Ask for clarification when user requests are unclear
+- Provide clear summaries of implemented changes
+- Wait for user approval before major changes
+
+## 🎯 PROJECT CONTEXT
+- This is a React/TypeScript game show application
+- Use existing patterns and components when possible
+- Maintain consistency with established code style
+- Follow the project's architectural decisions 

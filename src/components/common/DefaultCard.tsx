@@ -1,6 +1,7 @@
 import React from 'react';
-import { TagType } from '../../types';
+import { TagType, ButtonType } from '../../types';
 import { Tag } from './Tag';
+import { Button } from './Button';
 import '../../styles/DefaultCard.css';
 
 interface DefaultCardProps {
@@ -9,9 +10,9 @@ interface DefaultCardProps {
     body?: string;
     children?: React.ReactNode;
     button?: {
-        text: string;
-        icon: string;
+        type: ButtonType;
         onClick: (e: React.MouseEvent) => void;
+        disabled?: boolean;
         className?: string;
     };
     onClick?: () => void;
@@ -70,13 +71,12 @@ export const DefaultCard: React.FC<DefaultCardProps> = ({
             )}
 
             {button && (
-                <button
-                    className={`card-button ${button.className || ''}`}
+                <Button
+                    type={button.type}
                     onClick={handleButtonClick}
-                >
-                    <span className="button-icon">{button.icon}</span>
-                    <span className="button-text">{button.text}</span>
-                </button>
+                    disabled={button.disabled}
+                    className={button.className}
+                />
             )}
         </div>
     );

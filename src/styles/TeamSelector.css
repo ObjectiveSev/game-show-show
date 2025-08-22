@@ -49,3 +49,14 @@
     color: #666;
     font-style: italic;
 }
+
+.team-selector-dropdown:disabled {
+    background: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+    border-color: #ddd;
+}
+
+.team-selector-dropdown:disabled:hover {
+    border-color: #ddd;
+}

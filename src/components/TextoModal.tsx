@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { BaseModal } from './common/BaseModal';
 import type { VerdadeAbsurda, TextoEstado } from '../types/verdadesAbsurdas';
 import type { Team } from '../types';
+import { ButtonType } from '../types';
 import { extrairTextoVerdade, encontrarIndiceVerdade } from '../utils/verdadesAbsurdasLoader';
 import { soundManager } from '../utils/soundManager';
 import '../styles/TextoModal.css';
 import { TeamSelector } from './common/TeamSelector';
+import { Button } from './common/Button';
 
 interface TextoModalProps {
     isOpen: boolean;
@@ -121,9 +123,6 @@ export const TextoModal: React.FC<TextoModalProps> = ({
     const handleRevelarVerdades = () => {
         if (!estado) return;
 
-        // Tocar som de sucesso ao revelar verdades
-        soundManager.playSuccessSound();
-
         const novoEstado: TextoEstado = {
             ...estado,
             verdadesReveladas: true
@@ -175,6 +174,9 @@ export const TextoModal: React.FC<TextoModalProps> = ({
     const verdadesEncontradas = estado.verdadesEncontradas.length;
     const totalVerdades = texto.verdades.length;
 
+    // Verificar se o texto já foi lido e salvo
+    const textoCompleto = estado.lido && estado.pontuacaoSalva;
+
     return (
         <BaseModal
             isOpen={isOpen}
@@ -198,6 +200,7 @@ export const TextoModal: React.FC<TextoModalProps> = ({
                             value={timeSelecionado}
                             onChange={(v: 'A' | 'B' | '') => setTimeSelecionado(v)}
                             label="Time leitor:"
+                            disabled={textoCompleto}
                         />
                         <div className="verdades-info">
                             <span className="label">Verdades encontradas:</span>
@@ -210,10 +213,29 @@ export const TextoModal: React.FC<TextoModalProps> = ({
                     </div>
 
                     <div className="botoes-controle">
-                        <button className="btn-erro" onClick={handleAdicionarErro}>❌ +1 Erro</button>
-                        <button className="btn-revelar" onClick={handleRevelarVerdades} disabled={verdadesReveladas}>🔍 Revelar Verdades</button>
-                        <button className="btn-resetar" onClick={handleResetarPontuacao}>🔄 Resetar Pontuação</button>
-                        <button className="btn-salvar" onClick={() => { if (!estado || !timeSelecionado) return; onSalvarPontuacao(timeSelecionado as 'A' | 'B'); }} disabled={!timeSelecionado || estado.pontuacaoSalva}>{estado.pontuacaoSalva ? '✅ Pontuação Salva' : '💾 Salvar Pontuação'}</button>
+                        <Button
+                            type={ButtonType.ERROR}
+                            onClick={handleAdicionarErro}
+                            disabled={textoCompleto}
+                        />
+                        <Button
+                            type={ButtonType.REVEAL_TRUTH}
+                            onClick={handleRevelarVerdades}
+                            disabled={verdadesReveladas || textoCompleto}
+                        />
+                        <Button
+                            type={ButtonType.RESET}
+                            onClick={handleResetarPontuacao}
+                            disabled={textoCompleto}
+                        />
+                        <Button
+                            type={ButtonType.SAVE}
+                            onClick={() => {
+                                if (!estado || !timeSelecionado) return;
+                                onSalvarPontuacao(timeSelecionado as 'A' | 'B');
+                            }}
+                            disabled={!timeSelecionado || estado.pontuacaoSalva || textoCompleto}
+                        />
                     </div>
                 </div>
             </div>

@@ -8,7 +8,7 @@ import { STORAGE_KEYS } from '../constants';
 import { BackButton } from '../components/common/BackButton';
 import { NoticiasExtraordinariasModal } from '../components/NoticiasExtraordinariasModal';
 import { DefaultCard } from '../components/common/DefaultCard';
-import { TagType } from '../types';
+import { TagType, ButtonType } from '../types';
 import '../styles/NoticiasExtraordinarias.css';
 
 interface NoticiasExtraordinariasProps {
@@ -168,8 +168,7 @@ export const NoticiasExtraordinarias: React.FC<NoticiasExtraordinariasProps> = (
                             button={
                                 lida
                                     ? {
-                                        text: 'Resetar',
-                                        icon: '🔄',
+                                        type: ButtonType.RESET,
                                         onClick: (e) => {
                                             e.stopPropagation();
                                             handleResetarPontuacao(noticia.id);

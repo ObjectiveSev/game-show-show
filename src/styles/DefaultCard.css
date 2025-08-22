@@ -61,36 +61,7 @@
     padding: 10px 0;
 }
 
-.default-card .card-button {
-    background: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: auto;
-    align-self: center;
-}
 
-.default-card .card-button:hover {
-    background: #5a6268;
-    transform: translateY(-2px);
-}
-
-.default-card .card-button .button-icon {
-    font-size: 1.1rem;
-}
-
-.default-card .card-button .button-text {
-    font-weight: 600;
-}
 
 /* Responsividade */
 @media (max-width: 768px) {
@@ -98,13 +69,13 @@
         padding: 20px;
         min-height: 180px;
     }
-    
+
     .default-card .card-header h3 {
         font-size: 1.3rem;
     }
-    
+
     .default-card .card-button {
         padding: 10px 16px;
         font-size: 0.9rem;
     }
-} 
+}
