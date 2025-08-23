@@ -10,6 +10,7 @@ import { CaroPraChuchuModal } from './CaroPraChuchuModal';
 import { DefaultCard } from '../../../components/default-card/DefaultCard';
 import { TagType, ButtonType } from '../../../types';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
+import { soundManager } from '../../../utils/soundManager';
 import './CaroPrachuchu.css';
 
 interface Props {
@@ -68,6 +69,11 @@ export const CaroPraChuchu: React.FC<Props> = ({ gameState, addGamePoints, addPo
     }, [estados]);
 
     const handleCardClick = (item: ItemCaroPraChuchu) => {
+        // Verificar se o item já foi lido
+        const estadoItem = estados.find(e => e.id === item.id);
+        if (estadoItem && !estadoItem.lido) {
+            soundManager.playGameSound('caro-pra-chuchu');
+        }
         setItemSelecionado(item);
         setModalOpen(true);
     };

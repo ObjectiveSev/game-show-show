@@ -8,6 +8,7 @@ import { carregarOvoOuGalinha } from '../../../utils/ovoOuGalinhaLoader';
 import { saveOvoOuGalinhaScore, removeOvoOuGalinhaScore } from '../../../utils/scoreStorage';
 import { STORAGE_KEYS } from '../../../constants';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
+import { soundManager } from '../../../utils/soundManager';
 import type { OvoOuGalinhaTrio, OvoOuGalinhaConfig, OvoOuGalinhaScoreEntry } from '../../../types/ovoOuGalinha';
 import { TagType, ButtonType } from '../../../types';
 import './OvoOuGalinha.css';
@@ -63,6 +64,11 @@ export const OvoOuGalinha: React.FC = () => {
 
     const handleTrioClick = (trio: OvoOuGalinhaTrio) => {
         try {
+            // Verificar se o trio já foi jogado
+            const estadoTrio = estadosTrios.get(trio.id);
+            if (!estadoTrio) {
+                soundManager.playGameSound('ovo-ou-galinha');
+            }
             setTrioSelecionado(trio);
             setModalOpen(true);
         } catch (error) {

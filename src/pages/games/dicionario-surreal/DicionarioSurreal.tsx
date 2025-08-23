@@ -8,6 +8,7 @@ import type { DicionarioPalavra, PalavraEstado, DicionarioData } from '../../../
 import type { AppState } from '../../../types';
 import { TagType, ButtonType } from '../../../types';
 import { STORAGE_KEYS } from '../../../constants';
+import { soundManager } from '../../../utils/soundManager';
 import './DicionarioSurreal.css';
 
 interface Props {
@@ -73,6 +74,10 @@ export const DicionarioSurreal: React.FC<Props> = ({ gameState, addGamePoints, a
         try {
             const st = estados.find((e) => e.id === p.id);
             if (st) {
+                // Só tocar som se não foi lido antes
+                if (!st.lido) {
+                    soundManager.playGameSound('dicionario-surreal');
+                }
                 setPalavraAtual(p);
                 setEstadoAtual(st);
                 setModalAberto(true);

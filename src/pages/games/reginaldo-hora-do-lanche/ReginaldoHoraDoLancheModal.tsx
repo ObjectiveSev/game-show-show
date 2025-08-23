@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BaseModal } from '../../../components/base-modal/BaseModal';
 import { TeamSelector } from '../../../components/team-selector/TeamSelector';
 import { Button } from '../../../components/button/Button';
-import { soundManager, CUSTOM_SOUNDS } from '../../../utils/soundManager';
+import { soundManager } from '../../../utils/soundManager';
 import { saveReginaldoHoraDoLancheScore } from '../../../utils/scoreStorage';
 import type { Team } from '../../../types';
 import type { Comida, ReginaldoHoraDoLancheConfig } from '../../../types/reginaldoHoraDoLanche';
@@ -47,7 +47,7 @@ export const ReginaldoHoraDoLancheModal: React.FC<ReginaldoHoraDoLancheModalProp
         if (isOpen) {
             // Só tocar música se não foi jogado antes
             if (!isAlreadyPlayed) {
-                soundManager.playCustomSound(CUSTOM_SOUNDS.REGINALDO_HORA_DO_LANCHE);
+                soundManager.playGameSound('reginaldo-hora-do-lanche');
             }
 
             // Se já foi jogado, abrir revelado

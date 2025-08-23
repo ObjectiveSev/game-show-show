@@ -6,6 +6,7 @@ import { carregarNoticiasExtraordinarias } from '../../../utils/noticiasExtraord
 import { saveNoticiasExtraordinariasScore } from '../../../utils/scoreStorage';
 import { STORAGE_KEYS } from '../../../constants';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
+import { soundManager } from '../../../utils/soundManager';
 import { GameHeader } from '../../../components/game-header/GameHeader';
 import { NoticiasExtraordinariasModal } from './NoticiasExtraordinariasModal';
 import { DefaultCard } from '../../../components/default-card/DefaultCard';
@@ -73,6 +74,11 @@ export const NoticiasExtraordinarias: React.FC<NoticiasExtraordinariasProps> = (
 
 
     const handleCardClick = (noticia: Noticia) => {
+        // Verificar se a notícia já foi lida
+        const estadoNoticia = estados.find(e => e.id === noticia.id);
+        if (estadoNoticia && !estadoNoticia.lida) {
+            soundManager.playGameSound('noticias-extraordinarias');
+        }
         setNoticiaSelecionada(noticia);
         setModalOpen(true);
     };

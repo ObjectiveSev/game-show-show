@@ -8,6 +8,7 @@ import { PainelistasExcentricosModal } from './PainelistasExcentricosModal';
 import { GameHeader } from '../../../components/game-header/GameHeader';
 import { DefaultCard } from '../../../components/default-card/DefaultCard';
 import { TagType, ButtonType } from '../../../types';
+import { soundManager } from '../../../utils/soundManager';
 import './PainelistasExcentricos.css';
 import { STORAGE_KEYS } from '../../../constants';
 
@@ -84,6 +85,11 @@ export const PainelistasExcentricos: React.FC<Props> = ({ gameState, addGamePoin
 
 
     const handleFatoClick = (fato: FatoPainelista, participanteId: string) => {
+        // Verificar se o fato já foi lido
+        const estadoFato = estados.find(e => e.id === `${participanteId}:${fato.id}`);
+        if (estadoFato && !estadoFato.lido) {
+            soundManager.playGameSound('painelistas-excentricos');
+        }
         setFatoSelecionado(fato);
         setParticipanteSelecionado(participanteId);
         setModalOpen(true);

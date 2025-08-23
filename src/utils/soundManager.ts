@@ -6,10 +6,9 @@ export const SoundType = {
 export type SoundType = typeof SoundType[keyof typeof SoundType];
 
 // Constantes para sons customizados
-export const CUSTOM_SOUNDS = {
-    QUEM_E_ESSE_POKEMON: 'https://www.myinstants.com/media/sounds/quem-e-esse-pokemon-011.mp3',
-    REGINALDO_HORA_DO_LANCHE: 'https://www.myinstants.com/media/sounds/reginald-hora-do-lanche.mp3'
-} as const;
+// export const CUSTOM_SOUNDS = {
+//     EXEMPLO: 'https://www.myinstants.com/media/sounds/exemplo.mp3'
+// } as const;
 
 interface SoundItem {
     url: string;
@@ -20,6 +19,7 @@ interface SoundConfig {
     success: SoundItem[];
     error: SoundItem[];
     custom: Map<string, HTMLAudioElement>;
+    gameSounds: Map<string, HTMLAudioElement>;
 }
 
 export class SoundManager {
@@ -63,7 +63,17 @@ export class SoundManager {
                 { url: 'https://www.myinstants.com/media/sounds/windows-xp-error.mp3' },
                 { url: 'https://www.myinstants.com/media/sounds/errou-show-do-milhao.mp3' },
             ],
-            custom: new Map<string, HTMLAudioElement>()
+            custom: new Map<string, HTMLAudioElement>(),
+            gameSounds: new Map<string, HTMLAudioElement>([
+                ['quem-e-esse-pokemon', new Audio('https://www.myinstants.com/media/sounds/quem-e-esse-pokemon-011.mp3')],
+                ['reginaldo-hora-do-lanche', new Audio('https://www.myinstants.com/media/sounds/reginald-hora-do-lanche.mp3')],
+                ['verdades-absurdas', new Audio('https://www.myinstants.com/media/sounds/ronaldinho-gaucho-xaveca-reporter-na-vespera-do-dia-da-mulher.mp3')],
+                ['painelistas-excentricos', new Audio('https://www.myinstants.com/media/sounds/chaves-o-bolo-1979.mp3')],
+                ['ovo-ou-galinha', new Audio('https://www.myinstants.com/media/sounds/telecurso-2000-tema-musical-final-creditos-1.mp3')],
+                ['noticias-extraordinarias', new Audio('https://www.myinstants.com/media/sounds/jornal-nacional-short.mp3')],
+                ['dicionario-surreal', new Audio('https://www.myinstants.com/media/sounds/a-de-amor-xuxa.mp3')],
+                ['caro-pra-chuchu', new Audio('https://www.myinstants.com/media/sounds/money-money-money-abba.mp3')]
+            ])
         };
     }
 
@@ -143,6 +153,30 @@ export class SoundManager {
 
         } catch (error) {
             console.error(`Erro ao tocar som customizado:`, error);
+        }
+    }
+
+    public playGameSound(gameId: string): void {
+        try {
+            // Verificar se o jogo tem som configurado no map
+            const existingAudio = this.soundConfig.gameSounds.get(gameId);
+
+            if (!existingAudio) {
+                console.warn(`Nenhum som configurado para o jogo: ${gameId}`);
+                return;
+            }
+
+            // Configurar volume e resetar para início
+            existingAudio.volume = 0.7;
+            existingAudio.currentTime = 0;
+
+            // Tocar o áudio
+            existingAudio.play().catch(error => {
+                console.error(`Erro ao tocar som do jogo ${gameId}:`, error);
+            });
+
+        } catch (error) {
+            console.error(`Erro ao tocar som do jogo ${gameId}:`, error);
         }
     }
 }

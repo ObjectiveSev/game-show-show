@@ -10,6 +10,7 @@ import { TagType, ButtonType } from '../../../types';
 import { STORAGE_KEYS } from '../../../constants';
 import { loadVerdadesAbsurdasScores } from '../../../utils/scoreStorage';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
+import { soundManager } from '../../../utils/soundManager';
 import './VerdadesAbsurdas.css';
 
 interface VerdadesAbsurdasProps {
@@ -131,6 +132,10 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
     const handleCardClick = (texto: VerdadeAbsurda) => {
         const estado = estadosTextos.find(e => e.id === texto.id);
         if (estado) {
+            // Só tocar som se não foi lido antes
+            if (!estado.lido) {
+                soundManager.playGameSound('verdades-absurdas');
+            }
             setTextoAtual(texto);
             setEstadoAtual(estado);
             setModalAberto(true);

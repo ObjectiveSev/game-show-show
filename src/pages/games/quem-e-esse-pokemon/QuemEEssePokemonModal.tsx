@@ -4,7 +4,7 @@ import { TeamSelector } from '../../../components/team-selector/TeamSelector';
 import { Button } from '../../../components/button/Button';
 import { ButtonType } from '../../../types';
 import type { Team } from '../../../types';
-import { soundManager, CUSTOM_SOUNDS } from '../../../utils/soundManager';
+import { soundManager } from '../../../utils/soundManager';
 import { saveQuemEEssePokemonScore } from '../../../utils/scoreStorage';
 import './QuemEEssePokemonModal.css';
 
@@ -58,7 +58,7 @@ export const QuemEEssePokemonModal: React.FC<QuemEEssePokemonModalProps> = ({
         if (isOpen) {
             // Só tocar música se não foi jogado antes
             if (!isAlreadyPlayed) {
-                soundManager.playCustomSound(CUSTOM_SOUNDS.QUEM_E_ESSE_POKEMON);
+                soundManager.playGameSound('quem-e-esse-pokemon');
             }
 
             // Se já foi jogado, abrir revelado
