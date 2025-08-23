@@ -6,6 +6,8 @@ import { carregarParticipantes } from '../../../utils/participantesLoader';
 import { appendPainelistasScore, appendPainelistasPunicao, removePainelistasPunicao, loadPainelistasPunicoes, loadPainelistasScores } from '../../../utils/scoreStorage';
 import { PainelistasExcentricosModal } from './PainelistasExcentricosModal';
 import { BackButton } from '../../../components/back-button/BackButton';
+import { DefaultCard } from '../../../components/default-card/DefaultCard';
+import { TagType, ButtonType } from '../../../types';
 import './PainelistasExcentricos.css';
 import { STORAGE_KEYS } from '../../../constants';
 
@@ -145,6 +147,7 @@ export const PainelistasExcentricos: React.FC<Props> = ({ gameState, addGamePoin
     };
 
     const handleResetarPontuacao = (participanteId: string) => {
+        console.log(`handleResetarPontuacao chamado para ${participanteId}`);
         if (dados) {
             const jogador = dados.jogadores.find(j => j.participanteId === participanteId);
             if (jogador) {
@@ -166,7 +169,11 @@ export const PainelistasExcentricos: React.FC<Props> = ({ gameState, addGamePoin
 
                 // 3. Remover punições deste participante
                 removePainelistasPunicao(participanteId);
-                setPunicoes(prev => ({ ...prev, [participanteId]: false }));
+                setPunicoes(prev => {
+                    const newPunicoes = { ...prev };
+                    delete newPunicoes[participanteId];
+                    return newPunicoes;
+                });
 
                 // 4. Recalcular e atualizar placar geral
                 // Primeiro, remover pontos existentes deste participante
@@ -223,23 +230,47 @@ export const PainelistasExcentricos: React.FC<Props> = ({ gameState, addGamePoin
 
                         const temPunicao = punicoes[membroId];
 
+                        // Determinar tags do jogador
+                        const getJogadorTags = (): TagType[] => {
+                            const tags: TagType[] = [];
+
+                            // Tag de punido se aplicável
+                            if (temPunicao) {
+                                tags.push(TagType.PUNIDO);
+                            }
+
+                            // Tag de lido se todos os fatos foram verificados
+                            if (fatosVerificados === fatosEsperados && fatosEsperados > 0) {
+                                tags.push(TagType.READ);
+                            }
+
+                            return tags;
+                        };
+
+                        // Determinar botão do card
+                        const getJogadorButton = () => {
+                            if (temPunicao || fatosVerificados > 0) {
+                                return {
+                                    type: ButtonType.RESET,
+                                    onClick: () => handleResetarPontuacao(membroId)
+                                };
+                            } else if (fatosFaltando > 0) {
+                                return {
+                                    type: ButtonType.PUNICAO,
+                                    onClick: () => handlePunicao(membroId, fatosFaltando)
+                                };
+                            }
+                            return undefined;
+                        };
+
                         return (
-                            <div key={membroId} className="jogador-card">
-                                <div className="jogador-header">
-                                    <h3>{participantes[membroId] || membroId}</h3>
-                                    <div className="status-info">
-                                        <span className="fatos-status">
-                                            {fatosVerificados}/{fatosEsperados} fatos
-                                        </span>
-                                        {temPunicao && (
-                                            <div className="punicao-info">
-                                                <span className="punicao-badge">⚠️ Punido</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-
+                            <DefaultCard
+                                key={membroId}
+                                title={participantes[membroId] || membroId}
+                                tags={getJogadorTags()}
+                                button={getJogadorButton()}
+                                className="jogador-card"
+                            >
                                 {jogadorConfigurado && jogadorConfigurado.fatos.length > 0 ? (
                                     <div className="fatos-container">
                                         {jogadorConfigurado.fatos.map((fato, index) => {
@@ -264,30 +295,8 @@ export const PainelistasExcentricos: React.FC<Props> = ({ gameState, addGamePoin
                                     </div>
                                 )}
 
-                                {!temPunicao && fatosFaltando > 0 && (
-                                    <div className="multas-container">
-                                        <button
-                                            className="punicao-btn"
-                                            onClick={() => handlePunicao(membroId, fatosFaltando)}
-                                        >
-                                            ⚠️ Aplicar Punição ({dados.pontuacao.fatoNaoFornecido * fatosFaltando > 0 ? '+' : ''}{dados.pontuacao.fatoNaoFornecido * fatosFaltando} pontos)
-                                            <span className="punicao-detalhes">
-                                                {fatosFaltando} fato{fatosFaltando > 1 ? 's' : ''} faltando
-                                            </span>
-                                        </button>
-                                    </div>
-                                )}
 
-                                {/* Botão de resetar pontuação - aparece para participantes com fatos lidos OU punição */}
-                                {(fatosVerificados > 0 || temPunicao) && (
-                                    <button
-                                        className="resetar-pontuacao-btn"
-                                        onClick={() => handleResetarPontuacao(membroId)}
-                                    >
-                                        🔄 Resetar Pontuação
-                                    </button>
-                                )}
-                            </div>
+                            </DefaultCard>
                         );
                     })}
                 </div>

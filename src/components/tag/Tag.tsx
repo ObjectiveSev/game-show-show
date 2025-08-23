@@ -61,6 +61,12 @@ const TAG_CONFIGS = {
         backgroundColor: '#dc3545',
         textColor: 'white',
         icon: '❌'
+    },
+    [TagType.PUNIDO]: {
+        text: 'Punido',
+        backgroundColor: '#dc3545',
+        textColor: 'white',
+        icon: '⚠️'
     }
 };
 

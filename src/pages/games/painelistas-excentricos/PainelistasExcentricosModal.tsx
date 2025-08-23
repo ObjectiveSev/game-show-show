@@ -4,6 +4,8 @@ import { BaseModal } from '../../../components/base-modal/BaseModal';
 import { VerdadeButton } from '../../../components/verdade-button/VerdadeButton';
 import { MentiraButton } from '../../../components/mentira-button/MentiraButton';
 import { ResultadoStatus } from '../../../components/resultado-status/ResultadoStatus';
+import { Button } from '../../../components/button/Button';
+import { ButtonType } from '../../../types';
 import { soundManager } from '../../../utils/soundManager';
 import './PainelistasExcentricosModal.css';
 
@@ -116,13 +118,15 @@ export const PainelistasExcentricosModal: React.FC<PainelistasExcentricosModalPr
             <div className="modal-actions">
                 {resultado && (
                     <>
-                        <button className="reset-btn" onClick={handleReset}>
-                            🔄 Resetar
-                        </button>
+                        <Button
+                            type={ButtonType.RESET}
+                            onClick={handleReset}
+                        />
                         {!estadoFato?.pontuacaoSalva && (
-                            <button className="save-btn" onClick={handleSalvar}>
-                                💾 Salvar Pontos
-                            </button>
+                            <Button
+                                type={ButtonType.SAVE}
+                                onClick={handleSalvar}
+                            />
                         )}
                     </>
                 )}

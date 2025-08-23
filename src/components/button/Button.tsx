@@ -81,6 +81,13 @@ const BUTTON_CONFIGS = {
         textColor: 'white',
         hoverBackground: '#c82333'
     },
+    [ButtonType.PUNICAO]: {
+        text: 'Aplicar Punição',
+        icon: '⚠️',
+        backgroundColor: '#dc3545',
+        textColor: 'white',
+        hoverBackground: '#c82333'
+    },
     [ButtonType.CUSTOM]: {
         text: 'Custom',
         icon: '🎯',

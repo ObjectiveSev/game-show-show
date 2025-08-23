@@ -103,7 +103,8 @@ export const TagType = {
     MOEDA_CORRETA: 'moeda_correta',
     PERTO_SUFICIENTE: 'perto_suficiente',
     ACERTO_LENDARIO: 'acerto_lendario',
-    ERRO: 'erro'
+    ERRO: 'erro',
+    PUNIDO: 'punido'
 } as const;
 
 export type TagType = typeof TagType[keyof typeof TagType];
@@ -118,6 +119,7 @@ export const ButtonType = {
     SCOREBOARD: 'scoreboard',
     SETTINGS: 'settings',
     CLEAR_STORAGE: 'clear_storage',
+    PUNICAO: 'punicao',
     CUSTOM: 'custom'
 } as const;
 
