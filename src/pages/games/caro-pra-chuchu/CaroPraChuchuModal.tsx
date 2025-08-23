@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { BaseModal } from '../../../components/base-modal/BaseModal';
 import { TeamSelector } from '../../../components/team-selector/TeamSelector';
 import { soundManager } from '../../../utils/soundManager';
+import { Button } from '../../../components/button/Button';
+import { Tag } from '../../../components/tag/Tag';
+
+import { ButtonType } from '../../../types';
 import type { ItemCaroPraChuchu, PontuacaoConfig } from '../../../types/caroPraChuchu';
 import type { Team } from '../../../types';
 import './CaroPraChuchuModal.css';
@@ -27,6 +31,15 @@ export const CaroPraChuchuModal: React.FC<Props> = ({
     const [timeSelecionado, setTimeSelecionado] = useState<'A' | 'B' | ''>('');
     const [tipoAcerto, setTipoAcerto] = useState<'moedaCorreta' | 'pertoSuficiente' | 'acertoLendario' | 'erro' | null>(null);
     const [precoRevelado, setPrecoRevelado] = useState(false);
+
+    // Cores dos tipos de acerto
+    const acertoColors = {
+        moedaCorreta: '#6f42c1',      // Roxo
+        pertoSuficiente: '#fd7e14',    // Laranja
+        acertoLendario: '#e83e8c',     // Rosa
+        erro: '#dc3545'                // Vermelho
+    };
+
 
     const handleAcerto = (tipo: 'moedaCorreta' | 'pertoSuficiente' | 'acertoLendario' | 'erro') => {
         setTipoAcerto(tipo);
@@ -65,9 +78,23 @@ export const CaroPraChuchuModal: React.FC<Props> = ({
             <div className="item-info">
                 <div className="item-header">
                     <h2>{item.nome}</h2>
-                    <div className="local-data">
-                        <span className="local">{item.local}</span>
-                        <span className="data">{item.data}</span>
+                    <div className="tags-container">
+                        <Tag
+                            customConfig={{
+                                text: item.local,
+                                backgroundColor: '#20c997',
+                                textColor: 'white',
+                                icon: '📍'
+                            }}
+                        />
+                        <Tag
+                            customConfig={{
+                                text: item.data,
+                                backgroundColor: '#868e96',
+                                textColor: 'white',
+                                icon: '📅'
+                            }}
+                        />
                     </div>
                 </div>
 
@@ -81,9 +108,21 @@ export const CaroPraChuchuModal: React.FC<Props> = ({
                 </div>
 
                 {precoRevelado && (
-                    <div className={`preco-real preco-${tipoAcerto}`}>
+                    <div
+                        className="preco-real"
+                        style={{
+                            backgroundColor: tipoAcerto ? acertoColors[tipoAcerto] : '#6c757d',
+                            color: 'white',
+                            padding: '20px',
+                            borderRadius: '15px',
+                            textAlign: 'center',
+                            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.2)'
+                        }}
+                    >
                         <h3>💎 Preço Real</h3>
-                        <div className="preco-valor">{item.precoReal}</div>
+                        <div className="preco-valor">
+                            {item.precoReal}
+                        </div>
                     </div>
                 )}
 
@@ -97,46 +136,64 @@ export const CaroPraChuchuModal: React.FC<Props> = ({
 
                     {!tipoAcerto && (
                         <div className="acerto-buttons">
-                            <button
-                                className="acerto-btn moeda-correta"
+                            <Button
+                                type={ButtonType.CUSTOM}
                                 onClick={() => handleAcerto('moedaCorreta')}
                                 disabled={!timeSelecionado}
-                            >
-                                Acertou a moeda<br />+1 ponto
-                            </button>
-                            <button
-                                className="acerto-btn perto-suficiente"
+                                customConfig={{
+                                    text: 'Acertou a moeda +1 ponto',
+                                    backgroundColor: '#6f42c1',
+                                    textColor: 'white',
+                                    hoverBackground: '#5a359b'
+                                }}
+                            />
+                            <Button
+                                type={ButtonType.CUSTOM}
                                 onClick={() => handleAcerto('pertoSuficiente')}
                                 disabled={!timeSelecionado}
-                            >
-                                Perto o suficiente<br />+3 pontos
-                            </button>
-                            <button
-                                className="acerto-btn acerto-lendario"
+                                customConfig={{
+                                    text: 'Perto o suficiente +3 pontos',
+                                    backgroundColor: '#fd7e14',
+                                    textColor: 'white',
+                                    hoverBackground: '#e8681a'
+                                }}
+                            />
+                            <Button
+                                type={ButtonType.CUSTOM}
                                 onClick={() => handleAcerto('acertoLendario')}
                                 disabled={!timeSelecionado}
-                            >
-                                Acerto lendário<br />+5 pontos
-                            </button>
-                            <button
-                                className="acerto-btn erro"
+                                customConfig={{
+                                    text: 'Acerto lendário +5 pontos',
+                                    backgroundColor: '#e83e8c',
+                                    textColor: 'white',
+                                    hoverBackground: '#d63384'
+                                }}
+                            />
+                            <Button
+                                type={ButtonType.CUSTOM}
                                 onClick={() => handleAcerto('erro')}
                                 disabled={!timeSelecionado}
-                            >
-                                Errou<br />0 pontos
-                            </button>
+                                customConfig={{
+                                    text: 'Errou 0 pontos',
+                                    backgroundColor: '#dc3545',
+                                    textColor: 'white',
+                                    hoverBackground: '#c82333'
+                                }}
+                            />
                         </div>
                     )}
 
                     <div className="modal-actions">
                         {tipoAcerto && (
                             <>
-                                <button className="reset-btn" onClick={handleResetar}>
-                                    🔄 Resetar
-                                </button>
-                                <button className="save-btn" onClick={handleSalvar}>
-                                    💾 Salvar Pontos
-                                </button>
+                                <Button
+                                    type={ButtonType.RESET}
+                                    onClick={handleResetar}
+                                />
+                                <Button
+                                    type={ButtonType.SAVE}
+                                    onClick={handleSalvar}
+                                />
                             </>
                         )}
                     </div>

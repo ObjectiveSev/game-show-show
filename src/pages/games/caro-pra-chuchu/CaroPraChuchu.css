@@ -39,113 +39,25 @@
     margin-top: 20px;
 }
 
-/* Card de item */
-.item-card {
-    background: white;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: 2px solid #e9ecef;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    min-height: 200px;
-}
-
-.item-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-    border-color: #007bff;
-}
-
-.item-card.lido {
+/* Estilos para o DefaultCard quando lido */
+.default-card.lido {
     border-color: #28a745;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-}
-
-/* Header do card */
-.card-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 15px;
-    gap: 10px;
-}
-
-.card-header h3 {
-    margin: 0;
-    font-size: 1.8rem;
-    color: #333;
-    font-weight: 700;
-    line-height: 1.2;
-}
-
-/* Indicadores de status */
-.status-indicator {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-}
-
-.status-lida,
-.status-pendente {
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-align: center;
-    min-width: 80px;
-}
-
-.status-lida {
-    background-color: #28a745;
-    color: white;
-}
-
-.status-pendente {
-    background-color: #ffc107;
-    color: #212529;
-}
-
-/* Informações do item */
-.item-info {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 15px;
-}
-
-.local-data {
-    font-size: 0.9rem;
-    color: #666;
-    font-style: italic;
 }
 
 .pontos-info {
     font-weight: 600;
     color: #28a745;
     font-size: 1rem;
+    text-align: center;
+    width: 100%;
 }
 
-/* Botão resetar */
-.resetar-btn {
-    background: #6c757d;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.2s;
-    margin-top: auto;
+.zero-pontos {
+    color: #dc3545 !important;
 }
 
-.resetar-btn:hover {
-    background: #5a6268;
-}
+
 
 /* Loading */
 .loading {

@@ -32,7 +32,7 @@
             "id": "caro-pra-chuchu",
             "name": "Caro Pra Chuchu",
             "emoji": "💰",
-            "description": "Adivinhe os preços históricos dos itens mais caros",
+            "description": "Adivinhe os preços históricos de itens famosos",
             "configFile": "caro-pra-chuchu.json"
         },
         {

@@ -7,6 +7,9 @@ import { saveCaroPraChuchuScore, removeCaroPraChuchuScore } from '../../../utils
 import { STORAGE_KEYS } from '../../../constants';
 import { BackButton } from '../../../components/back-button/BackButton';
 import { CaroPraChuchuModal } from './CaroPraChuchuModal';
+import { DefaultCard } from '../../../components/default-card/DefaultCard';
+import { TagType, ButtonType } from '../../../types';
+import { getTeamNameFromString } from '../../../utils/teamUtils';
 import './CaroPrachuchu.css';
 
 interface Props {
@@ -138,44 +141,60 @@ export const CaroPraChuchu: React.FC<Props> = ({ gameState, addGamePoints, addPo
                     const estado = estados.find(e => e.id === item.id);
                     const lido = estado?.lido || false;
 
+                    // Determinar tags baseadas no tipo de acerto
+                    const getTags = (): TagType[] => {
+                        const tags: TagType[] = [lido ? TagType.READ : TagType.PENDING];
+
+                        if (lido && estado?.tipoAcerto) {
+                            switch (estado.tipoAcerto) {
+                                case 'moedaCorreta':
+                                    tags.push(TagType.MOEDA_CORRETA);
+                                    break;
+                                case 'pertoSuficiente':
+                                    tags.push(TagType.PERTO_SUFICIENTE);
+                                    break;
+                                case 'acertoLendario':
+                                    tags.push(TagType.ACERTO_LENDARIO);
+                                    break;
+                                case 'erro':
+                                    tags.push(TagType.ERRO);
+                                    break;
+                            }
+                        }
+
+                        return tags;
+                    };
+
                     return (
-                        <div
+                        <DefaultCard
                             key={item.id}
-                            className={`item-card ${lido ? 'lido' : ''}`}
+                            title={lido ? item.nome : `Item #${item.id}`}
+                            tags={getTags()}
+                            body={
+                                lido && estado?.timeAdivinhador
+                                    ? `${item.local}, ${item.data} • ${getTeamNameFromString(estado.timeAdivinhador, gameState.teams)}`
+                                    : undefined
+                            }
+                            button={
+                                lido
+                                    ? {
+                                        type: ButtonType.RESET,
+                                        onClick: (e) => {
+                                            e.stopPropagation();
+                                            handleResetarPontuacao(item.id);
+                                        }
+                                    }
+                                    : undefined
+                            }
                             onClick={() => handleCardClick(item)}
+                            className={lido ? 'lido' : ''}
                         >
-                            <div className="card-header">
-                                <h3>{lido ? item.nome : `Item #${item.id}`}</h3>
-                                <div className="status-indicator">
-                                    {lido ? (
-                                        <span className="status-lido">✅ Lido</span>
-                                    ) : (
-                                        <span className="status-pendente">⏳ Pendente</span>
-                                    )}
-                                </div>
-                            </div>
-
-                            {lido && (
-                                <div className="item-info">
-                                    <span className="local-data">{item.local}, {item.data}</span>
-                                    {estado?.pontos && (
-                                        <span className="pontos-info">+{estado.pontos} pontos</span>
-                                    )}
+                            {lido && estado?.pontos !== undefined && (
+                                <div className={`pontos-info ${estado.pontos === 0 ? 'zero-pontos' : ''}`}>
+                                    {estado.pontos > 0 ? `+${estado.pontos}` : estado.pontos} pontos
                                 </div>
                             )}
-
-                            {lido && (
-                                <button
-                                    className="resetar-btn"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleResetarPontuacao(item.id);
-                                    }}
-                                >
-                                    🔄 Resetar
-                                </button>
-                            )}
-                        </div>
+                        </DefaultCard>
                     );
                 })}
             </div>

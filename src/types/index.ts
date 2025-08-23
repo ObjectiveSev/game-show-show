@@ -99,7 +99,11 @@ export const TagType = {
     PENDING: 'pending',
     ERROR: 'error',
     READ: 'read',
-    CORRECT: 'correct'
+    CORRECT: 'correct',
+    MOEDA_CORRETA: 'moeda_correta',
+    PERTO_SUFICIENTE: 'perto_suficiente',
+    ACERTO_LENDARIO: 'acerto_lendario',
+    ERRO: 'erro'
 } as const;
 
 export type TagType = typeof TagType[keyof typeof TagType];

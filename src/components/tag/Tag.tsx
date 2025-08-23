@@ -3,8 +3,14 @@ import { TagType } from '../../types';
 import './Tag.css';
 
 interface TagProps {
-    type: TagType;
+    type?: TagType;
     className?: string;
+    customConfig?: {
+        text: string;
+        backgroundColor: string;
+        textColor: string;
+        icon: string;
+    };
 }
 
 const TAG_CONFIGS = {
@@ -31,14 +37,48 @@ const TAG_CONFIGS = {
         backgroundColor: '#28a745',
         textColor: 'white',
         icon: '✅'
+    },
+    [TagType.MOEDA_CORRETA]: {
+        text: 'Moeda Correta',
+        backgroundColor: '#6f42c1',
+        textColor: 'white',
+        icon: '🪙'
+    },
+    [TagType.PERTO_SUFICIENTE]: {
+        text: 'Perto Suficiente',
+        backgroundColor: '#fd7e14',
+        textColor: 'white',
+        icon: '🎯'
+    },
+    [TagType.ACERTO_LENDARIO]: {
+        text: 'Acerto Lendário',
+        backgroundColor: '#e83e8c',
+        textColor: 'white',
+        icon: '⭐'
+    },
+    [TagType.ERRO]: {
+        text: 'Errou',
+        backgroundColor: '#dc3545',
+        textColor: 'white',
+        icon: '❌'
     }
 };
 
 export const Tag: React.FC<TagProps> = ({
     type,
-    className = ''
+    className = '',
+    customConfig
 }) => {
-    const config = TAG_CONFIGS[type];
+    let config;
+    
+    if (customConfig) {
+        config = customConfig;
+    } else if (type) {
+        config = TAG_CONFIGS[type];
+    } else {
+        // Fallback para evitar erro
+        config = TAG_CONFIGS[TagType.PENDING];
+    }
 
     return (
         <span

@@ -27,6 +27,14 @@
     color: #1f2937;
 }
 
+.item-header .tags-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
 .local-data {
     display: flex;
     justify-content: center;
@@ -91,6 +99,18 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
+.preco-real h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.preco-real .preco-valor {
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
 /* Cores baseadas no tipo de acerto */
 .preco-real.preco-moedaCorreta {
     background: linear-gradient(135deg, #4f46e5, #6366f1);
@@ -137,46 +157,39 @@
     gap: 15px;
 }
 
-.acerto-btn {
-    padding: 15px 20px;
-    border: none;
-    border-radius: 12px;
+/* Estilos para a tag de acerto exibida */
+.acerto-tag-display {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.acerto-tag-display .custom-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 25px;
     font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
+    font-weight: 700;
+    min-width: 120px;
     transition: all 0.3s ease;
-    color: white;
-    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.acerto-btn.moeda-correta {
-    background: linear-gradient(135deg, #4f46e5, #6366f1);
-}
-
-.acerto-btn.perto-suficiente {
-    background: linear-gradient(135deg, #d97706, #f59e0b);
-}
-
-.acerto-btn.acerto-lendario {
-    background: linear-gradient(135deg, #7c3aed, #8b5cf6);
-}
-
-.acerto-btn.erro {
-    background: linear-gradient(135deg, #dc2626, #ef4444);
-}
-
-.acerto-btn:hover:not(:disabled) {
+.acerto-tag-display .custom-tag:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
-/* Estilos para botões desabilitados */
-.acerto-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-    filter: grayscale(0.3);
+.acerto-tag-display .custom-tag .tag-icon {
+    font-size: 1.2rem;
+}
+
+.acerto-tag-display .custom-tag .tag-text {
+    font-weight: 700;
+    white-space: nowrap;
 }
 
 .modal-actions {
@@ -187,46 +200,7 @@
     padding-top: 20px;
 }
 
-.reset-btn,
-.save-btn {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 25px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    min-width: 140px;
-}
 
-.reset-btn {
-    background: linear-gradient(135deg, #6b7280, #4b5563);
-    color: white;
-}
-
-.reset-btn:hover {
-    background: linear-gradient(135deg, #4b5563, #374151);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(107, 114, 128, 0.4);
-}
-
-.save-btn {
-    background: linear-gradient(135deg, #4f46e5, #6366f1);
-    color: white;
-}
-
-.save-btn:hover:not(:disabled) {
-    background: linear-gradient(135deg, #4338ca, #3730a3);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
-}
-
-.save-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
 
 /* Responsividade */
 @media (max-width: 768px) {
