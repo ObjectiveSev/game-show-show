@@ -9,7 +9,6 @@ import './Dashboard.css';
 
 interface DashboardProps {
     onOpenScoreboard: () => void;
-    onOpenBuzzer: () => void;
     onOpenSettings: () => void;
     onGameClick: (gameId: string) => void;
     gameState: {
@@ -25,7 +24,6 @@ interface DashboardProps {
 
 export const Dashboard: React.FC<DashboardProps> = ({
     onOpenScoreboard,
-    onOpenBuzzer,
     onOpenSettings,
     onGameClick,
     gameState,
@@ -74,10 +72,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         event.preventDefault();
                         addPoints('B', -1);
                         break;
-                    case 'b':
-                        event.preventDefault();
-                        onOpenBuzzer();
-                        break;
+
                     case 's':
                         event.preventDefault();
                         onOpenScoreboard();
@@ -97,7 +92,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [addPoints, resetScores, onOpenBuzzer, onOpenScoreboard]);
+    }, [addPoints, resetScores, onOpenScoreboard]);
 
     return (
         <div className="dashboard">
@@ -128,7 +123,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 )}
 
                 <ToolsSection
-                    onOpenBuzzer={onOpenBuzzer}
                     onResetScores={() => {
                         // Usar uma abordagem mais segura para evitar problemas com message channel
                         const shouldReset = window.confirm('Tem certeza que deseja resetar a pontuação?');

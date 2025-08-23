@@ -34,19 +34,7 @@ export const NoticiasExtraordinariasModal: React.FC<NoticiasExtraordinariasModal
     const [palpite, setPalpite] = useState<boolean | null>(null);
     const [resultado, setResultado] = useState<'acerto' | 'erro' | null>(null);
 
-    // Fechar com ESC
-    useEffect(() => {
-        if (!isOpen) return;
 
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
-                onClose();
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, onClose]);
 
     // Resetar estados quando modal abre
     useEffect(() => {

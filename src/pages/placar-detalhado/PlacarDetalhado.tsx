@@ -35,6 +35,8 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
     const [gamesConfig, setGamesConfig] = useState<GamesConfig | null>(null);
 
     useEffect(() => {
+        let isMounted = true;
+
         // Carregar scores
         setVerdadesAbsurdasScores(loadVerdadesAbsurdasScores());
         setDicionarioSurrealScores(loadDicionarioSurrealScores());
@@ -43,47 +45,65 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
         setCaroPraChuchuScores(loadCaroPraChuchuScores());
 
         // Carregar dados para mapear IDs para nomes
-        (async () => {
+        const loadData = async () => {
             try {
                 const verdades = await carregarVerdadesAbsurdas();
+                if (!isMounted) return;
                 const titulos = verdades.verdadesAbsurdas.reduce((acc: Record<string, string>, texto: { id: string; titulo: string }) => {
                     acc[texto.id] = texto.titulo;
                     return acc;
                 }, {});
                 setTitulosVerdades(titulos);
             } catch (error) {
-                console.error('Erro ao carregar verdades absurdas:', error);
+                if (isMounted) {
+                    console.error('Erro ao carregar verdades absurdas:', error);
+                }
             }
 
             try {
                 const dicionario = await carregarDicionarioSurreal();
+                if (!isMounted) return;
                 const palavras = dicionario.palavras.reduce((acc: Record<string, string>, palavra: { id: string; palavra: string }) => {
                     acc[palavra.id] = palavra.palavra;
                     return acc;
                 }, {});
                 setPalavrasDicionario(palavras);
             } catch (error) {
-                console.error('Erro ao carregar dicionário surreal:', error);
+                if (isMounted) {
+                    console.error('Erro ao carregar dicionário surreal:', error);
+                }
             }
 
             try {
                 const noticias = await carregarNoticiasExtraordinarias();
+                if (!isMounted) return;
                 const manchetes = noticias.noticias.reduce((acc: Record<string, string>, noticia: { id: string; manchete: string }) => {
                     acc[noticia.id] = noticia.manchete;
                     return acc;
                 }, {});
                 setManchetesNoticias(manchetes);
             } catch (error) {
-                console.error('Erro ao carregar notícias extraordinárias:', error);
+                if (isMounted) {
+                    console.error('Erro ao carregar notícias extraordinárias:', error);
+                }
             }
 
             try {
                 const games = await carregarConfiguracaoJogos();
+                if (!isMounted) return;
                 setGamesConfig(games);
             } catch (error) {
-                console.error('Erro ao carregar configuração dos jogos:', error);
+                if (isMounted) {
+                    console.error('Erro ao carregar configuração dos jogos:', error);
+                }
             }
-        })();
+        };
+
+        loadData();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     const getGameEmoji = (gameId: string) => {
@@ -104,12 +124,12 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                 <h2>🏆 Placar Geral</h2>
                 <div className="totais-container">
                     <div className="total-card">
-                        <span className="label">Time A: {getTeamNameFromString('A', gameState.teams)}</span>
-                        <span className="valor">{gameState.teams.teamA.score} pontos</span>
+                        <span className="label">{getTeamNameFromString('A', gameState.teams)}</span>
+                        <span className="placar-valor">{gameState.teams.teamA.score} pontos</span>
                     </div>
                     <div className="total-card">
-                        <span className="label">Time B: {getTeamNameFromString('B', gameState.teams)}</span>
-                        <span className="valor">{gameState.teams.teamB.score} pontos</span>
+                        <span className="label">{getTeamNameFromString('B', gameState.teams)}</span>
+                        <span className="placar-valor">{gameState.teams.teamB.score} pontos</span>
                     </div>
                 </div>
 

@@ -40,27 +40,39 @@ export const useGameState = () => {
 
     // Carregar configuração inicial
     useEffect(() => {
+        let isMounted = true;
+
         const loadInitialConfig = async () => {
             try {
                 const config = await loadGameConfig();
+                if (!isMounted) return;
                 setGameState(prev => ({
                     ...prev,
                     teams: config.teams
                 }));
             } catch (error) {
-                console.warn('❌ Failed to load initial config, using defaults:', error);
+                if (isMounted) {
+                    console.warn('❌ Failed to load initial config, using defaults:', error);
+                }
             }
         };
 
         loadInitialConfig();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     // Carregar scores salvos
     useEffect(() => {
+        let isMounted = true;
+
         const loadSavedScores = async () => {
             try {
                 // Sincronizar scores dos jogos individuais
                 const updatedScores = syncGameScores();
+                if (!isMounted) return;
                 setGameState(prev => ({
                     ...prev,
                     gameScores: updatedScores
@@ -70,7 +82,7 @@ export const useGameState = () => {
                 const savedScores = localStorage.getItem(STORAGE_KEYS.GAME_SCORES);
                 if (savedScores) {
                     const parsed = JSON.parse(savedScores);
-                    if (parsed) {
+                    if (parsed && isMounted) {
                         setGameState(prev => ({
                             ...prev,
                             gameScores: parsed
@@ -78,11 +90,17 @@ export const useGameState = () => {
                     }
                 }
             } catch (error) {
-                console.warn('❌ Failed to load saved scores:', error);
+                if (isMounted) {
+                    console.warn('❌ Failed to load saved scores:', error);
+                }
             }
         };
 
         loadSavedScores();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     // Salvar scores automaticamente quando mudarem

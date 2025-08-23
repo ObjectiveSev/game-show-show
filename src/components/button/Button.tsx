@@ -53,6 +53,27 @@ const BUTTON_CONFIGS = {
         backgroundColor: '#17a2b8',
         textColor: 'white',
         hoverBackground: '#138496'
+    },
+    [ButtonType.SCOREBOARD]: {
+        text: 'Abrir Scoreboard Detalhado',
+        icon: '📊',
+        backgroundColor: '#6f42c1',
+        textColor: 'white',
+        hoverBackground: '#5a359b'
+    },
+    [ButtonType.SETTINGS]: {
+        text: 'Configuração de Times',
+        icon: '⚙️',
+        backgroundColor: '#28a745',
+        textColor: 'white',
+        hoverBackground: '#218838'
+    },
+    [ButtonType.CLEAR_STORAGE]: {
+        text: 'Limpar LocalStorage',
+        icon: '🗑️',
+        backgroundColor: '#dc3545',
+        textColor: 'white',
+        hoverBackground: '#c82333'
     }
 };
 

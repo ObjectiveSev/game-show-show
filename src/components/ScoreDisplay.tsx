@@ -2,6 +2,8 @@ import React, { useMemo } from 'react';
 import type { Team } from '../types';
 import { carregarParticipantes } from '../utils/participantesLoader';
 import { getTeamNameFromString } from '../utils/teamUtils';
+import { Button } from './button/Button';
+import { ButtonType } from '../types';
 
 interface ScoreDisplayProps {
     teamA: Team;
@@ -64,20 +66,16 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
 
             <div className="score-actions">
                 {onOpenScoreboard && (
-                    <button
-                        className="scoreboard-button"
+                    <Button
+                        type={ButtonType.SCOREBOARD}
                         onClick={onOpenScoreboard}
-                    >
-                        📊 Abrir Scoreboard Detalhado
-                    </button>
+                    />
                 )}
                 {onOpenSettings && (
-                    <button
-                        className="settings-button"
+                    <Button
+                        type={ButtonType.SETTINGS}
                         onClick={onOpenSettings}
-                    >
-                        ⚙️ Configuração de Times
-                    </button>
+                    />
                 )}
             </div>
         </div>

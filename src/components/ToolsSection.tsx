@@ -1,13 +1,13 @@
 import React from 'react';
+import { Button } from './button/Button';
+import { ButtonType } from '../types';
 
 interface ToolsSectionProps {
-    onOpenBuzzer: () => void;
     onResetScores: () => void;
     onClearLocalStorage: () => void;
 }
 
 export const ToolsSection: React.FC<ToolsSectionProps> = ({
-    onOpenBuzzer,
     onResetScores,
     onClearLocalStorage
 }) => {
@@ -15,20 +15,16 @@ export const ToolsSection: React.FC<ToolsSectionProps> = ({
         <div className="tools-section">
             <h3>🛠️ Ferramentas do Host</h3>
             <div className="tools-grid">
-                <button className="tool-button" onClick={onOpenBuzzer}>
-                    <span className="tool-icon">🔔</span>
-                    <span>Sistema de Buzzer</span>
-                </button>
+                <Button
+                    type={ButtonType.RESET}
+                    onClick={onResetScores}
+                    text="Resetar Pontuação"
+                />
 
-                <button className="tool-button" onClick={onResetScores}>
-                    <span className="tool-icon">🔄</span>
-                    <span>Resetar Pontuação</span>
-                </button>
-
-                <button className="tool-button" onClick={onClearLocalStorage}>
-                    <span className="tool-icon">🗑️</span>
-                    <span>Limpar LocalStorage</span>
-                </button>
+                <Button
+                    type={ButtonType.CLEAR_STORAGE}
+                    onClick={onClearLocalStorage}
+                />
             </div>
 
             <div className="shortcuts-info">
@@ -50,10 +46,7 @@ export const ToolsSection: React.FC<ToolsSectionProps> = ({
                         <kbd>Ctrl + X</kbd>
                         <span>-1 ponto Time B</span>
                     </div>
-                    <div className="shortcut">
-                        <kbd>Ctrl + B</kbd>
-                        <span>Abrir Buzzer</span>
-                    </div>
+
                     <div className="shortcut">
                         <kbd>Ctrl + S</kbd>
                         <span>Abrir Scoreboard</span>

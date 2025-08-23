@@ -101,7 +101,10 @@ export const ButtonType = {
     REVEAL_TRUTH: 'reveal_truth',
     SAVE: 'save',
     HINT: 'hint',
-    SELECT: 'select'
+    SELECT: 'select',
+    SCOREBOARD: 'scoreboard',
+    SETTINGS: 'settings',
+    CLEAR_STORAGE: 'clear_storage'
 } as const;
 
 export type ButtonType = typeof ButtonType[keyof typeof ButtonType];

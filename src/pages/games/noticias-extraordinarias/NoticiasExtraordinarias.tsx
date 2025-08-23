@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import type { AppState } from '../../../types';
 import type { Noticia, NoticiaEstado, NoticiasExtraordinariasData } from '../../../types/noticiasExtraordinarias';
 import { carregarNoticiasExtraordinarias } from '../../../utils/noticiasExtraordinariasLoader';
@@ -23,7 +23,7 @@ export const NoticiasExtraordinarias: React.FC<NoticiasExtraordinariasProps> = (
     addGamePoints,
     addPoints
 }) => {
-    const navigate = useNavigate();
+
     const [loading, setLoading] = useState(true);
     const [dados, setDados] = useState<NoticiasExtraordinariasData | null>(null);
     const [estados, setEstados] = useState<NoticiaEstado[]>([]);
@@ -70,21 +70,7 @@ export const NoticiasExtraordinarias: React.FC<NoticiasExtraordinariasProps> = (
         if (estados.length) localStorage.setItem(STORAGE_KEYS.NOTICIAS_EXTRAORDINARIAS_ESTADOS, JSON.stringify(estados));
     }, [estados]);
 
-    // Lógica de ESC: se modal aberto fecha modal, senão volta ao dashboard
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
-                if (modalOpen) {
-                    setModalOpen(false);
-                } else {
-                    navigate('/');
-                }
-            }
-        };
 
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [modalOpen, navigate]);
 
     const handleCardClick = (noticia: Noticia) => {
         setNoticiaSelecionada(noticia);

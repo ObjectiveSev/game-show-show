@@ -22,9 +22,7 @@ function App() {
     window.location.href = '/placar-detalhado';
   };
 
-  const handleOpenBuzzer = () => {
-    alert('Sistema de Buzzer será implementado em breve!');
-  };
+
 
   const handleOpenSettings = () => {
     setIsSettingsOpen(true);
@@ -85,7 +83,6 @@ function App() {
           <Route path="/" element={
             <Dashboard
               onOpenScoreboard={handleOpenScoreboard}
-              onOpenBuzzer={handleOpenBuzzer}
               onOpenSettings={handleOpenSettings}
               onGameClick={handleGameClick}
               gameState={gameState}

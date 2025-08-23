@@ -118,9 +118,10 @@
 
 .score-actions {
     display: flex;
-    gap: 15px;
+    gap: 20px;
     justify-content: center;
     flex-wrap: wrap;
+    align-items: stretch;
 }
 
 .settings-button {
@@ -269,9 +270,11 @@
 }
 
 .tools-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 20px;
+    justify-content: center;
+    align-items: stretch;
     margin-bottom: 30px;
 }
 

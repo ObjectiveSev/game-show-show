@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import { BackButton } from '../../../components/back-button/BackButton';
 import { OvoOuGalinhaModal } from './OvoOuGalinhaModal';
 import { DefaultCard } from '../../../components/default-card/DefaultCard';
@@ -14,7 +14,7 @@ import './OvoOuGalinha.css';
 import './OvoOuGalinhaModal.css';
 
 export const OvoOuGalinha: React.FC = () => {
-    const navigate = useNavigate();
+
     const { gameState, syncPoints } = useGameState();
     const [config, setConfig] = useState<OvoOuGalinhaConfig | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
@@ -59,21 +59,7 @@ export const OvoOuGalinha: React.FC = () => {
         carregarEstados();
     }, []);
 
-    useEffect(() => {
-        const handleEsc = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
-                if (modalOpen) {
-                    setModalOpen(false);
-                    setTrioSelecionado(null);
-                } else {
-                    navigate('/');
-                }
-            }
-        };
 
-        document.addEventListener('keydown', handleEsc);
-        return () => document.removeEventListener('keydown', handleEsc);
-    }, [modalOpen, navigate]);
 
     const handleTrioClick = (trio: OvoOuGalinhaTrio) => {
         try {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import type { AppState } from '../../../types';
 import type { ItemCaroPraChuchu, ItemEstado, CaroPraChuchuData } from '../../../types/caroPraChuchu';
 import { carregarCaroPraChuchu } from '../../../utils/caroPraChuchuLoader';
@@ -16,28 +16,14 @@ interface Props {
 }
 
 export const CaroPraChuchu: React.FC<Props> = ({ gameState, addGamePoints, addPoints }) => {
-    const navigate = useNavigate();
+
     const [loading, setLoading] = useState(true);
     const [dados, setDados] = useState<CaroPraChuchuData | null>(null);
     const [estados, setEstados] = useState<ItemEstado[]>([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [itemSelecionado, setItemSelecionado] = useState<ItemCaroPraChuchu | null>(null);
 
-    // Lógica de ESC: se modal aberto fecha modal, senão volta ao dashboard
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
-                if (modalOpen) {
-                    setModalOpen(false);
-                } else {
-                    navigate('/');
-                }
-            }
-        };
 
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [modalOpen, navigate]);
 
     useEffect(() => {
         let mounted = true;
