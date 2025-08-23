@@ -29,4 +29,81 @@
 - This is a React/TypeScript game show application
 - Use existing patterns and components when possible
 - Maintain consistency with established code style
-- Follow the project's architectural decisions 
+- Follow the project's architectural decisions
+
+## 🏗️ CODE ORGANIZATION & ARCHITECTURE
+
+### 📁 Folder Structure Standards
+- **ALWAYS** use kebab-case (hífens) for folder names, NOT camelCase
+- **NEVER** use PascalCase for folders (only for component files)
+- **Examples**:
+  - ✅ `caro-pra-chuchu/` (NOT `caroPraChuchu/`)
+  - ✅ `verdades-absurdas/` (NOT `verdadesAbsurdas/`)
+  - ✅ `back-button/` (NOT `BackButton/`)
+  - ✅ `base-modal/` (NOT `BaseModal/`)
+
+### 🎮 Game Pages Organization
+- **ALWAYS** organize games under `src/pages/games/[game-name]/`
+- **Each game folder MUST contain**:
+  - `[GameName].tsx` (main page component)
+  - `[GameName].css` (main page styles)
+  - `[GameName]Modal.tsx` (modal component)
+  - `[GameName]Modal.css` (modal styles)
+- **NO** `index.tsx` or `index.css` files in game folders
+
+### 🧩 Component Organization
+- **ALWAYS** create dedicated subfolders for each component
+- **Structure**: `src/components/[component-name]/[ComponentName].tsx`
+- **Examples**:
+  - `src/components/back-button/BackButton.tsx`
+  - `src/components/base-modal/BaseModal.tsx`
+  - `src/components/default-card/DefaultCard.tsx`
+- **NEVER** use `src/components/common/` subfolder
+
+### 📄 Page Organization
+- **Main pages**: `src/pages/[page-name]/[PageName].tsx`
+- **Examples**:
+  - `src/pages/dashboard/Dashboard.tsx`
+  - `src/pages/placar-detalhado/PlacarDetalhado.tsx`
+- **App page**: `src/pages/app/App.tsx`
+
+### 🔗 Import Path Standards
+- **ALWAYS** use relative paths with correct depth
+- **From pages to components**: `../../../components/[component-name]/[ComponentName]`
+- **From pages to types/utils**: `../../../types/`, `../../../utils/`
+- **From components to types/utils**: `../../types/`, `../../utils/`
+- **Examples**:
+  - ✅ `import { BackButton } from '../../../components/back-button/BackButton';`
+  - ✅ `import { DefaultCard } from '../../../components/default-card/DefaultCard';`
+  - ❌ `import { BackButton } from '../../../components/BackButton/BackButton';`
+
+### 🏷️ Naming Conventions
+- **Folders**: kebab-case (hífens) - `caro-pra-chuchu/`
+- **Files**: PascalCase - `CaroPraChuchu.tsx`
+- **Components**: PascalCase - `CaroPraChuchu`
+- **Types/Interfaces**: PascalCase - `ItemCaroPraChuchu`
+- **URLs**: kebab-case - `/caro-pra-chuchu`
+
+### 🚨 Critical Rules
+- **NEVER** delete files during reorganization - ALWAYS move them
+- **ALWAYS** update imports after moving files
+- **ALWAYS** test build after reorganization
+- **NEVER** mix camelCase and kebab-case in folder names
+- **ALWAYS** maintain consistent import depth (`../../../`)
+
+### 🔄 Reorganization Workflow
+1. **Create new folder structure** with kebab-case names
+2. **Move files** (don't delete) to new locations
+3. **Update ALL imports** to use new paths
+4. **Test build** with `npm run build`
+5. **Fix any remaining import errors**
+6. **Verify final structure** is consistent
+
+### 📋 File Movement Checklist
+- [ ] Create new folders with kebab-case names
+- [ ] Move all files (TSX, CSS, etc.) to new locations
+- [ ] Update imports in moved files
+- [ ] Update imports in files that reference moved files
+- [ ] Test build for compilation errors
+- [ ] Verify folder structure follows standards
+- [ ] Document final structure in response 

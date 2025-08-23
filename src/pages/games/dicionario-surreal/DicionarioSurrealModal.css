@@ -1,0 +1,152 @@
+/* DicionarioSurrealModal.css */
+.modal-content {
+    padding: 20px;
+}
+
+.controles-host {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.status-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.verdades-info,
+.erros-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.label {
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
+.valor {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.extras-stepper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.extras-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+.extras-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.extras-btn {
+    background: #666;
+    border: none;
+    color: white;
+    width: 24px;
+    height: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.extras-btn:hover {
+    background: #888;
+}
+
+.extras-value {
+    font-weight: bold;
+    color: #e0e0e0;
+    min-width: 20px;
+    text-align: center;
+}
+
+.texto-container {
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.texto-completo {
+    line-height: 1.6;
+}
+
+.def-item {
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.def-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.def-item.selected {
+    border-color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.def-item.def-correct {
+    border-color: #4CAF50;
+    background: rgba(76, 175, 80, 0.2);
+}
+
+.def-item.def-incorrect {
+    border-color: #f44336;
+    background: rgba(244, 67, 54, 0.2);
+}
+
+.def-texto {
+    font-size: 1.1em;
+    margin-bottom: 8px;
+}
+
+.def-fonte {
+    font-size: 0.9em;
+    color: #aaa;
+    font-style: italic;
+}
+
+.botoes-controle {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .status-info {
+        gap: 10px;
+    }
+
+    .extras-box {
+        padding: 6px 10px;
+    }
+
+    .def-item {
+        padding: 12px;
+        margin: 8px 0;
+    }
+}
