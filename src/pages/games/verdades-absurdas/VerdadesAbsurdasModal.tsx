@@ -16,7 +16,7 @@ interface VerdadesAbsurdasModalProps {
     texto: VerdadeAbsurda | null;
     estado: TextoEstado | null;
     onUpdateEstado: (estado: TextoEstado) => void;
-    onSalvarPontuacao: (timeLeitor: 'A' | 'B') => void;
+    onSalvarPontuacao: (timeLeitor: 'A' | 'B', dadosTemporarios: { verdadesEncontradas: number[], erros: number, verdadesReveladas: boolean }) => void;
     onResetarPontuacao?: (textoId: string) => void; // Nova prop para resetar pontuação
     teams: { teamA: Team; teamB: Team };
 }
@@ -32,8 +32,10 @@ export const VerdadesAbsurdasModal: React.FC<VerdadesAbsurdasModalProps> = ({
     teams
 }) => {
     const [textoRenderizado, setTextoRenderizado] = useState<string>('');
-    const [erros, setErros] = useState(0);
-    const [verdadesReveladas, setVerdadesReveladas] = useState(false);
+    // Estados locais temporários (não persistem até salvar)
+    const [verdadesEncontradasLocal, setVerdadesEncontradasLocal] = useState<number[]>([]);
+    const [errosLocal, setErrosLocal] = useState(0);
+    const [verdadesReveladasLocal, setVerdadesReveladasLocal] = useState(false);
     const [timeSelecionado, setTimeSelecionado] = useState<'A' | 'B' | ''>('');
 
 
@@ -42,12 +44,31 @@ export const VerdadesAbsurdasModal: React.FC<VerdadesAbsurdasModalProps> = ({
 
 
 
+    // Inicializar estados locais quando abrir modal
+    useEffect(() => {
+        if (!isOpen || !texto || !estado) return;
+
+        // Se o texto já foi lido (salvo), usar estados persistidos
+        if (estado.lido && estado.pontuacaoSalva) {
+            setVerdadesEncontradasLocal(estado.verdadesEncontradas);
+            setErrosLocal(estado.erros);
+            setVerdadesReveladasLocal(estado.verdadesReveladas);
+        } else {
+            // Se não foi salvo, começar do zero
+            setVerdadesEncontradasLocal([]);
+            setErrosLocal(0);
+            setVerdadesReveladasLocal(false);
+        }
+        setTimeSelecionado('');
+    }, [isOpen, texto, estado]);
+
     // Renderizar texto com verdades marcadas
     useEffect(() => {
         if (!texto || !estado) return;
 
         let textoComMarcacoes = texto.texto;
-        const verdadesEncontradas = estado.verdadesEncontradas;
+        const verdadesEncontradas = estado.lido ? estado.verdadesEncontradas : verdadesEncontradasLocal;
+        const verdadesReveladas = estado.lido ? estado.verdadesReveladas : verdadesReveladasLocal;
         const verdades = texto.verdades;
 
         // Marcar verdades encontradas em verde
@@ -70,12 +91,13 @@ export const VerdadesAbsurdasModal: React.FC<VerdadesAbsurdasModalProps> = ({
         }
 
         setTextoRenderizado(textoComMarcacoes);
-        setErros(estado.erros);
-        setVerdadesReveladas(estado.verdadesReveladas);
-    }, [texto, estado, verdadesReveladas]);
+    }, [texto, estado, verdadesEncontradasLocal, errosLocal, verdadesReveladasLocal]);
 
     const handleTextoClick = (event: React.MouseEvent<HTMLDivElement>) => {
         if (!texto || !estado) return;
+
+        // Se o texto já foi lido (salvo), não permitir cliques
+        if (estado.lido && estado.pontuacaoSalva) return;
 
         const target = event.target as HTMLElement;
         if (target.tagName === 'SPAN') return; // Não processar cliques em spans já marcados
@@ -105,18 +127,12 @@ export const VerdadesAbsurdasModal: React.FC<VerdadesAbsurdasModalProps> = ({
         const indiceVerdade = encontrarIndiceVerdade(posicao, texto.verdades);
 
         if (indiceVerdade !== -1) {
-            // Clicou em uma verdade
-            const verdadesEncontradas = [...estado.verdadesEncontradas];
+            // Clicou em uma verdade - usar estados locais
+            const verdadesEncontradas = [...verdadesEncontradasLocal];
             if (!verdadesEncontradas.includes(indiceVerdade)) {
                 verdadesEncontradas.push(indiceVerdade);
                 verdadesEncontradas.sort((a, b) => a - b);
-
-                const novoEstado: TextoEstado = {
-                    ...estado,
-                    verdadesEncontradas
-                };
-
-                onUpdateEstado(novoEstado);
+                setVerdadesEncontradasLocal(verdadesEncontradas);
             }
         }
     };
@@ -124,26 +140,22 @@ export const VerdadesAbsurdasModal: React.FC<VerdadesAbsurdasModalProps> = ({
     const handleRevelarVerdades = () => {
         if (!estado) return;
 
-        const novoEstado: TextoEstado = {
-            ...estado,
-            verdadesReveladas: true
-        };
+        // Se o texto já foi lido (salvo), não permitir ação
+        if (estado.lido && estado.pontuacaoSalva) return;
 
-        onUpdateEstado(novoEstado);
+        setVerdadesReveladasLocal(true);
     };
 
     const handleAdicionarErro = () => {
         if (!estado) return;
 
+        // Se o texto já foi lido (salvo), não permitir ação
+        if (estado.lido && estado.pontuacaoSalva) return;
+
         // Tocar som de erro
         soundManager.playErrorSound();
 
-        const novoEstado: TextoEstado = {
-            ...estado,
-            erros: estado.erros + 1
-        };
-
-        onUpdateEstado(novoEstado);
+        setErrosLocal(prev => prev + 1);
     };
 
 
@@ -155,6 +167,12 @@ export const VerdadesAbsurdasModal: React.FC<VerdadesAbsurdasModalProps> = ({
         if (onResetarPontuacao) {
             onResetarPontuacao(texto.id);
         }
+
+        // Resetar estados locais
+        setVerdadesEncontradasLocal([]);
+        setErrosLocal(0);
+        setVerdadesReveladasLocal(false);
+        setTimeSelecionado('');
 
         const novoEstado: TextoEstado = {
             ...estado,
@@ -172,7 +190,10 @@ export const VerdadesAbsurdasModal: React.FC<VerdadesAbsurdasModalProps> = ({
 
     if (!isOpen || !texto || !estado) return null;
 
-    const verdadesEncontradas = estado.verdadesEncontradas.length;
+    // Usar estados corretos baseado se foi salvo ou não
+    const verdadesEncontradas = estado.lido ? estado.verdadesEncontradas.length : verdadesEncontradasLocal.length;
+    const erros = estado.lido ? estado.erros : errosLocal;
+    const verdadesReveladas = estado.lido ? estado.verdadesReveladas : verdadesReveladasLocal;
     const totalVerdades = texto.verdades.length;
 
     // Verificar se o texto já foi lido e salvo
@@ -232,10 +253,32 @@ export const VerdadesAbsurdasModal: React.FC<VerdadesAbsurdasModalProps> = ({
                         <Button
                             type={ButtonType.SAVE}
                             onClick={() => {
-                                if (!estado || !timeSelecionado) return;
-                                onSalvarPontuacao(timeSelecionado as 'A' | 'B');
+                                if (!estado || !timeSelecionado || !verdadesReveladas) return;
+
+                                // Passar dados temporários para a função de salvar
+                                const dadosTemporarios = {
+                                    verdadesEncontradas: verdadesEncontradasLocal,
+                                    erros: errosLocal,
+                                    verdadesReveladas: verdadesReveladasLocal
+                                };
+
+                                // Atualizar estado com dados locais
+                                const novoEstado: TextoEstado = {
+                                    ...estado,
+                                    verdadesEncontradas: verdadesEncontradasLocal,
+                                    erros: errosLocal,
+                                    verdadesReveladas: verdadesReveladasLocal,
+                                    lido: true,
+                                    pontuacaoSalva: true
+                                };
+
+                                // Atualizar estado global
+                                onUpdateEstado(novoEstado);
+
+                                // Chamar salvar pontuação com dados temporários
+                                onSalvarPontuacao(timeSelecionado as 'A' | 'B', dadosTemporarios);
                             }}
-                            disabled={!timeSelecionado || estado.pontuacaoSalva || textoCompleto}
+                            disabled={!timeSelecionado || !verdadesReveladas || estado.pontuacaoSalva || textoCompleto}
                         />
                     </div>
                 </div>

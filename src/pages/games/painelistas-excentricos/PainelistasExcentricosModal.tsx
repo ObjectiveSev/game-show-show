@@ -80,7 +80,10 @@ export const PainelistasExcentricosModal: React.FC<PainelistasExcentricosModalPr
 
     const handleReset = () => {
         onReset();
-        onClose();
+        // Resetar estados locais sem fechar o modal
+        setPalpite(null);
+        setResultado(null);
+        setPontosCalculados(0);
     };
 
     if (!fato) return null;

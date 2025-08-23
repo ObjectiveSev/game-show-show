@@ -28,9 +28,9 @@ const BUTTON_CONFIGS = {
     [ButtonType.ERROR]: {
         text: 'Erro',
         icon: '❌',
-        backgroundColor: '#e74c3c',
+        backgroundColor: '#ff6b6b',
         textColor: 'white',
-        hoverBackground: '#c0392b'
+        hoverBackground: '#ff5252'
     },
     [ButtonType.SUCCESS]: {
         text: 'Acerto',

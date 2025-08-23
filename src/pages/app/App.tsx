@@ -18,7 +18,7 @@ import type { Team } from '../../types';
 
 function AppContent() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const { gameState, updateTeamConfig, addGamePoints, addPoints, addExtraPoints, resetScores, syncPoints } = useGameState();
+  const { gameState, updateTeamConfig, addGamePoints, removeGamePoints, addPoints, addExtraPoints, resetScores, syncPoints } = useGameState();
   const navigate = useNavigate();
 
   const handleOpenScoreboard = () => {
@@ -99,6 +99,7 @@ function AppContent() {
           <VerdadesAbsurdas
             gameState={{ ...gameState, syncPoints }}
             addGamePoints={addGamePoints}
+            removeGamePoints={removeGamePoints}
             addPoints={addPoints}
           />
         } />

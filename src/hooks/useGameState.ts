@@ -185,6 +185,20 @@ export const useGameState = () => {
         }));
     };
 
+    // Função para remover pontos específicos de um jogo (para reset)
+    const removeGamePoints = (gameId: string, teamId: 'A' | 'B', points: number) => {
+        setGameState(prev => ({
+            ...prev,
+            gameScores: {
+                ...prev.gameScores,
+                [gameId]: {
+                    ...prev.gameScores[gameId],
+                    [`team${teamId}`]: Math.max(0, (prev.gameScores[gameId]?.[`team${teamId}`] || 0) - points)
+                }
+            }
+        }));
+    };
+
     // Função para adicionar pontos extras do host
     const addExtraPoints = (teamId: 'A' | 'B', points: number) => {
         const entry: ExtraPointsEntry = {
@@ -214,11 +228,25 @@ export const useGameState = () => {
             extraPoints: []
         }));
 
-        // Limpar localStorage
+        // Limpar todos os localStorages dos jogos para resetar score detalhado
         localStorage.removeItem(STORAGE_KEYS.GAME_SCORES);
         localStorage.removeItem(STORAGE_KEYS.VERDADES_ABSURDAS_SCORES);
+        localStorage.removeItem(STORAGE_KEYS.VERDADES_ABSURDAS_ESTADOS);
         localStorage.removeItem(STORAGE_KEYS.DICIONARIO_SURREAL_SCORES);
+        localStorage.removeItem(STORAGE_KEYS.DICIONARIO_SURREAL_ESTADOS);
         localStorage.removeItem(STORAGE_KEYS.PAINELISTAS_SCORES);
+        localStorage.removeItem(STORAGE_KEYS.PAINELISTAS_ESTADOS);
+        localStorage.removeItem(STORAGE_KEYS.PAINELISTAS_PUNICOES);
+        localStorage.removeItem(STORAGE_KEYS.NOTICIAS_EXTRAORDINARIAS_SCORES);
+        localStorage.removeItem(STORAGE_KEYS.NOTICIAS_EXTRAORDINARIAS_ESTADOS);
+        localStorage.removeItem(STORAGE_KEYS.CARO_PRA_CHUCHU_SCORES);
+        localStorage.removeItem(STORAGE_KEYS.CARO_PRA_CHUCHU_ESTADOS);
+        localStorage.removeItem(STORAGE_KEYS.OVO_OU_GALINHA_SCORES);
+        localStorage.removeItem(STORAGE_KEYS.OVO_OU_GALINHA_ESTADOS);
+        localStorage.removeItem(STORAGE_KEYS.QUEM_E_ESSE_POKEMON_SCORES);
+        localStorage.removeItem(STORAGE_KEYS.QUEM_E_ESSE_POKEMON_ESTADOS);
+        localStorage.removeItem(STORAGE_KEYS.REGINALDO_HORA_DO_LANCHE_SCORES);
+        localStorage.removeItem(STORAGE_KEYS.REGINALDO_HORA_DO_LANCHE_ESTADOS);
         localStorage.removeItem(STORAGE_KEYS.EXTRA_POINTS);
     };
 
@@ -384,6 +412,7 @@ export const useGameState = () => {
         gameState,
         addPoints,
         addGamePoints,
+        removeGamePoints,
         addExtraPoints,
         resetScores,
         updateTeamNames,

@@ -22,12 +22,14 @@ interface VerdadesAbsurdasProps {
         syncPoints: () => void;
     };
     addGamePoints: (gameId: string, teamId: 'A' | 'B', points: number) => void;
+    removeGamePoints: (gameId: string, teamId: 'A' | 'B', points: number) => void;
     addPoints: (teamId: 'A' | 'B', points: number) => void;
 }
 
 export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
     gameState,
     addGamePoints,
+    removeGamePoints,
     addPoints
 }) => {
     const [verdadesAbsurdas, setVerdadesAbsurdas] = useState<VerdadeAbsurda[]>([]);
@@ -153,13 +155,13 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
         setEstadoAtual(novoEstado);
     };
 
-    const handleSalvarPontuacao = (timeLeitor: 'A' | 'B') => {
+    const handleSalvarPontuacao = (timeLeitor: 'A' | 'B', dadosTemporarios: { verdadesEncontradas: number[], erros: number, verdadesReveladas: boolean }) => {
         if (!textoAtual || !estadoAtual || estadoAtual.pontuacaoSalva) return;
 
         const total = textoAtual.verdades.length;
-        const acertosRival = estadoAtual.verdadesEncontradas.length;
+        const acertosRival = dadosTemporarios.verdadesEncontradas.length;
         const naoEncontradas = total - acertosRival;
-        const errosRival = estadoAtual.erros;
+        const errosRival = dadosTemporarios.erros;
         const timeAdivinhador: 'A' | 'B' = timeLeitor === 'A' ? 'B' : 'A';
 
         const pontosAdivinhador = acertosRival * pontuacaoConfig.acertoVerdade - errosRival * pontuacaoConfig.erroFalso;
@@ -174,7 +176,7 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
             erros: errosRival,
             pontosLeitor,
             pontosAdivinhador,
-            verdadesAcertadasIndices: estadoAtual.verdadesEncontradas,
+            verdadesAcertadasIndices: dadosTemporarios.verdadesEncontradas,
             timestamp: Date.now()
         });
 
@@ -186,21 +188,27 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
         addPoints(timeLeitor, pontosLeitor);
         addPoints(timeAdivinhador, pontosAdivinhador);
 
-        // Marcar como lido e pontuação salva
-        const novoEstado: TextoEstado = {
-            ...estadoAtual,
-            lido: true,
-            pontuacaoSalva: true
-        };
-        handleUpdateEstado(novoEstado);
-
-        // Fechar modal após salvar
+        // Estado já foi atualizado pelo modal, só fechar
         setModalAberto(false);
         setTextoAtual(null);
         setEstadoAtual(null);
     };
 
     const handleResetarPontuacao = (textoId: string) => {
+        // Buscar pontuação existente para remover dos scores detalhados
+        try {
+            const scores = loadVerdadesAbsurdasScores();
+            const scoreToRemove = scores.find(score => score.textoId === textoId);
+
+            if (scoreToRemove) {
+                // Remover pontos dos scores detalhados
+                removeGamePoints('verdades-absurdas', scoreToRemove.timeLeitor, scoreToRemove.pontosLeitor);
+                removeGamePoints('verdades-absurdas', scoreToRemove.timeAdivinhador, scoreToRemove.pontosAdivinhador);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar score para remoção:', error);
+        }
+
         // Remover pontuação específica do localStorage
         removeVerdadesAbsurdasScore(textoId);
 
