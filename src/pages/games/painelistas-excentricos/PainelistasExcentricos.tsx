@@ -5,7 +5,7 @@ import { carregarPainelistas } from '../../../utils/painelistasLoader';
 import { carregarParticipantes } from '../../../utils/participantesLoader';
 import { appendPainelistasScore, appendPainelistasPunicao, removePainelistasPunicao, loadPainelistasPunicoes, loadPainelistasScores } from '../../../utils/scoreStorage';
 import { PainelistasExcentricosModal } from './PainelistasExcentricosModal';
-import { BackButton } from '../../../components/back-button/BackButton';
+import { GameHeader } from '../../../components/game-header/GameHeader';
 import { DefaultCard } from '../../../components/default-card/DefaultCard';
 import { TagType, ButtonType } from '../../../types';
 import './PainelistasExcentricos.css';
@@ -309,11 +309,11 @@ export const PainelistasExcentricos: React.FC<Props> = ({ gameState, addGamePoin
 
     return (
         <div className="painelistas">
-            <BackButton />
-            <header className="header">
-                <h1>🎭 Painelistas Excêntricos</h1>
-                <p>Escolha um fato por participante para jogar</p>
-            </header>
+            <GameHeader
+                title="Painelistas Excêntricos"
+                subtitle="Escolha um fato por participante para jogar"
+                emoji="🎭"
+            />
 
             <main className="main-content">
                 {renderTimeSection(gameState.teams.teamA)}

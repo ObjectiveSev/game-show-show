@@ -325,6 +325,17 @@
     font-weight: 600;
 }
 
+/* Classes para pontuação */
+.negative-points {
+    color: #dc3545 !important;
+    font-weight: 600;
+}
+
+.positive-points {
+    color: #28a745 !important;
+    font-weight: 600;
+}
+
 /* Células da tabela */
 .nome-cell {
     font-weight: 600;

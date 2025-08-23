@@ -1,0 +1,40 @@
+{
+    "pontuacao": {
+        "acerto": 2,
+        "erro": -2
+    },
+    "pokemons": [
+        {
+            "id": "1",
+            "nome": "Greninja"
+        },
+        {
+            "id": "2",
+            "nome": "Gyarados"
+        },
+        {
+            "id": "3",
+            "nome": "Bruxish"
+        },
+        {
+            "id": "4",
+            "nome": "Loudred"
+        },
+        {
+            "id": "5",
+            "nome": "Gastly"
+        },
+        {
+            "id": "6",
+            "nome": "Wailmer"
+        },
+        {
+            "id": "7",
+            "nome": "Rowlet"
+        },
+        {
+            "id": "8",
+            "nome": "Krookodile"
+        }
+    ]
+}

@@ -24,6 +24,8 @@ export const STORAGE_KEYS = {
     CARO_PRA_CHUCHU_SCORES: 'caroPraChuchuScores',
     OVO_OU_GALINHA_ESTADOS: 'ovoOuGalinhaEstados',
     OVO_OU_GALINHA_SCORES: 'ovoOuGalinhaScores',
+    QUEM_E_ESSE_POKEMON_ESTADOS: 'quemEEssePokemonEstados',
+    QUEM_E_ESSE_POKEMON_SCORES: 'quemEEssePokemonScores',
     EXTRA_POINTS: 'extraPoints'
 } as const;
 
@@ -39,7 +41,8 @@ export const API_ENDPOINTS = {
     PAINELISTAS_EXCENTRICOS: '/config/painelistas-excentricos.json',
     NOTICIAS_EXTRAORDINARIAS: '/config/noticias-extraordinarias.json',
     CARO_PRA_CHUCHU: '/config/caro-pra-chuchu.json',
-    OVO_OU_GALINHA: '/config/ovo-ou-galinha.json'
+    OVO_OU_GALINHA: '/config/ovo-ou-galinha.json',
+    QUEM_E_ESSE_POKEMON: '/config/quem-e-esse-pokemon.json'
 } as const;
 
 // ============================================================================

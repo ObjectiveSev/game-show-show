@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { BackButton } from '../../../components/back-button/BackButton';
+import { GameHeader } from '../../../components/game-header/GameHeader';
 import { OvoOuGalinhaModal } from './OvoOuGalinhaModal';
 import { DefaultCard } from '../../../components/default-card/DefaultCard';
 import { useGameState } from '../../../hooks/useGameState';
@@ -126,13 +126,11 @@ export const OvoOuGalinha: React.FC = () => {
 
     return (
         <div className="ovo-ou-galinha-page">
-            <div className="page-header">
-                <BackButton />
-                <div className="header-content">
-                    <h1>🥚 O Ovo ou a Galinha</h1>
-                    <p>Ordene os eventos históricos do mais antigo para o mais recente.</p>
-                </div>
-            </div>
+            <GameHeader
+                title="O Ovo ou a Galinha"
+                subtitle="Ordene os eventos históricos do mais antigo para o mais recente."
+                emoji="🥚"
+            />
 
             <div className="trios-grid">
                 {config.trios.map((trio) => {

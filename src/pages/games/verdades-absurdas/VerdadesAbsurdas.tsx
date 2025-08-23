@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { VerdadesAbsurdasModal } from './VerdadesAbsurdasModal';
 import { DefaultCard } from '../../../components/default-card/DefaultCard';
-import { BackButton } from '../../../components/back-button/BackButton';
+import { GameHeader } from '../../../components/game-header/GameHeader';
 import { carregarVerdadesAbsurdas } from '../../../utils/verdadesAbsurdasLoader';
 import { appendVerdadesAbsurdasScore, removeVerdadesAbsurdasScore } from '../../../utils/scoreStorage';
 import type { VerdadeAbsurda, TextoEstado } from '../../../types/verdadesAbsurdas';
@@ -234,13 +234,11 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
 
     return (
         <div className="verdades-absurdas">
-            <div className="page-header">
-                <BackButton />
-                <div className="header-content">
-                    <h1>🤔 Verdades Absurdas</h1>
-                    <p>Encontre as 5 verdades escondidas em cada texto</p>
-                </div>
-            </div>
+            <GameHeader
+                title="Verdades Absurdas"
+                subtitle="Encontre as 5 verdades escondidas em cada texto"
+                emoji="🤔"
+            />
 
             <main className="main-content">
                 <div className="textos-grid">

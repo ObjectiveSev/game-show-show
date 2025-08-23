@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { useGameState } from '../../hooks/useGameState';
 import { Dashboard } from '../dashboard/Dashboard';
 import { VerdadesAbsurdas } from '../games/verdades-absurdas/VerdadesAbsurdas';
@@ -8,18 +8,20 @@ import { PainelistasExcentricos } from '../games/painelistas-excentricos/Paineli
 import { NoticiasExtraordinarias } from '../games/noticias-extraordinarias/NoticiasExtraordinarias';
 import { CaroPraChuchu } from '../games/caro-pra-chuchu/CaroPraChuchu';
 import { OvoOuGalinha } from '../games/ovo-ou-galinha/OvoOuGalinha';
+import { QuemEEssePokemon } from '../games/quem-e-esse-pokemon/QuemEEssePokemon';
 import { PlacarDetalhado } from '../placar-detalhado/PlacarDetalhado';
 import { TeamSettingsModal } from '../team-settings/TeamSettingsModal';
 import { clearAllLocalStorage } from '../../utils/fileSystem';
 import type { Team } from '../../types';
 
 
-function App() {
+function AppContent() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { gameState, updateTeamConfig, addGamePoints, addPoints, addExtraPoints, resetScores, syncPoints } = useGameState();
+  const navigate = useNavigate();
 
   const handleOpenScoreboard = () => {
-    window.location.href = '/placar-detalhado';
+    navigate('/placar-detalhado');
   };
 
 
@@ -31,22 +33,25 @@ function App() {
   const handleGameClick = (gameId: string) => {
     switch (gameId) {
       case 'verdades-absurdas':
-        window.location.href = '/verdades-absurdas';
+        navigate('/verdades-absurdas');
         break;
       case 'dicionario-surreal':
-        window.location.href = '/dicionario-surreal';
+        navigate('/dicionario-surreal');
         break;
       case 'painelistas-excentricos':
-        window.location.href = '/painelistas-excentricos';
+        navigate('/painelistas-excentricos');
         break;
       case 'noticias-extraordinarias':
-        window.location.href = '/noticias-extraordinarias';
+        navigate('/noticias-extraordinarias');
         break;
       case 'caro-pra-chuchu':
-        window.location.href = '/caro-pra-chuchu';
+        navigate('/caro-pra-chuchu');
         break;
       case 'ovo-ou-galinha':
-        window.location.href = '/ovo-ou-galinha';
+        navigate('/ovo-ou-galinha');
+        break;
+      case 'quem-e-esse-pokemon':
+        navigate('/quem-e-esse-pokemon');
         break;
       default:
         alert(`Jogo "${gameId}" será implementado em breve!`);
@@ -72,76 +77,89 @@ function App() {
   };
 
   return (
+    <div className="App">
+      <Routes>
+        <Route path="/" element={
+          <Dashboard
+            onOpenScoreboard={handleOpenScoreboard}
+            onOpenSettings={handleOpenSettings}
+            onGameClick={handleGameClick}
+            gameState={gameState}
+            addPoints={addPoints}
+            resetScores={resetScores}
+            onClearLocalStorage={handleClearLocalStorage}
+            addExtraPoints={addExtraPoints}
+          />
+        } />
+        <Route path="/verdades-absurdas" element={
+          <VerdadesAbsurdas
+            gameState={{ ...gameState, syncPoints }}
+            addGamePoints={addGamePoints}
+            addPoints={addPoints}
+          />
+        } />
+        <Route path="/dicionario-surreal" element={
+          <DicionarioSurreal
+            gameState={gameState}
+            addGamePoints={addGamePoints}
+            addPoints={addPoints}
+            />
+        } />
+        <Route path="/painelistas-excentricos" element={
+          <PainelistasExcentricos
+            gameState={{ ...gameState, syncPoints }}
+            addGamePoints={addGamePoints}
+            addPoints={addPoints}
+          />
+        } />
+        <Route path="/noticias-extraordinarias" element={
+          <NoticiasExtraordinarias
+            gameState={gameState}
+            addGamePoints={addGamePoints}
+            addPoints={addPoints}
+          />
+        } />
+        <Route path="/caro-pra-chuchu" element={
+          <CaroPraChuchu
+            gameState={gameState}
+            addGamePoints={addGamePoints}
+            addPoints={addPoints}
+          />
+        } />
+        <Route path="/ovo-ou-galinha" element={
+          <OvoOuGalinha />
+        } />
+                  <Route path="/quem-e-esse-pokemon" element={
+            <QuemEEssePokemon
+              gameState={{ ...gameState, syncPoints }}
+              addGamePoints={addGamePoints}
+              addPoints={addPoints}
+            />
+          } />
+        <Route path="/placar-detalhado" element={
+          <PlacarDetalhado gameState={gameState} />
+        } />
+      </Routes>
+
+      <TeamSettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        teams={[gameState.teams.teamA, gameState.teams.teamB]}
+        onUpdateTeams={handleUpdateTeams}
+      />
+    </div>
+  );
+}
+
+function App() {
+  return (
     <Router
       future={{
         v7_relativeSplatPath: true,
         v7_startTransition: true
       }}
     >
-      <div className="App">
-        <Routes>
-          <Route path="/" element={
-            <Dashboard
-              onOpenScoreboard={handleOpenScoreboard}
-              onOpenSettings={handleOpenSettings}
-              onGameClick={handleGameClick}
-              gameState={gameState}
-              addPoints={addPoints}
-              resetScores={resetScores}
-              onClearLocalStorage={handleClearLocalStorage}
-              addExtraPoints={addExtraPoints}
-            />
-          } />
-          <Route path="/verdades-absurdas" element={
-            <VerdadesAbsurdas
-              gameState={{ ...gameState, syncPoints }}
-              addGamePoints={addGamePoints}
-              addPoints={addPoints}
-            />
-          } />
-          <Route path="/dicionario-surreal" element={
-            <DicionarioSurreal
-              gameState={gameState}
-              addGamePoints={addGamePoints}
-              addPoints={addPoints}
-            />
-          } />
-          <Route path="/painelistas-excentricos" element={
-            <PainelistasExcentricos
-              gameState={{ ...gameState, syncPoints }}
-              addGamePoints={addGamePoints}
-              addPoints={addPoints}
-            />
-          } />
-          <Route path="/noticias-extraordinarias" element={
-            <NoticiasExtraordinarias
-              gameState={gameState}
-              addGamePoints={addGamePoints}
-              addPoints={addPoints}
-            />
-          } />
-          <Route path="/caro-pra-chuchu" element={
-            <CaroPraChuchu
-              gameState={gameState}
-              addGamePoints={addGamePoints}
-              addPoints={addPoints}
-            />
-          } />
-          <Route path="/ovo-ou-galinha" element={
-            <OvoOuGalinha />
-          } />
-          <Route path="/placar-detalhado" element={
-            <PlacarDetalhado gameState={gameState} />
-          } />
-        </Routes>
-
-        <TeamSettingsModal
-          isOpen={isSettingsOpen}
-          onClose={() => setIsSettingsOpen(false)}
-          teams={[gameState.teams.teamA, gameState.teams.teamB]}
-          onUpdateTeams={handleUpdateTeams}
-        />
-      </div>
+      <AppContent />
     </Router>
   );
 }

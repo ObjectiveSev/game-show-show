@@ -112,6 +112,7 @@ export type TagType = typeof TagType[keyof typeof TagType];
 export const ButtonType = {
     RESET: 'reset',
     ERROR: 'error',
+    SUCCESS: 'success',
     REVEAL_TRUTH: 'reveal_truth',
     SAVE: 'save',
     HINT: 'hint',

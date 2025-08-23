@@ -6,7 +6,7 @@ import { carregarNoticiasExtraordinarias } from '../../../utils/noticiasExtraord
 import { saveNoticiasExtraordinariasScore } from '../../../utils/scoreStorage';
 import { STORAGE_KEYS } from '../../../constants';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
-import { BackButton } from '../../../components/back-button/BackButton';
+import { GameHeader } from '../../../components/game-header/GameHeader';
 import { NoticiasExtraordinariasModal } from './NoticiasExtraordinariasModal';
 import { DefaultCard } from '../../../components/default-card/DefaultCard';
 import { TagType, ButtonType } from '../../../types';
@@ -180,11 +180,11 @@ export const NoticiasExtraordinarias: React.FC<NoticiasExtraordinariasProps> = (
 
     return (
         <div className="noticias-extraordinarias">
-            <BackButton />
-            <header className="header">
-                <h1>📰 Notícias Extraordinárias</h1>
-                <p>Identifique se as manchetes são verdadeiras ou falsas</p>
-            </header>
+            <GameHeader
+                title="Notícias Extraordinárias"
+                subtitle="Identifique se as manchetes são verdadeiras ou falsas"
+                emoji="📰"
+            />
 
             <main className="main-content">
                 {renderNoticiasGrid()}

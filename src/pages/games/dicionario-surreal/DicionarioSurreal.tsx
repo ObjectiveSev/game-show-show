@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BackButton } from '../../../components/back-button/BackButton';
+import { GameHeader } from '../../../components/game-header/GameHeader';
 import { DicionarioSurrealModal } from './DicionarioSurrealModal';
 import { DefaultCard } from '../../../components/default-card/DefaultCard';
 import { carregarDicionarioSurreal } from '../../../utils/dicionarioLoader';
@@ -115,13 +115,11 @@ export const DicionarioSurreal: React.FC<Props> = ({ gameState, addGamePoints, a
 
     return (
         <div className="dicionario-surreal">
-            <div className="page-header">
-                <BackButton />
-                <div className="header-content">
-                    <h1>📚 Dicionário Surreal</h1>
-                    <p>Escolha a definição correta para palavras raras</p>
-                </div>
-            </div>
+            <GameHeader
+                title="Dicionário Surreal"
+                subtitle="Escolha a definição correta para palavras raras"
+                emoji="📚"
+            />
 
             <main className="main-content">
                 <div className="palavras-grid">

@@ -28,9 +28,16 @@ const BUTTON_CONFIGS = {
     [ButtonType.ERROR]: {
         text: 'Erro',
         icon: '❌',
-        backgroundColor: '#dc3545',
+        backgroundColor: '#e74c3c',
         textColor: 'white',
-        hoverBackground: '#c82333'
+        hoverBackground: '#c0392b'
+    },
+    [ButtonType.SUCCESS]: {
+        text: 'Acerto',
+        icon: '✅',
+        backgroundColor: '#27ae60',
+        textColor: 'white',
+        hoverBackground: '#229954'
     },
     [ButtonType.REVEAL_TRUTH]: {
         text: 'Revelar Verdade',

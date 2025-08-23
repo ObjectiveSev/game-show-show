@@ -4,6 +4,7 @@ import type { PainelistasScoreEntry, PainelistasPunicaoEntry } from '../types/pa
 import type { NoticiasExtraordinariasScoreEntry } from '../types/noticiasExtraordinarias';
 import type { CaroPraChuchuScoreEntry } from '../types/caroPraChuchu';
 import type { OvoOuGalinhaScoreEntry } from '../types/ovoOuGalinha';
+import type { QuemEEssePokemonScoreEntry } from '../types/quemEEssePokemon';
 import { STORAGE_KEYS } from '../constants';
 
 export const loadVerdadesAbsurdasScores = (): VerdadesAbsurdasScoreEntry[] => {
@@ -233,6 +234,48 @@ export const removeOvoOuGalinhaScore = (trioId: number): void => {
 export const clearOvoOuGalinhaScores = (): void => {
     try {
         localStorage.removeItem(STORAGE_KEYS.OVO_OU_GALINHA_SCORES);
+    } catch {
+        // Ignorar erros de localStorage
+    }
+};
+
+// ============================================================================
+// QUEM É ESSE POKÉMON SCORES
+// ============================================================================
+
+export const saveQuemEEssePokemonScore = (entry: QuemEEssePokemonScoreEntry): void => {
+    try {
+        const existing = loadQuemEEssePokemonScores();
+        existing.push(entry);
+        localStorage.setItem(STORAGE_KEYS.QUEM_E_ESSE_POKEMON_SCORES, JSON.stringify(existing));
+    } catch (error) {
+        console.error('Erro ao salvar score do Quem é esse Pokémon:', error);
+    }
+};
+
+export const loadQuemEEssePokemonScores = (): QuemEEssePokemonScoreEntry[] => {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEYS.QUEM_E_ESSE_POKEMON_SCORES);
+        return raw ? JSON.parse(raw) : [];
+    } catch (error) {
+        console.error('Erro ao carregar scores do Quem é esse Pokémon:', error);
+        return [];
+    }
+};
+
+export const removeQuemEEssePokemonScore = (pokemonId: string): void => {
+    try {
+        const existing = loadQuemEEssePokemonScores();
+        const filtered = existing.filter(score => score.pokemonId !== pokemonId);
+        localStorage.setItem(STORAGE_KEYS.QUEM_E_ESSE_POKEMON_SCORES, JSON.stringify(filtered));
+    } catch (error) {
+        console.error('Erro ao remover score do Quem é esse Pokémon:', error);
+    }
+};
+
+export const clearQuemEEssePokemonScores = (): void => {
+    try {
+        localStorage.removeItem(STORAGE_KEYS.QUEM_E_ESSE_POKEMON_SCORES);
     } catch {
         // Ignorar erros de localStorage
     }

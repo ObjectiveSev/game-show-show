@@ -50,11 +50,11 @@
             "configFile": "maestro-billy.json"
         },
         {
-            "id": "pokemon-impossivel",
+            "id": "quem-e-esse-pokemon",
             "name": "Quem É Esse Pokémon",
             "emoji": "⚡",
-            "description": "Versão impossível",
-            "configFile": "pokemon-impossivel.json"
+            "description": "Adivinhe qual é o Pokémon pela sombra",
+            "configFile": "quem-e-esse-pokemon.json"
         },
         {
             "id": "qual-comida",

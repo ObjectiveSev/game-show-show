@@ -5,6 +5,11 @@ export const SoundType = {
 
 export type SoundType = typeof SoundType[keyof typeof SoundType];
 
+// Constantes para sons customizados
+export const CUSTOM_SOUNDS = {
+    QUEM_E_ESSE_POKEMON: 'https://www.myinstants.com/media/sounds/quem-e-esse-pokemon-011.mp3'
+} as const;
+
 interface SoundItem {
     url: string;
     audio?: HTMLAudioElement;
@@ -13,6 +18,7 @@ interface SoundItem {
 interface SoundConfig {
     success: SoundItem[];
     error: SoundItem[];
+    custom: Map<string, HTMLAudioElement>;
 }
 
 export class SoundManager {
@@ -55,7 +61,8 @@ export class SoundManager {
                 { url: 'https://www.myinstants.com/media/sounds/wrong-answer-buzzer.mp3' },
                 { url: 'https://www.myinstants.com/media/sounds/windows-xp-error.mp3' },
                 { url: 'https://www.myinstants.com/media/sounds/errou-show-do-milhao.mp3' },
-            ]
+            ],
+            custom: new Map<string, HTMLAudioElement>()
         };
     }
 
@@ -107,6 +114,35 @@ export class SoundManager {
 
     public playErrorSound(): void {
         this.playSound(SoundType.ERROR);
+    }
+
+        public playCustomSound(url: string): void {
+        try {
+            let audio: HTMLAudioElement;
+
+            // Verificar se já temos o Audio pré-carregado no map de custom sounds
+            const existingAudio = this.soundConfig.custom.get(url);
+
+            if (existingAudio) {
+                audio = existingAudio;
+                audio.currentTime = 0;
+            } else {
+                // Criar novo Audio
+                audio = new Audio(url);
+                audio.volume = 0.7; // Volume em 70%
+                
+                // Salvar para reutilização no map de custom sounds
+                this.soundConfig.custom.set(url, audio);
+            }
+
+            // Tocar o áudio
+            audio.play().catch(error => {
+                console.error(`Erro ao tocar som customizado:`, error);
+            });
+
+        } catch (error) {
+            console.error(`Erro ao tocar som customizado:`, error);
+        }
     }
 }
 

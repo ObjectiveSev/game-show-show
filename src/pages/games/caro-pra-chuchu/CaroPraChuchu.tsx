@@ -5,7 +5,7 @@ import type { ItemCaroPraChuchu, ItemEstado, CaroPraChuchuData } from '../../../
 import { carregarCaroPraChuchu } from '../../../utils/caroPraChuchuLoader';
 import { saveCaroPraChuchuScore, removeCaroPraChuchuScore } from '../../../utils/scoreStorage';
 import { STORAGE_KEYS } from '../../../constants';
-import { BackButton } from '../../../components/back-button/BackButton';
+import { GameHeader } from '../../../components/game-header/GameHeader';
 import { CaroPraChuchuModal } from './CaroPraChuchuModal';
 import { DefaultCard } from '../../../components/default-card/DefaultCard';
 import { TagType, ButtonType } from '../../../types';
@@ -213,11 +213,11 @@ export const CaroPraChuchu: React.FC<Props> = ({ gameState, addGamePoints, addPo
 
     return (
         <div className="caro-pra-chuchu">
-            <BackButton />
-            <header className="header">
-                <h1>💰 Caro Pra Chuchu</h1>
-                <p>Adivinhe os preços históricos dos itens mais caros</p>
-            </header>
+            <GameHeader
+                title="Caro Pra Chuchu"
+                subtitle="Adivinhe os preços históricos dos itens mais caros"
+                emoji="💰"
+            />
 
             <main className="main-content">
                 {renderItensGrid()}
