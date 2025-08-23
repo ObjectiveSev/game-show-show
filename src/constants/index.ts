@@ -23,7 +23,8 @@ export const STORAGE_KEYS = {
     CARO_PRA_CHUCHU_ESTADOS: 'caroPraChuchuEstados',
     CARO_PRA_CHUCHU_SCORES: 'caroPraChuchuScores',
     OVO_OU_GALINHA_ESTADOS: 'ovoOuGalinhaEstados',
-    OVO_OU_GALINHA_SCORES: 'ovoOuGalinhaScores'
+    OVO_OU_GALINHA_SCORES: 'ovoOuGalinhaScores',
+    EXTRA_POINTS: 'extraPoints'
 } as const;
 
 // ============================================================================

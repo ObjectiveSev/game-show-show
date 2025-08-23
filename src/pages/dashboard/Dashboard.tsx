@@ -20,6 +20,7 @@ interface DashboardProps {
     addPoints: (teamId: 'A' | 'B', points: number) => void;
     resetScores: () => void;
     onClearLocalStorage: () => void;
+    addExtraPoints: (teamId: 'A' | 'B', points: number) => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
@@ -29,7 +30,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
     gameState,
     addPoints,
     resetScores,
-    onClearLocalStorage
+    onClearLocalStorage,
+    addExtraPoints: onAddExtraPoints
 }) => {
     const [gamesConfig, setGamesConfig] = useState<GamesConfig | null>(null);
     const [loading, setLoading] = useState(true);
@@ -131,6 +133,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         }
                     }}
                     onClearLocalStorage={onClearLocalStorage}
+                    onAddExtraPoints={onAddExtraPoints}
+                    teamA={gameState.teams.teamA}
+                    teamB={gameState.teams.teamB}
                 />
             </main>
         </div>

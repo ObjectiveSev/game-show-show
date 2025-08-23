@@ -13,7 +13,7 @@
     justify-content: center;
     gap: 8px;
     min-width: 200px;
-    min-height: 48px;
+    height: 52px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     box-sizing: border-box;
 }
@@ -43,6 +43,36 @@
 .custom-button .button-text {
     font-weight: 600;
     white-space: nowrap;
+}
+
+/* Estilos base para botões CUSTOM */
+button[style*="background-color"] {
+    border: none;
+    border-radius: 12px;
+    padding: 14px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 200px;
+    height: 52px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
+}
+
+/* Hover para botões CUSTOM */
+button[style*="background-color"]:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    filter: brightness(1.1);
+}
+
+button[style*="background-color"]:active:not(:disabled) {
+    transform: translateY(0);
 }
 
 /* Responsividade */

@@ -9,6 +9,12 @@ interface ButtonProps {
     className?: string;
     text?: string; // Optional text to override default
     icon?: string; // Optional icon to override default
+    customConfig?: {
+        text: string;
+        backgroundColor: string;
+        textColor?: string;
+        hoverBackground?: string;
+    };
 }
 
 const BUTTON_CONFIGS = {
@@ -74,6 +80,13 @@ const BUTTON_CONFIGS = {
         backgroundColor: '#dc3545',
         textColor: 'white',
         hoverBackground: '#c82333'
+    },
+    [ButtonType.CUSTOM]: {
+        text: 'Custom',
+        icon: '🎯',
+        backgroundColor: '#6c757d',
+        textColor: 'white',
+        hoverBackground: '#5a6268'
     }
 };
 
@@ -83,23 +96,41 @@ export const Button: React.FC<ButtonProps> = ({
     disabled = false,
     className = '',
     text,
-    icon
+    icon,
+    customConfig
 }) => {
     const config = BUTTON_CONFIGS[type];
-    const buttonText = text !== undefined ? text : config.text;
-    const buttonIcon = icon !== undefined ? icon : config.icon;
+    
+    let buttonText: string;
+    let buttonIcon: string;
+    let buttonStyle: React.CSSProperties = {};
+    
+    if (type === ButtonType.CUSTOM && customConfig) {
+        buttonText = customConfig.text;
+        buttonIcon = icon || '';
+        buttonStyle = {
+            backgroundColor: customConfig.backgroundColor,
+            color: customConfig.textColor || 'white'
+        };
+        
+        // Hover será tratado via CSS
+    } else {
+        buttonText = text !== undefined ? text : config.text;
+        buttonIcon = icon !== undefined ? icon : config.icon;
+        buttonStyle = {
+            backgroundColor: config.backgroundColor,
+            color: config.textColor
+        };
+    }
 
     return (
         <button
-            className={`custom-button ${className}`}
+            className={type === ButtonType.CUSTOM ? className : `custom-button ${className}`}
             onClick={onClick}
             disabled={disabled}
-            style={{
-                backgroundColor: config.backgroundColor,
-                color: config.textColor
-            }}
+            style={buttonStyle}
         >
-            <span className="button-icon">{buttonIcon}</span>
+            {buttonIcon && <span className="button-icon">{buttonIcon}</span>}
             <span className="button-text">{buttonText}</span>
         </button>
     );

@@ -16,7 +16,7 @@ import type { Team } from '../../types';
 
 function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const { gameState, updateTeamConfig, addGamePoints, addPoints, resetScores, syncPoints } = useGameState();
+  const { gameState, updateTeamConfig, addGamePoints, addPoints, addExtraPoints, resetScores, syncPoints } = useGameState();
 
   const handleOpenScoreboard = () => {
     window.location.href = '/placar-detalhado';
@@ -89,6 +89,7 @@ function App() {
               addPoints={addPoints}
               resetScores={resetScores}
               onClearLocalStorage={handleClearLocalStorage}
+              addExtraPoints={addExtraPoints}
             />
           } />
           <Route path="/verdades-absurdas" element={

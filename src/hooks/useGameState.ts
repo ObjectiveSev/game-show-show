@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { Team, AppState } from '../types';
+import type { Team, AppState, ExtraPointsEntry } from '../types';
 import { loadGameConfig, saveGameConfig } from '../config/gameConfig';
 import { STORAGE_KEYS } from '../constants';
 import { syncGameScores } from '../utils/scoreSync';
@@ -32,7 +32,8 @@ const initialState: AppState = {
         winner: null,
         timer: null,
         timeLeft: 0
-    }
+    },
+    extraPoints: []
 };
 
 export const useGameState = () => {
@@ -89,6 +90,22 @@ export const useGameState = () => {
                         }));
                     }
                 }
+
+                // Carregar pontos extras salvos
+                const savedExtraPoints = localStorage.getItem(STORAGE_KEYS.EXTRA_POINTS);
+                if (savedExtraPoints && isMounted) {
+                    try {
+                        const extraPoints = JSON.parse(savedExtraPoints);
+                        if (Array.isArray(extraPoints)) {
+                            setGameState(prev => ({
+                                ...prev,
+                                extraPoints
+                            }));
+                        }
+                    } catch (error) {
+                        console.warn('❌ Failed to parse extra points:', error);
+                    }
+                }
             } catch (error) {
                 if (isMounted) {
                     console.warn('❌ Failed to load saved scores:', error);
@@ -112,22 +129,33 @@ export const useGameState = () => {
         }
     }, [gameState.gameScores]);
 
-    // Sincronizar pontos dos times automaticamente quando gameScores mudar
+    // Salvar pontos extras automaticamente quando mudarem
     useEffect(() => {
-        if (Object.keys(gameState.gameScores).length > 0) {
-            const totalScoreA = Object.values(gameState.gameScores).reduce((sum, game) => sum + game.teamA, 0);
-            const totalScoreB = Object.values(gameState.gameScores).reduce((sum, game) => sum + game.teamB, 0);
-
-            setGameState(prev => ({
-                ...prev,
-                teams: {
-                    ...prev.teams,
-                    teamA: { ...prev.teams.teamA, score: totalScoreA },
-                    teamB: { ...prev.teams.teamB, score: totalScoreB }
-                }
-            }));
+        if (gameState.extraPoints.length > 0) {
+            localStorage.setItem(STORAGE_KEYS.EXTRA_POINTS, JSON.stringify(gameState.extraPoints));
         }
-    }, [gameState.gameScores]);
+    }, [gameState.extraPoints]);
+
+    // Sincronizar pontos dos times automaticamente quando gameScores ou extraPoints mudarem
+    useEffect(() => {
+        const gameScoreA = Object.values(gameState.gameScores).reduce((sum, game) => sum + game.teamA, 0);
+        const gameScoreB = Object.values(gameState.gameScores).reduce((sum, game) => sum + game.teamB, 0);
+
+        const extraScoreA = gameState.extraPoints.filter(entry => entry.teamId === 'A').reduce((sum, entry) => sum + entry.points, 0);
+        const extraScoreB = gameState.extraPoints.filter(entry => entry.teamId === 'B').reduce((sum, entry) => sum + entry.points, 0);
+
+        const totalScoreA = gameScoreA + extraScoreA;
+        const totalScoreB = gameScoreB + extraScoreB;
+
+        setGameState(prev => ({
+            ...prev,
+            teams: {
+                ...prev.teams,
+                teamA: { ...prev.teams.teamA, score: totalScoreA },
+                teamB: { ...prev.teams.teamB, score: totalScoreB }
+            }
+        }));
+    }, [gameState.gameScores, gameState.extraPoints]);
 
     // Função para adicionar pontos a um time
     const addPoints = (teamId: 'A' | 'B', points: number) => {
@@ -157,6 +185,22 @@ export const useGameState = () => {
         }));
     };
 
+    // Função para adicionar pontos extras do host
+    const addExtraPoints = (teamId: 'A' | 'B', points: number) => {
+        const entry: ExtraPointsEntry = {
+            id: Date.now().toString(),
+            teamId,
+            points,
+            timestamp: Date.now(),
+            description: `${points > 0 ? '+' : ''}${points} ponto${points !== 1 ? 's' : ''}`
+        };
+
+        setGameState(prev => ({
+            ...prev,
+            extraPoints: [...prev.extraPoints, entry]
+        }));
+    };
+
     // Função para resetar todos os scores
     const resetScores = () => {
         setGameState(prev => ({
@@ -166,7 +210,8 @@ export const useGameState = () => {
                 ...prev.teams,
                 teamA: { ...prev.teams.teamA, score: 0 },
                 teamB: { ...prev.teams.teamB, score: 0 }
-            }
+            },
+            extraPoints: []
         }));
 
         // Limpar localStorage
@@ -174,6 +219,7 @@ export const useGameState = () => {
         localStorage.removeItem(STORAGE_KEYS.VERDADES_ABSURDAS_SCORES);
         localStorage.removeItem(STORAGE_KEYS.DICIONARIO_SURREAL_SCORES);
         localStorage.removeItem(STORAGE_KEYS.PAINELISTAS_SCORES);
+        localStorage.removeItem(STORAGE_KEYS.EXTRA_POINTS);
     };
 
     // Função para atualizar nomes dos times
@@ -338,6 +384,7 @@ export const useGameState = () => {
         gameState,
         addPoints,
         addGamePoints,
+        addExtraPoints,
         resetScores,
         updateTeamNames,
         updateTeamMembers,

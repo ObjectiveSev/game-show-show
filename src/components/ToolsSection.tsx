@@ -1,16 +1,37 @@
 import React from 'react';
 import { Button } from './button/Button';
 import { ButtonType } from '../types';
+import { getTeamNameFromString } from '../utils/teamUtils';
+import type { Team } from '../types';
+import { soundManager } from '../utils/soundManager';
 
 interface ToolsSectionProps {
     onResetScores: () => void;
     onClearLocalStorage: () => void;
+    onAddExtraPoints: (teamId: 'A' | 'B', points: number) => void;
+    teamA: Team;
+    teamB: Team;
 }
 
 export const ToolsSection: React.FC<ToolsSectionProps> = ({
     onResetScores,
-    onClearLocalStorage
+    onClearLocalStorage,
+    onAddExtraPoints,
+    teamA,
+    teamB
 }) => {
+    // Função para adicionar pontos com som
+    const handleAddExtraPoints = (teamId: 'A' | 'B', points: number) => {
+        // Tocar som baseado no tipo de ação
+        if (points > 0) {
+            soundManager.playSuccessSound();
+        } else {
+            soundManager.playErrorSound();
+        }
+
+        // Executar a ação original
+        onAddExtraPoints(teamId, points);
+    };
     return (
         <div className="tools-section">
             <h3>🛠️ Ferramentas do Host</h3>
@@ -27,29 +48,53 @@ export const ToolsSection: React.FC<ToolsSectionProps> = ({
                 />
             </div>
 
-            <div className="shortcuts-info">
-                <h4>⌨️ Atalhos de Teclado</h4>
-                <div className="shortcuts-grid">
-                    <div className="shortcut">
-                        <kbd>Ctrl + 1</kbd>
-                        <span>+1 ponto Time A</span>
-                    </div>
-                    <div className="shortcut">
-                        <kbd>Ctrl + 2</kbd>
-                        <span>+1 ponto Time B</span>
-                    </div>
-                    <div className="shortcut">
-                        <kbd>Ctrl + Z</kbd>
-                        <span>-1 ponto Time A</span>
-                    </div>
-                    <div className="shortcut">
-                        <kbd>Ctrl + X</kbd>
-                        <span>-1 ponto Time B</span>
+            <div className="pontuacao-extra-section">
+                <h4>🎯 Pontuação Extra do Host</h4>
+                <div className="pontuacao-extra-grid">
+                    <div className="pontuacao-row">
+                        <Button
+                            type={ButtonType.CUSTOM}
+                            onClick={() => handleAddExtraPoints('A', 1)}
+                            customConfig={{
+                                text: `+1 ${getTeamNameFromString('A', { teamA, teamB })}`,
+                                backgroundColor: teamA.color,
+                                hoverBackground: teamA.color,
+                                textColor: 'white'
+                            }}
+                        />
+                        <Button
+                            type={ButtonType.CUSTOM}
+                            onClick={() => handleAddExtraPoints('A', -1)}
+                            customConfig={{
+                                text: `-1 ${getTeamNameFromString('A', { teamA, teamB })}`,
+                                backgroundColor: teamA.color,
+                                hoverBackground: teamA.color,
+                                textColor: 'white'
+                            }}
+                        />
                     </div>
 
-                    <div className="shortcut">
-                        <kbd>Ctrl + S</kbd>
-                        <span>Abrir Scoreboard</span>
+                    <div className="pontuacao-row">
+                        <Button
+                            type={ButtonType.CUSTOM}
+                            onClick={() => handleAddExtraPoints('B', 1)}
+                            customConfig={{
+                                text: `+1 ${getTeamNameFromString('B', { teamA, teamB })}`,
+                                backgroundColor: teamB.color,
+                                hoverBackground: teamB.color,
+                                textColor: 'white'
+                            }}
+                        />
+                        <Button
+                            type={ButtonType.CUSTOM}
+                            onClick={() => handleAddExtraPoints('B', -1)}
+                            customConfig={{
+                                text: `-1 ${getTeamNameFromString('B', { teamA, teamB })}`,
+                                backgroundColor: teamB.color,
+                                hoverBackground: teamB.color,
+                                textColor: 'white'
+                            }}
+                        />
                     </div>
                 </div>
             </div>

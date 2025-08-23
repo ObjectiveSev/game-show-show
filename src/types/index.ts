@@ -36,6 +36,14 @@ export interface BuzzerState {
     timeLeft: number;
 }
 
+export interface ExtraPointsEntry {
+    id: string;
+    teamId: 'A' | 'B';
+    points: number;
+    timestamp: number;
+    description: string;
+}
+
 export interface AppState {
     teams: {
         teamA: Team;
@@ -43,6 +51,7 @@ export interface AppState {
     };
     gameScores: GameScores;
     buzzer: BuzzerState;
+    extraPoints: ExtraPointsEntry[];
 }
 
 // Tipos para jogos específicos
@@ -104,7 +113,8 @@ export const ButtonType = {
     SELECT: 'select',
     SCOREBOARD: 'scoreboard',
     SETTINGS: 'settings',
-    CLEAR_STORAGE: 'clear_storage'
+    CLEAR_STORAGE: 'clear_storage',
+    CUSTOM: 'custom'
 } as const;
 
 export type ButtonType = typeof ButtonType[keyof typeof ButtonType];

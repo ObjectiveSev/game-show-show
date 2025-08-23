@@ -91,6 +91,63 @@
 - **NEVER** mix camelCase and kebab-case in folder names
 - **ALWAYS** maintain consistent import depth (`../../../`)
 
+## ⚡ ASYNC ERROR HANDLING
+### 🛡️ Promise and Async Operation Rules
+- **ALWAYS** implement proper error handling for async operations in React components
+- **ALWAYS** use `isMounted` flag pattern in `useEffect` to prevent state updates on unmounted components
+- **ALWAYS** use `Promise.allSettled()` instead of `Promise.all()` when handling multiple async operations
+- **ALWAYS** add individual `.catch()` handlers for each promise to prevent unhandled rejections
+- **NEVER** leave async operations without proper error handling
+- **ALWAYS** use `console.warn()` instead of `console.error()` for non-critical async errors
+
+### 📝 Async Pattern Template
+```typescript
+useEffect(() => {
+    let isMounted = true;
+
+    const loadData = async () => {
+        const promises = [];
+
+        // Individual promise with error handling
+        promises.push(
+            asyncOperation()
+                .then(result => {
+                    if (!isMounted) return null;
+                    // Handle success
+                    return result;
+                })
+                .catch(error => {
+                    if (isMounted) {
+                        console.warn('Operation failed:', error);
+                    }
+                    return null;
+                })
+        );
+
+        // Wait for all promises to settle
+        try {
+            await Promise.allSettled(promises);
+        } catch (error) {
+            if (isMounted) {
+                console.warn('General error:', error);
+            }
+        }
+    };
+
+    loadData();
+
+    return () => {
+        isMounted = false;
+    };
+}, []);
+```
+
+### 🎯 Error Prevention Rules
+- **CRITICAL**: This pattern prevents `Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received`
+- **ALWAYS** apply this pattern when loading external data (JSON files, APIs, localStorage)
+- **ALWAYS** check `isMounted` before calling `setState` after async operations
+- **NEVER** let promises reject without proper handling
+
 ### 🔄 Reorganization Workflow
 1. **Create new folder structure** with kebab-case names
 2. **Move files** (don't delete) to new locations

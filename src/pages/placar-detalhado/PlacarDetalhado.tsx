@@ -37,64 +37,103 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
     useEffect(() => {
         let isMounted = true;
 
-        // Carregar scores
-        setVerdadesAbsurdasScores(loadVerdadesAbsurdasScores());
-        setDicionarioSurrealScores(loadDicionarioSurrealScores());
-        setPainelistasScores(loadPainelistasScores());
-        setNoticiasExtraordinariasScores(loadNoticiasExtraordinariasScores());
-        setCaroPraChuchuScores(loadCaroPraChuchuScores());
+        // Carregar scores (síncrono - não precisa de async)
+        try {
+            setVerdadesAbsurdasScores(loadVerdadesAbsurdasScores());
+            setDicionarioSurrealScores(loadDicionarioSurrealScores());
+            setPainelistasScores(loadPainelistasScores());
+            setNoticiasExtraordinariasScores(loadNoticiasExtraordinariasScores());
+            setCaroPraChuchuScores(loadCaroPraChuchuScores());
+        } catch (error) {
+            console.warn('Erro ao carregar scores:', error);
+        }
 
         // Carregar dados para mapear IDs para nomes
         const loadData = async () => {
-            try {
-                const verdades = await carregarVerdadesAbsurdas();
-                if (!isMounted) return;
-                const titulos = verdades.verdadesAbsurdas.reduce((acc: Record<string, string>, texto: { id: string; titulo: string }) => {
-                    acc[texto.id] = texto.titulo;
-                    return acc;
-                }, {});
-                setTitulosVerdades(titulos);
-            } catch (error) {
-                if (isMounted) {
-                    console.error('Erro ao carregar verdades absurdas:', error);
-                }
-            }
+            const promises = [];
 
-            try {
-                const dicionario = await carregarDicionarioSurreal();
-                if (!isMounted) return;
-                const palavras = dicionario.palavras.reduce((acc: Record<string, string>, palavra: { id: string; palavra: string }) => {
-                    acc[palavra.id] = palavra.palavra;
-                    return acc;
-                }, {});
-                setPalavrasDicionario(palavras);
-            } catch (error) {
-                if (isMounted) {
-                    console.error('Erro ao carregar dicionário surreal:', error);
-                }
-            }
+            // Verdades Absurdas
+            promises.push(
+                carregarVerdadesAbsurdas()
+                    .then(verdades => {
+                        if (!isMounted) return null;
+                        const titulos = verdades.verdadesAbsurdas.reduce((acc: Record<string, string>, texto: { id: string; titulo: string }) => {
+                            acc[texto.id] = texto.titulo;
+                            return acc;
+                        }, {});
+                        setTitulosVerdades(titulos);
+                        return titulos;
+                    })
+                    .catch(error => {
+                        if (isMounted) {
+                            console.warn('Erro ao carregar verdades absurdas:', error);
+                        }
+                        return null;
+                    })
+            );
 
-            try {
-                const noticias = await carregarNoticiasExtraordinarias();
-                if (!isMounted) return;
-                const manchetes = noticias.noticias.reduce((acc: Record<string, string>, noticia: { id: string; manchete: string }) => {
-                    acc[noticia.id] = noticia.manchete;
-                    return acc;
-                }, {});
-                setManchetesNoticias(manchetes);
-            } catch (error) {
-                if (isMounted) {
-                    console.error('Erro ao carregar notícias extraordinárias:', error);
-                }
-            }
+            // Dicionário Surreal
+            promises.push(
+                carregarDicionarioSurreal()
+                    .then(dicionario => {
+                        if (!isMounted) return null;
+                        const palavras = dicionario.palavras.reduce((acc: Record<string, string>, palavra: { id: string; palavra: string }) => {
+                            acc[palavra.id] = palavra.palavra;
+                            return acc;
+                        }, {});
+                        setPalavrasDicionario(palavras);
+                        return palavras;
+                    })
+                    .catch(error => {
+                        if (isMounted) {
+                            console.warn('Erro ao carregar dicionário surreal:', error);
+                        }
+                        return null;
+                    })
+            );
 
+            // Notícias Extraordinárias
+            promises.push(
+                carregarNoticiasExtraordinarias()
+                    .then(noticias => {
+                        if (!isMounted) return null;
+                        const manchetes = noticias.noticias.reduce((acc: Record<string, string>, noticia: { id: string; manchete: string }) => {
+                            acc[noticia.id] = noticia.manchete;
+                            return acc;
+                        }, {});
+                        setManchetesNoticias(manchetes);
+                        return manchetes;
+                    })
+                    .catch(error => {
+                        if (isMounted) {
+                            console.warn('Erro ao carregar notícias extraordinárias:', error);
+                        }
+                        return null;
+                    })
+            );
+
+            // Configuração dos Jogos
+            promises.push(
+                carregarConfiguracaoJogos()
+                    .then(games => {
+                        if (!isMounted) return null;
+                        setGamesConfig(games);
+                        return games;
+                    })
+                    .catch(error => {
+                        if (isMounted) {
+                            console.warn('Erro ao carregar configuração dos jogos:', error);
+                        }
+                        return null;
+                    })
+            );
+
+            // Aguardar todas as promises com timeout
             try {
-                const games = await carregarConfiguracaoJogos();
-                if (!isMounted) return;
-                setGamesConfig(games);
+                await Promise.allSettled(promises);
             } catch (error) {
                 if (isMounted) {
-                    console.error('Erro ao carregar configuração dos jogos:', error);
+                    console.warn('Erro geral ao carregar dados:', error);
                 }
             }
         };
@@ -135,6 +174,33 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
 
                 <h2>📰 Histórico Detalhado</h2>
                 <p className="historico-descricao">Registro completo de todas as pontuações por jogo</p>
+
+                {/* Pontuação Extra do Host */}
+                {gameState.extraPoints && gameState.extraPoints.length > 0 && (
+                    <div className="historico-subsecao">
+                        <h3>🎯 Pontuação Extra do Host</h3>
+                        <div className="table-wrapper">
+                            <table className="pd-table">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Pontos</th>
+                                        <th>Data/Hora</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {gameState.extraPoints.map((entry) => (
+                                        <tr key={entry.id}>
+                                            <td>{getTeamNameFromString(entry.teamId, gameState.teams)}</td>
+                                            <td className="center">{entry.points > 0 ? `+${entry.points}` : entry.points}</td>
+                                            <td>{new Date(entry.timestamp).toLocaleString('pt-BR')}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
 
                 {/* Verdades Absurdas */}
                 <div className="historico-subsecao">
