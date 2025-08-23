@@ -1,0 +1,111 @@
+.reginaldo-hora-do-lanche-modal .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    min-width: 95vw;
+    min-height: 85vh;
+    max-width: 98vw;
+    max-height: 95vh;
+    padding: 30px;
+}
+
+.comida-image-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.comida-image {
+    max-width: 600px;
+    max-height: 500px;
+    width: auto;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    object-fit: contain;
+}
+
+.game-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.team-selection {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.team-selection h3 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.answer-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.result-actions {
+    text-align: center;
+    width: 100%;
+}
+
+.comida-info {
+    margin-bottom: 20px;
+}
+
+.comida-info h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.positive-points {
+    color: #28a745;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.negative-points {
+    color: #dc3545;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .reginaldo-hora-do-lanche-modal .modal-content {
+        min-width: 95vw;
+        min-height: 90vh;
+        padding: 20px;
+        gap: 20px;
+    }
+
+    .comida-image {
+        max-width: 80vw;
+        max-height: 50vh;
+    }
+
+    .answer-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+}

@@ -57,11 +57,11 @@
             "configFile": "quem-e-esse-pokemon.json"
         },
         {
-            "id": "qual-comida",
+            "id": "reginaldo-hora-do-lanche",
             "name": "Reginaldo Hora do Lanche",
-            "emoji": "🍕",
-            "description": "Adivinhe pratos por descrição",
-            "configFile": "qual-comida.json"
+            "emoji": "🍽️",
+            "description": "Adivinhe a comida pela foto com muito zoom",
+            "configFile": "reginaldo-hora-do-lanche.json"
         }
     ]
 }

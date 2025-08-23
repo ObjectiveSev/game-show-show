@@ -1,0 +1,40 @@
+{
+    "pontuacao": {
+        "acerto": 2,
+        "erro": -2
+    },
+    "comidas": [
+        {
+            "id": "1",
+            "nome": "Ovo"
+        },
+        {
+            "id": "2",
+            "nome": "Croissant"
+        },
+        {
+            "id": "3",
+            "nome": "Macarrão"
+        },
+        {
+            "id": "4",
+            "nome": "Cenoura"
+        },
+        {
+            "id": "5",
+            "nome": "Arroz"
+        },
+        {
+            "id": "6",
+            "nome": "Abóbora"
+        },
+        {
+            "id": "7",
+            "nome": "Salmão"
+        },
+        {
+            "id": "8",
+            "nome": "Cebola"
+        }
+    ]
+}

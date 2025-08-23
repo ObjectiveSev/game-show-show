@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { DefaultCard } from '../../../components/default-card/DefaultCard';
 import { GameHeader } from '../../../components/game-header/GameHeader';
-import { QuemEEssePokemonModal } from './QuemEEssePokemonModal';
-import { carregarQuemEEssePokemon } from '../../../utils/quemEEssePokemonLoader';
-import { removeQuemEEssePokemonScore } from '../../../utils/scoreStorage';
+import { ReginaldoHoraDoLancheModal } from './ReginaldoHoraDoLancheModal';
+import { carregarReginaldoHoraDoLanche } from '../../../utils/reginaldoHoraDoLancheLoader';
+import { removeReginaldoHoraDoLancheScore } from '../../../utils/scoreStorage';
 import type { Team } from '../../../types';
-import type { Pokemon, QuemEEssePokemonConfig, PokemonEstado } from '../../../types/quemEEssePokemon';
+import type { Comida, ReginaldoHoraDoLancheConfig, ComidaEstado } from '../../../types/reginaldoHoraDoLanche';
 import { TagType, ButtonType } from '../../../types';
 import { STORAGE_KEYS } from '../../../constants';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
-import './QuemEEssePokemon.css';
+import './ReginaldoHoraDoLanche.css';
 
-interface QuemEEssePokemonProps {
+interface ReginaldoHoraDoLancheProps {
     gameState: {
         teams: {
             teamA: Team;
@@ -23,15 +23,15 @@ interface QuemEEssePokemonProps {
     addPoints: (teamId: 'A' | 'B', points: number) => void;
 }
 
-export const QuemEEssePokemon: React.FC<QuemEEssePokemonProps> = ({
+export const ReginaldoHoraDoLanche: React.FC<ReginaldoHoraDoLancheProps> = ({
     gameState,
     addGamePoints,
     addPoints
 }) => {
-    const [config, setConfig] = useState<QuemEEssePokemonConfig | null>(null);
-    const [estados, setEstados] = useState<PokemonEstado[]>([]);
+    const [config, setConfig] = useState<ReginaldoHoraDoLancheConfig | null>(null);
+    const [estados, setEstados] = useState<ComidaEstado[]>([]);
     const [loading, setLoading] = useState(true);
-    const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
+    const [selectedComida, setSelectedComida] = useState<Comida | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
@@ -39,22 +39,22 @@ export const QuemEEssePokemon: React.FC<QuemEEssePokemonProps> = ({
 
         const loadData = async () => {
             try {
-                const data = await carregarQuemEEssePokemon();
+                const data = await carregarReginaldoHoraDoLanche();
                 if (!isMounted) return;
 
                 setConfig(data);
 
-                // Inicializar estados dos pokémon (default)
-                const estadosIniciais: PokemonEstado[] = data.pokemons.map(pokemon => ({
-                    id: pokemon.id,
+                // Inicializar estados das comidas (default)
+                const estadosIniciais: ComidaEstado[] = data.comidas.map(comida => ({
+                    id: comida.id,
                     jogado: false
                 }));
 
                 // Tentar carregar estados salvos do localStorage e mesclar por id
                 try {
-                    const salvo = localStorage.getItem(STORAGE_KEYS.QUEM_E_ESSE_POKEMON_ESTADOS);
+                    const salvo = localStorage.getItem(STORAGE_KEYS.REGINALDO_HORA_DO_LANCHE_ESTADOS);
                     if (salvo) {
-                        const estadosSalvos: PokemonEstado[] = JSON.parse(salvo);
+                        const estadosSalvos: ComidaEstado[] = JSON.parse(salvo);
                         const mesclados = estadosIniciais.map((estado) => {
                             const encontrado = estadosSalvos.find(s => s.id === estado.id);
                             return encontrado ? { ...estado, ...encontrado } : estado;
@@ -69,7 +69,7 @@ export const QuemEEssePokemon: React.FC<QuemEEssePokemonProps> = ({
 
                 setLoading(false);
             } catch (error) {
-                console.error('Erro ao carregar dados do Quem é esse Pokémon:', error);
+                console.error('Erro ao carregar dados do Reginaldo Hora do Lanche:', error);
                 if (isMounted) {
                     setLoading(false);
                 }
@@ -86,24 +86,24 @@ export const QuemEEssePokemon: React.FC<QuemEEssePokemonProps> = ({
     // Salvar estados no localStorage quando mudarem
     useEffect(() => {
         if (estados.length) {
-            localStorage.setItem(STORAGE_KEYS.QUEM_E_ESSE_POKEMON_ESTADOS, JSON.stringify(estados));
+            localStorage.setItem(STORAGE_KEYS.REGINALDO_HORA_DO_LANCHE_ESTADOS, JSON.stringify(estados));
         }
     }, [estados]);
 
-    const handleCardClick = (pokemon: Pokemon) => {
-        setSelectedPokemon(pokemon);
+    const handleCardClick = (comida: Comida) => {
+        setSelectedComida(comida);
         setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setSelectedPokemon(null);
+        setSelectedComida(null);
     };
 
-    const handleSavePokemon = (pokemonId: string, teamId: 'A' | 'B', resultado: 'acerto' | 'erro', pontos: number) => {
+    const handleSaveComida = (comidaId: string, teamId: 'A' | 'B', resultado: 'acerto' | 'erro', pontos: number) => {
         // Atualizar estado local
         setEstados(prev => prev.map(estado =>
-            estado.id === pokemonId
+            estado.id === comidaId
                 ? {
                     ...estado,
                     jogado: true,
@@ -121,13 +121,13 @@ export const QuemEEssePokemon: React.FC<QuemEEssePokemonProps> = ({
         }
     };
 
-    const handleResetarPontuacao = (pokemonId: string) => {
+    const handleResetarPontuacao = (comidaId: string) => {
         // Remover pontuação do storage
-        removeQuemEEssePokemonScore(pokemonId);
+        removeReginaldoHoraDoLancheScore(comidaId);
 
         // Resetar estado local
         setEstados(prev => prev.map(estado =>
-            estado.id === pokemonId
+            estado.id === comidaId
                 ? { ...estado, jogado: false, timeAdivinhador: undefined, resultado: undefined, pontos: undefined, pontuacaoSalva: false }
                 : estado
         ));
@@ -140,9 +140,9 @@ export const QuemEEssePokemon: React.FC<QuemEEssePokemonProps> = ({
 
     if (loading) {
         return (
-            <div className="quem-e-esse-pokemon">
+            <div className="reginaldo-hora-do-lanche">
                 <div className="loading">
-                    <h2>Carregando Quem É Esse Pokémon...</h2>
+                    <h2>Carregando Reginaldo Hora do Lanche...</h2>
                 </div>
             </div>
         );
@@ -150,7 +150,7 @@ export const QuemEEssePokemon: React.FC<QuemEEssePokemonProps> = ({
 
     if (!config) {
         return (
-            <div className="quem-e-esse-pokemon">
+            <div className="reginaldo-hora-do-lanche">
                 <div className="error">
                     <h2>Erro ao carregar o jogo</h2>
                 </div>
@@ -159,16 +159,16 @@ export const QuemEEssePokemon: React.FC<QuemEEssePokemonProps> = ({
     }
 
     return (
-        <div className="quem-e-esse-pokemon">
+        <div className="reginaldo-hora-do-lanche">
             <GameHeader
-                title="Quem É Esse Pokémon?"
-                subtitle="Clique em um Pokémon para começar a adivinhar!"
-                emoji="⚡"
+                title="Reginaldo Hora do Lanche"
+                subtitle="Clique em uma comida para começar a adivinhar!"
+                emoji="🍽️"
             />
 
-            <div className="pokemon-grid">
-                {config.pokemons.map((pokemon) => {
-                    const estado = estados.find(e => e.id === pokemon.id);
+            <div className="comida-grid">
+                {config.comidas.map((comida) => {
+                    const estado = estados.find(e => e.id === comida.id);
                     const jogado = estado?.jogado || false;
 
                     // Determinar tags baseadas no resultado
@@ -191,8 +191,8 @@ export const QuemEEssePokemon: React.FC<QuemEEssePokemonProps> = ({
 
                     return (
                         <DefaultCard
-                            key={pokemon.id}
-                            title={jogado ? pokemon.nome : `Pokémon #${pokemon.id}`}
+                            key={comida.id}
+                            title={jogado ? comida.nome : `Comida #${comida.id}`}
                             tags={getTags()}
                             body={
                                 jogado && estado?.timeAdivinhador
@@ -205,17 +205,17 @@ export const QuemEEssePokemon: React.FC<QuemEEssePokemonProps> = ({
                                         type: ButtonType.RESET,
                                         onClick: (e) => {
                                             e.stopPropagation();
-                                            handleResetarPontuacao(pokemon.id);
+                                            handleResetarPontuacao(comida.id);
                                         }
                                     }
                                     : undefined
                             }
-                            onClick={() => handleCardClick(pokemon)}
-                            className={`pokemon-card ${jogado ? 'jogado' : ''}`}
+                            onClick={() => handleCardClick(comida)}
+                            className={`comida-card ${jogado ? 'jogado' : ''}`}
                         >
                             {jogado && estado?.pontos !== undefined && (
                                 <div className={`pontos-info ${estado.pontos > 0 ? 'pontos-positivos' :
-                                    estado.pontos < 0 ? 'pontos-negativos' : 'zero-pontos'
+                                        estado.pontos < 0 ? 'pontos-negativos' : 'zero-pontos'
                                     }`}>
                                     {estado.pontos > 0 ? `+${estado.pontos}` : estado.pontos} pontos
                                 </div>
@@ -225,17 +225,17 @@ export const QuemEEssePokemon: React.FC<QuemEEssePokemonProps> = ({
                 })}
             </div>
 
-            {selectedPokemon && (
-                <QuemEEssePokemonModal
+            {selectedComida && (
+                <ReginaldoHoraDoLancheModal
                     isOpen={isModalOpen}
                     onClose={handleCloseModal}
-                    pokemon={selectedPokemon}
+                    comida={selectedComida}
                     config={config}
                     gameState={gameState}
                     addGamePoints={addGamePoints}
                     addPoints={addPoints}
-                    onSavePokemon={handleSavePokemon}
-                    isAlreadyPlayed={estados.find(e => e.id === selectedPokemon.id)?.jogado || false}
+                    onSaveComida={handleSaveComida}
+                    isAlreadyPlayed={estados.find(e => e.id === selectedComida.id)?.jogado || false}
                 />
             )}
         </div>

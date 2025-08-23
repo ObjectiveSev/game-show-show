@@ -9,7 +9,8 @@ import {
     loadPainelistasPunicoes,
     loadNoticiasExtraordinariasScores,
     loadCaroPraChuchuScores,
-    loadQuemEEssePokemonScores
+    loadQuemEEssePokemonScores,
+    loadReginaldoHoraDoLancheScores
 } from './scoreStorage';
 
 /**
@@ -67,6 +68,12 @@ export const syncGameScores = (): GameScores => {
             return acc;
         }, {} as { A: number; B: number });
 
+        const reginaldoHoraDoLanche = loadReginaldoHoraDoLancheScores().reduce((acc: { [key: string]: number }, entry) => {
+            if (entry.timeAdivinhador === 'A') acc.A = (acc.A || 0) + entry.pontos;
+            if (entry.timeAdivinhador === 'B') acc.B = (acc.B || 0) + entry.pontos;
+            return acc;
+        }, {} as { A: number; B: number });
+
         // Calcular pontos das punições
         const punicoes = painelistasPunicoes.reduce((acc: { [key: string]: number }, entry) => {
             if (entry.time === 'A') acc.A = (acc.A || 0) + entry.pontos;
@@ -102,6 +109,10 @@ export const syncGameScores = (): GameScores => {
             'quem-e-esse-pokemon': {
                 teamA: quemEEssePokemon.A || 0,
                 teamB: quemEEssePokemon.B || 0
+            },
+            'reginaldo-hora-do-lanche': {
+                teamA: reginaldoHoraDoLanche.A || 0,
+                teamB: reginaldoHoraDoLanche.B || 0
             }
         };
 
@@ -117,7 +128,8 @@ export const syncGameScores = (): GameScores => {
             'painelistas-excentricos': { teamA: 0, teamB: 0 },
             'noticias-extraordinarias': { teamA: 0, teamB: 0 },
             'caro-pra-chuchu': { teamA: 0, teamB: 0 },
-            'quem-e-esse-pokemon': { teamA: 0, teamB: 0 }
+            'quem-e-esse-pokemon': { teamA: 0, teamB: 0 },
+            'reginaldo-hora-do-lanche': { teamA: 0, teamB: 0 }
         };
     }
 };

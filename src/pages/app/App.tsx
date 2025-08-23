@@ -9,6 +9,7 @@ import { NoticiasExtraordinarias } from '../games/noticias-extraordinarias/Notic
 import { CaroPraChuchu } from '../games/caro-pra-chuchu/CaroPraChuchu';
 import { OvoOuGalinha } from '../games/ovo-ou-galinha/OvoOuGalinha';
 import { QuemEEssePokemon } from '../games/quem-e-esse-pokemon/QuemEEssePokemon';
+import { ReginaldoHoraDoLanche } from '../games/reginaldo-hora-do-lanche/ReginaldoHoraDoLanche';
 import { PlacarDetalhado } from '../placar-detalhado/PlacarDetalhado';
 import { TeamSettingsModal } from '../team-settings/TeamSettingsModal';
 import { clearAllLocalStorage } from '../../utils/fileSystem';
@@ -52,6 +53,9 @@ function AppContent() {
         break;
       case 'quem-e-esse-pokemon':
         navigate('/quem-e-esse-pokemon');
+        break;
+      case 'reginaldo-hora-do-lanche':
+        navigate('/reginaldo-hora-do-lanche');
         break;
       default:
         alert(`Jogo "${gameId}" será implementado em breve!`);
@@ -103,7 +107,7 @@ function AppContent() {
             gameState={gameState}
             addGamePoints={addGamePoints}
             addPoints={addPoints}
-            />
+          />
         } />
         <Route path="/painelistas-excentricos" element={
           <PainelistasExcentricos
@@ -129,13 +133,20 @@ function AppContent() {
         <Route path="/ovo-ou-galinha" element={
           <OvoOuGalinha />
         } />
-                  <Route path="/quem-e-esse-pokemon" element={
-            <QuemEEssePokemon
-              gameState={{ ...gameState, syncPoints }}
-              addGamePoints={addGamePoints}
-              addPoints={addPoints}
-            />
-          } />
+        <Route path="/quem-e-esse-pokemon" element={
+          <QuemEEssePokemon
+            gameState={{ ...gameState, syncPoints }}
+            addGamePoints={addGamePoints}
+            addPoints={addPoints}
+          />
+        } />
+        <Route path="/reginaldo-hora-do-lanche" element={
+          <ReginaldoHoraDoLanche
+            gameState={{ ...gameState, syncPoints }}
+            addGamePoints={addGamePoints}
+            addPoints={addPoints}
+          />
+        } />
         <Route path="/placar-detalhado" element={
           <PlacarDetalhado gameState={gameState} />
         } />

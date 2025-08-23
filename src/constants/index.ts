@@ -26,6 +26,8 @@ export const STORAGE_KEYS = {
     OVO_OU_GALINHA_SCORES: 'ovoOuGalinhaScores',
     QUEM_E_ESSE_POKEMON_ESTADOS: 'quemEEssePokemonEstados',
     QUEM_E_ESSE_POKEMON_SCORES: 'quemEEssePokemonScores',
+    REGINALDO_HORA_DO_LANCHE_ESTADOS: 'reginaldoHoraDoLancheEstados',
+    REGINALDO_HORA_DO_LANCHE_SCORES: 'reginaldoHoraDoLancheScores',
     EXTRA_POINTS: 'extraPoints'
 } as const;
 
@@ -42,7 +44,8 @@ export const API_ENDPOINTS = {
     NOTICIAS_EXTRAORDINARIAS: '/config/noticias-extraordinarias.json',
     CARO_PRA_CHUCHU: '/config/caro-pra-chuchu.json',
     OVO_OU_GALINHA: '/config/ovo-ou-galinha.json',
-    QUEM_E_ESSE_POKEMON: '/config/quem-e-esse-pokemon.json'
+    QUEM_E_ESSE_POKEMON: '/config/quem-e-esse-pokemon.json',
+    REGINALDO_HORA_DO_LANCHE: '/config/reginaldo-hora-do-lanche.json'
 } as const;
 
 // ============================================================================

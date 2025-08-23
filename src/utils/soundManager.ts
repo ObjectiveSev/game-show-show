@@ -7,7 +7,8 @@ export type SoundType = typeof SoundType[keyof typeof SoundType];
 
 // Constantes para sons customizados
 export const CUSTOM_SOUNDS = {
-    QUEM_E_ESSE_POKEMON: 'https://www.myinstants.com/media/sounds/quem-e-esse-pokemon-011.mp3'
+    QUEM_E_ESSE_POKEMON: 'https://www.myinstants.com/media/sounds/quem-e-esse-pokemon-011.mp3',
+    REGINALDO_HORA_DO_LANCHE: 'https://www.myinstants.com/media/sounds/reginald-hora-do-lanche.mp3'
 } as const;
 
 interface SoundItem {
@@ -116,7 +117,7 @@ export class SoundManager {
         this.playSound(SoundType.ERROR);
     }
 
-        public playCustomSound(url: string): void {
+    public playCustomSound(url: string): void {
         try {
             let audio: HTMLAudioElement;
 
@@ -130,7 +131,7 @@ export class SoundManager {
                 // Criar novo Audio
                 audio = new Audio(url);
                 audio.volume = 0.7; // Volume em 70%
-                
+
                 // Salvar para reutilização no map de custom sounds
                 this.soundConfig.custom.set(url, audio);
             }

@@ -5,6 +5,7 @@ import type { NoticiasExtraordinariasScoreEntry } from '../types/noticiasExtraor
 import type { CaroPraChuchuScoreEntry } from '../types/caroPraChuchu';
 import type { OvoOuGalinhaScoreEntry } from '../types/ovoOuGalinha';
 import type { QuemEEssePokemonScoreEntry } from '../types/quemEEssePokemon';
+import type { ReginaldoHoraDoLancheScoreEntry } from '../types/reginaldoHoraDoLanche';
 import { STORAGE_KEYS } from '../constants';
 
 export const loadVerdadesAbsurdasScores = (): VerdadesAbsurdasScoreEntry[] => {
@@ -276,6 +277,48 @@ export const removeQuemEEssePokemonScore = (pokemonId: string): void => {
 export const clearQuemEEssePokemonScores = (): void => {
     try {
         localStorage.removeItem(STORAGE_KEYS.QUEM_E_ESSE_POKEMON_SCORES);
+    } catch {
+        // Ignorar erros de localStorage
+    }
+};
+
+// ============================================================================
+// REGINALDO HORA DO LANCHE SCORES
+// ============================================================================
+
+export const saveReginaldoHoraDoLancheScore = (entry: ReginaldoHoraDoLancheScoreEntry): void => {
+    try {
+        const existing = loadReginaldoHoraDoLancheScores();
+        existing.push(entry);
+        localStorage.setItem(STORAGE_KEYS.REGINALDO_HORA_DO_LANCHE_SCORES, JSON.stringify(existing));
+    } catch (error) {
+        console.error('Erro ao salvar score do Reginaldo Hora do Lanche:', error);
+    }
+};
+
+export const loadReginaldoHoraDoLancheScores = (): ReginaldoHoraDoLancheScoreEntry[] => {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEYS.REGINALDO_HORA_DO_LANCHE_SCORES);
+        return raw ? JSON.parse(raw) : [];
+    } catch (error) {
+        console.error('Erro ao carregar scores do Reginaldo Hora do Lanche:', error);
+        return [];
+    }
+};
+
+export const removeReginaldoHoraDoLancheScore = (comidaId: string): void => {
+    try {
+        const existing = loadReginaldoHoraDoLancheScores();
+        const filtered = existing.filter(score => score.id !== comidaId);
+        localStorage.setItem(STORAGE_KEYS.REGINALDO_HORA_DO_LANCHE_SCORES, JSON.stringify(filtered));
+    } catch (error) {
+        console.error('Erro ao remover score do Reginaldo Hora do Lanche:', error);
+    }
+};
+
+export const clearReginaldoHoraDoLancheScores = (): void => {
+    try {
+        localStorage.removeItem(STORAGE_KEYS.REGINALDO_HORA_DO_LANCHE_SCORES);
     } catch {
         // Ignorar erros de localStorage
     }

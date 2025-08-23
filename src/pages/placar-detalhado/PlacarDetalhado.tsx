@@ -6,6 +6,7 @@ import type { PainelistasScoreEntry } from '../../types/painelistas';
 import type { NoticiasExtraordinariasScoreEntry } from '../../types/noticiasExtraordinarias';
 import type { CaroPraChuchuScoreEntry } from '../../types/caroPraChuchu';
 import type { QuemEEssePokemonScoreEntry } from '../../types/quemEEssePokemon';
+import type { ReginaldoHoraDoLancheScoreEntry } from '../../types/reginaldoHoraDoLanche';
 import type { GamesConfig } from '../../types/games';
 import { loadVerdadesAbsurdasScores } from '../../utils/scoreStorage';
 import { loadDicionarioSurrealScores } from '../../utils/scoreStorage';
@@ -13,10 +14,12 @@ import { loadPainelistasScores } from '../../utils/scoreStorage';
 import { loadNoticiasExtraordinariasScores } from '../../utils/scoreStorage';
 import { loadCaroPraChuchuScores } from '../../utils/scoreStorage';
 import { loadQuemEEssePokemonScores } from '../../utils/scoreStorage';
+import { loadReginaldoHoraDoLancheScores } from '../../utils/scoreStorage';
 import { carregarVerdadesAbsurdas } from '../../utils/verdadesAbsurdasLoader';
 import { carregarDicionarioSurreal } from '../../utils/dicionarioLoader';
 import { carregarNoticiasExtraordinarias } from '../../utils/noticiasExtraordinariasLoader';
 import { carregarQuemEEssePokemon } from '../../utils/quemEEssePokemonLoader';
+import { carregarReginaldoHoraDoLanche } from '../../utils/reginaldoHoraDoLancheLoader';
 import { carregarConfiguracaoJogos } from '../../utils/gamesLoader';
 import { getTeamNameFromString } from '../../utils/teamUtils';
 import { BackButton } from '../../components/back-button/BackButton';
@@ -33,10 +36,12 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
     const [noticiasExtraordinariasScores, setNoticiasExtraordinariasScores] = useState<NoticiasExtraordinariasScoreEntry[]>([]);
     const [caroPraChuchuScores, setCaroPraChuchuScores] = useState<CaroPraChuchuScoreEntry[]>([]);
     const [quemEEssePokemonScores, setQuemEEssePokemonScores] = useState<QuemEEssePokemonScoreEntry[]>([]);
+    const [reginaldoHoraDoLancheScores, setReginaldoHoraDoLancheScores] = useState<ReginaldoHoraDoLancheScoreEntry[]>([]);
     const [titulosVerdades, setTitulosVerdades] = useState<Record<string, string>>({});
     const [palavrasDicionario, setPalavrasDicionario] = useState<Record<string, string>>({});
     const [manchetesNoticias, setManchetesNoticias] = useState<Record<string, string>>({});
     const [nomesPokemon, setNomesPokemon] = useState<Record<string, string>>({});
+    const [nomesComidas, setNomesComidas] = useState<Record<string, string>>({});
     const [gamesConfig, setGamesConfig] = useState<GamesConfig | null>(null);
 
     useEffect(() => {
@@ -50,6 +55,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
             setNoticiasExtraordinariasScores(loadNoticiasExtraordinariasScores());
             setCaroPraChuchuScores(loadCaroPraChuchuScores());
             setQuemEEssePokemonScores(loadQuemEEssePokemonScores());
+            setReginaldoHoraDoLancheScores(loadReginaldoHoraDoLancheScores());
         } catch (error) {
             console.warn('Erro ao carregar scores:', error);
         }
@@ -133,6 +139,26 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                     .catch(error => {
                         if (isMounted) {
                             console.warn('Erro ao carregar pokémons:', error);
+                        }
+                        return null;
+                    })
+            );
+
+            // Reginaldo Hora do Lanche
+            promises.push(
+                carregarReginaldoHoraDoLanche()
+                    .then(comidas => {
+                        if (!isMounted) return null;
+                        const nomes = comidas.comidas.reduce((acc: Record<string, string>, comida: { id: string; nome: string }) => {
+                            acc[comida.id] = comida.nome;
+                            return acc;
+                        }, {});
+                        setNomesComidas(nomes);
+                        return nomes;
+                    })
+                    .catch(error => {
+                        if (!isMounted) {
+                            console.warn('Erro ao carregar comidas:', error);
                         }
                         return null;
                     })
@@ -410,6 +436,41 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                                     {quemEEssePokemonScores.map((score, idx) => (
                                         <tr key={idx}>
                                             <td className="nome-cell">{nomesPokemon[score.pokemonId] || `Pokémon #${score.pokemonId}`}</td>
+                                            <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
+                                            <td className="center">
+                                                {score.resultado === 'acerto' ? '✅ Acertou' : '❌ Errou'}
+                                            </td>
+                                            <td className={`center ${score.pontos < 0 ? 'negative-points' : score.pontos > 0 ? 'positive-points' : ''}`}>
+                                                {score.pontos > 0 ? `+${score.pontos}` : score.pontos}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <p className="empty">Nenhum registro encontrado</p>
+                    )}
+                </div>
+
+                {/* Reginaldo Hora do Lanche */}
+                <div className="historico-subsecao">
+                    <h3>{getGameEmoji('reginaldo-hora-do-lanche')} Reginaldo Hora do Lanche</h3>
+                    {reginaldoHoraDoLancheScores.length > 0 ? (
+                        <div className="table-wrapper">
+                            <table className="pd-table">
+                                <thead>
+                                    <tr>
+                                        <th>Comida</th>
+                                        <th>Time</th>
+                                        <th>Resultado</th>
+                                        <th>Pontos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {reginaldoHoraDoLancheScores.map((score, idx) => (
+                                        <tr key={idx}>
+                                            <td className="nome-cell">{nomesComidas[score.id] || `Comida #${score.id}`}</td>
                                             <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
                                             <td className="center">
                                                 {score.resultado === 'acerto' ? '✅ Acertou' : '❌ Errou'}
