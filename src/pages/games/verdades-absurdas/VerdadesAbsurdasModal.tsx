@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { BaseModal } from '../../../components/BaseModal/BaseModal';
+import { BaseModal } from '../../../components/base-modal/BaseModal';
+
 import type { VerdadeAbsurda, TextoEstado } from '../../../types/verdadesAbsurdas';
 import type { Team } from '../../../types';
 import { ButtonType } from '../../../types';
 import { extrairTextoVerdade, encontrarIndiceVerdade } from '../../../utils/verdadesAbsurdasLoader';
 import { soundManager } from '../../../utils/soundManager';
 import './VerdadesAbsurdasModal.css';
-import { TeamSelector } from '../../../components/TeamSelector/TeamSelector';
-import { Button } from '../../../components/Button/Button';
+import { TeamSelector } from '../../../components/team-selector/TeamSelector';
+import { Button } from '../../../components/button/Button';
 
 interface VerdadesAbsurdasModalProps {
     isOpen: boolean;

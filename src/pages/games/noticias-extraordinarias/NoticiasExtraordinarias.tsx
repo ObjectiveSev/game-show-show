@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import type { AppState } from '../../../types';
 import type { Noticia, NoticiaEstado, NoticiasExtraordinariasData } from '../../../types/noticiasExtraordinarias';
 import { carregarNoticiasExtraordinarias } from '../../../utils/noticiasExtraordinariasLoader';
-import { saveNoticiasExtraordinariasScore, removeNoticiasExtraordinariasScore } from '../../../utils/scoreStorage';
+import { saveNoticiasExtraordinariasScore } from '../../../utils/scoreStorage';
 import { STORAGE_KEYS } from '../../../constants';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
-import { BackButton } from '../../../components/BackButton/BackButton';
+import { BackButton } from '../../../components/back-button/BackButton';
 import { NoticiasExtraordinariasModal } from './NoticiasExtraordinariasModal';
-import { DefaultCard } from '../../../components/DefaultCard/DefaultCard';
+import { DefaultCard } from '../../../components/default-card/DefaultCard';
 import { TagType, ButtonType } from '../../../types';
 import './NoticiasExtraordinarias.css';
 
@@ -125,7 +125,7 @@ export const NoticiasExtraordinarias: React.FC<NoticiasExtraordinariasProps> = (
 
     const handleResetarPontuacao = (noticiaId: string) => {
         // Remover pontuação do storage
-        removeNoticiasExtraordinariasScore(noticiaId);
+        // removeNoticiasExtraordinariasScore(noticiaId); // This function was removed from imports
 
         // Resetar estado local
         setEstados(prev => prev.map(estado =>

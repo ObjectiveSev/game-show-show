@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BackButton } from '../../../components/BackButton/BackButton';
+import { BackButton } from '../../../components/back-button/BackButton';
 import { OvoOuGalinhaModal } from './OvoOuGalinhaModal';
-import { DefaultCard } from '../../../components/DefaultCard/DefaultCard';
+import { DefaultCard } from '../../../components/default-card/DefaultCard';
 import { useGameState } from '../../../hooks/useGameState';
 import { carregarOvoOuGalinha } from '../../../utils/ovoOuGalinhaLoader';
 import { saveOvoOuGalinhaScore, removeOvoOuGalinhaScore } from '../../../utils/scoreStorage';

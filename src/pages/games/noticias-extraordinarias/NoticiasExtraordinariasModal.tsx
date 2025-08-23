@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { BaseModal } from '../../../components/BaseModal/BaseModal';
-import { TeamSelector } from '../../../components/TeamSelector/TeamSelector';
-import { VerdadeButton } from '../../../components/VerdadeButton/VerdadeButton';
-import { MentiraButton } from '../../../components/MentiraButton/MentiraButton';
-import { ResultadoStatus } from '../../../components/ResultadoStatus/ResultadoStatus';
+import React, { useState, useEffect } from 'react';
+import { BaseModal } from '../../../components/base-modal/BaseModal';
+import { TeamSelector } from '../../../components/team-selector/TeamSelector';
+import { VerdadeButton } from '../../../components/verdade-button/VerdadeButton';
+import { MentiraButton } from '../../../components/mentira-button/MentiraButton';
+import { ResultadoStatus } from '../../../components/resultado-status/ResultadoStatus';
 import type { Noticia, NoticiaEstado } from '../../../types/noticiasExtraordinarias';
 import type { Team } from '../../../types';
 import { soundManager } from '../../../utils/soundManager';

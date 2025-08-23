@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { VerdadesAbsurdasModal } from './VerdadesAbsurdasModal';
-import { DefaultCard } from '../../../components/DefaultCard/DefaultCard';
-import { BackButton } from '../../../components/BackButton/BackButton';
+import { DefaultCard } from '../../../components/default-card/DefaultCard';
+import { BackButton } from '../../../components/back-button/BackButton';
 import { carregarVerdadesAbsurdas } from '../../../utils/verdadesAbsurdasLoader';
 import { appendVerdadesAbsurdasScore, removeVerdadesAbsurdasScore } from '../../../utils/scoreStorage';
 import type { VerdadeAbsurda, TextoEstado } from '../../../types/verdadesAbsurdas';

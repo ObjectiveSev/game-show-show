@@ -5,7 +5,7 @@ import type { ItemCaroPraChuchu, ItemEstado, CaroPraChuchuData } from '../../../
 import { carregarCaroPraChuchu } from '../../../utils/caroPraChuchuLoader';
 import { saveCaroPraChuchuScore, removeCaroPraChuchuScore } from '../../../utils/scoreStorage';
 import { STORAGE_KEYS } from '../../../constants';
-import { BackButton } from '../../../components/BackButton/BackButton';
+import { BackButton } from '../../../components/back-button/BackButton';
 import { CaroPraChuchuModal } from './CaroPraChuchuModal';
 import './CaroPrachuchu.css';
 

@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { carregarParticipantes } from '../utils/participantesLoader';
-import '../styles/SettingsModal.css';
-import type { Team } from '../types';
-import { TEAM_COLORS } from '../constants';
+import { carregarParticipantes } from '../../utils/participantesLoader';
+import './TeamSettingsModal.css';
+import type { Team } from '../../types';
+import { TEAM_COLORS } from '../../constants';
 
-interface SettingsModalProps {
+interface TeamSettingsModalProps {
     isOpen: boolean;
     onClose: () => void;
     teams: Team[];
     onUpdateTeams: (teams: Team[]) => void;
 }
 
-export const SettingsModal: React.FC<SettingsModalProps> = ({
+export const TeamSettingsModal: React.FC<TeamSettingsModalProps> = ({
     isOpen,
     onClose,
     teams,

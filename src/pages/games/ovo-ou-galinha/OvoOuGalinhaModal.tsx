@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { BaseModal } from '../../../components/BaseModal/BaseModal';
-import { TeamSelector } from '../../../components/TeamSelector/TeamSelector';
+import { BaseModal } from '../../../components/base-modal/BaseModal';
+import { TeamSelector } from '../../../components/team-selector/TeamSelector';
 import type { OvoOuGalinhaTrio, OvoOuGalinhaEvent } from '../../../types/ovoOuGalinha';
 import type { AppState } from '../../../types';
 
@@ -111,7 +111,7 @@ export const OvoOuGalinhaModal: React.FC<OvoOuGalinhaModalProps> = ({
     }, [trio.id, timeSelecionado, acertou, onConfirm, onClose]);
 
     const getEventoStyle = (index: number) => {
-        let style: React.CSSProperties = {
+        const style: React.CSSProperties = {
             cursor: 'grab',
             transition: 'all 0.2s ease'
         };

@@ -4,7 +4,7 @@ import type { FatoEstado, FatoPainelista, PainelistasData, PainelistasScoreEntry
 import { carregarPainelistas } from '../../../utils/painelistasLoader';
 import { carregarParticipantes } from '../../../utils/participantesLoader';
 import { appendPainelistasScore, appendPainelistasPunicao, removePainelistasPunicao, loadPainelistasPunicoes, loadPainelistasScores } from '../../../utils/scoreStorage';
-import { PainelistasExcentricosModal, PainelistasExcetricosModal } from './PainelistasExcentricosModal';
+import { PainelistasExcentricosModal } from './PainelistasExcentricosModal';
 import { BackButton } from '../../../components/back-button/BackButton';
 import './PainelistasExcentricos.css';
 import { STORAGE_KEYS } from '../../../constants';

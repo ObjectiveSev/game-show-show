@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { BaseModal } from './common/BaseModal';
-import { TeamSelector } from './common/TeamSelector';
-import { soundManager } from '../utils/soundManager';
-import type { ItemCaroPraChuchu, PontuacaoConfig } from '../../types/caroPraChuchu';
-import type { Team } from '../../types';
+import { BaseModal } from '../../../components/base-modal/BaseModal';
+import { TeamSelector } from '../../../components/team-selector/TeamSelector';
+import { soundManager } from '../../../utils/soundManager';
+import type { ItemCaroPraChuchu, PontuacaoConfig } from '../../../types/caroPraChuchu';
+import type { Team } from '../../../types';
 import './CaroPraChuchuModal.css';
 
 interface Props {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { BackButton } from '../../../components/BackButton/BackButton';
+import { BackButton } from '../../../components/back-button/BackButton';
 import { DicionarioSurrealModal } from './DicionarioSurrealModal';
-import { DefaultCard } from '../../../components/DefaultCard/DefaultCard';
+import { DefaultCard } from '../../../components/default-card/DefaultCard';
 import { carregarDicionarioSurreal } from '../../../utils/dicionarioLoader';
 import { appendDicionarioSurrealScore } from '../../../utils/scoreStorage';
 import type { DicionarioPalavra, PalavraEstado, DicionarioData } from '../../../types/dicionarioSurreal';

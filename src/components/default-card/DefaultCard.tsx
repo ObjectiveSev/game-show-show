@@ -1,7 +1,7 @@
 import React from 'react';
 import { TagType, ButtonType } from '../../types';
-import { Tag } from '../Tag/Tag';
-import { Button } from '../Button/Button';
+import { Tag } from '../tag/Tag';
+import { Button } from '../button/Button';
 import './DefaultCard.css';
 
 interface DefaultCardProps {

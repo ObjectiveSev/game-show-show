@@ -1,19 +1,18 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useGameState } from './hooks/useGameState';
-import { Dashboard } from './pages/Dashboard';
-import { VerdadesAbsurdas } from './pages/games/verdadesAbsurdas/VerdadesAbsurdas';
-import { DicionarioSurreal } from './pages/games/dicionarioSurreal/DicionarioSurreal';
-import { PainelistasExcetricos } from './pages/games/painelistasExcetricos/PainelistasExcetricos';
-import { NoticiasExtraordinarias } from './pages/games/noticiasExtraordinarias/NoticiasExtraordinarias';
-import { CaroPraChuchu } from './pages/games/caroPrachuchu/CaroPrachuchu';
-import { OvoOuGalinha } from './pages/games/ovoOuGalinha/OvoOuGalinha';
-import { PlacarDetalhado } from './pages/PlacarDetalhado';
-import { SettingsModal } from './components/SettingsModal';
-import { clearAllLocalStorage } from './utils/fileSystem';
-import type { Team } from './types';
-import './styles/Dashboard.css';
-import './styles/SettingsModal.css';
+import { useGameState } from '../../hooks/useGameState';
+import { Dashboard } from '../dashboard/Dashboard';
+import { VerdadesAbsurdas } from '../games/verdades-absurdas/VerdadesAbsurdas';
+import { DicionarioSurreal } from '../games/dicionario-surreal/DicionarioSurreal';
+import { PainelistasExcentricos } from '../games/painelistas-excentricos/PainelistasExcentricos';
+import { NoticiasExtraordinarias } from '../games/noticias-extraordinarias/NoticiasExtraordinarias';
+import { CaroPraChuchu } from '../games/caro-pra-chuchu/CaroPraChuchu';
+import { OvoOuGalinha } from '../games/ovo-ou-galinha/OvoOuGalinha';
+import { PlacarDetalhado } from '../placar-detalhado/PlacarDetalhado';
+import { TeamSettingsModal } from '../team-settings/TeamSettingsModal';
+import { clearAllLocalStorage } from '../../utils/fileSystem';
+import type { Team } from '../../types';
+
 
 function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -138,7 +137,7 @@ function App() {
           } />
         </Routes>
 
-        <SettingsModal
+        <TeamSettingsModal
           isOpen={isSettingsOpen}
           onClose={() => setIsSettingsOpen(false)}
           teams={[gameState.teams.teamA, gameState.teams.teamB]}

@@ -16,7 +16,7 @@ import { carregarDicionarioSurreal } from '../../utils/dicionarioLoader';
 import { carregarNoticiasExtraordinarias } from '../../utils/noticiasExtraordinariasLoader';
 import { carregarConfiguracaoJogos } from '../../utils/gamesLoader';
 import { getTeamNameFromString } from '../../utils/teamUtils';
-import { BackButton } from '../../components/BackButton/BackButton';
+import { BackButton } from '../../components/back-button/BackButton';
 import './PlacarDetalhado.css';
 
 interface Props {

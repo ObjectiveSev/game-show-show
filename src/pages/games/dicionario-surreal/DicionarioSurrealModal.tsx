@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { BaseModal } from '../../../components/BaseModal/BaseModal';
+import React, { useState, useEffect } from 'react';
+import { BaseModal } from '../../../components/base-modal/BaseModal';
+
 import type { DicionarioPalavra, PalavraEstado } from '../../../types/dicionarioSurreal';
 import type { Team } from '../../../types';
 import { ButtonType } from '../../../types';
-import { TeamSelector } from '../../../components/TeamSelector/TeamSelector';
-import { Button } from '../../../components/Button/Button';
+import { TeamSelector } from '../../../components/team-selector/TeamSelector';
+import { Button } from '../../../components/button/Button';
 import { soundManager } from '../../../utils/soundManager';
 import './DicionarioSurrealModal.css';
 

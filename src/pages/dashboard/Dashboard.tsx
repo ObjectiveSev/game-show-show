@@ -82,7 +82,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         event.preventDefault();
                         onOpenScoreboard();
                         break;
-                    case 'r':
+                    case 'r': {
                         event.preventDefault();
                         // Usar uma abordagem mais segura para evitar problemas com message channel
                         const shouldReset = window.confirm('Tem certeza que deseja resetar a pontuação?');
@@ -90,6 +90,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             resetScores();
                         }
                         break;
+                    }
                 }
             }
         };
