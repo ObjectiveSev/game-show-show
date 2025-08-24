@@ -1,19 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { CaroPraChuchuScoreEntry } from '../../../types/caroPraChuchu';
 import type { AppState } from '../../../types';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
+import { loadCaroPraChuchuScores } from '../../../utils/scoreStorage';
 
 interface CaroPraChuchuScoreSectionProps {
-    scores: CaroPraChuchuScoreEntry[];
     gameState: AppState;
     getGameEmoji: (gameId: string) => string;
 }
 
 export const CaroPraChuchuScoreSection: React.FC<CaroPraChuchuScoreSectionProps> = ({
-    scores,
     gameState,
     getGameEmoji
 }) => {
+    const [scores, setScores] = useState<CaroPraChuchuScoreEntry[]>([]);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadScores = async () => {
+            try {
+                const caroPraChuchuScores = loadCaroPraChuchuScores();
+                if (!isMounted) return;
+                setScores(caroPraChuchuScores);
+            } catch (error) {
+                if (isMounted) {
+                    console.warn('Erro ao carregar scores do Caro Pra Chuchu:', error);
+                }
+            }
+        };
+
+        loadScores();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
     return (
         <div className="historico-subsecao">
             <h3>{getGameEmoji('caro-pra-chuchu')} Caro Pra Chuchu</h3>

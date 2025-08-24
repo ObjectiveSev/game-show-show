@@ -1,21 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { OvoOuGalinhaScoreEntry } from '../../../types/ovoOuGalinha';
 import type { AppState } from '../../../types';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
+import { loadOvoOuGalinhaScores } from '../../../utils/scoreStorage';
 
 interface OvoOuGalinhaScoreSectionProps {
-    scores: OvoOuGalinhaScoreEntry[];
-    trios: Record<string, string>;
     gameState: AppState;
     getGameEmoji: (gameId: string) => string;
 }
 
 export const OvoOuGalinhaScoreSection: React.FC<OvoOuGalinhaScoreSectionProps> = ({
-    scores,
-    trios,
     gameState,
     getGameEmoji
 }) => {
+    const [scores, setScores] = useState<OvoOuGalinhaScoreEntry[]>([]);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadScores = async () => {
+            try {
+                const ovoOuGalinhaScores = loadOvoOuGalinhaScores();
+                if (!isMounted) return;
+                setScores(ovoOuGalinhaScores);
+            } catch (error) {
+                if (isMounted) {
+                    console.warn('Erro ao carregar scores do Ovo ou Galinha:', error);
+                }
+            }
+        };
+
+        loadScores();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
     return (
         <div className="historico-subsecao">
             <h3>{getGameEmoji('ovo-ou-galinha')} Ovo ou Galinha</h3>
@@ -26,18 +47,20 @@ export const OvoOuGalinhaScoreSection: React.FC<OvoOuGalinhaScoreSectionProps> =
                             <tr>
                                 <th>Trio</th>
                                 <th>Time</th>
-                                <th>Acertou</th>
+                                <th>Resultado</th>
                                 <th>Pontos</th>
                             </tr>
                         </thead>
                         <tbody>
                             {scores.map((score, idx) => (
                                 <tr key={idx}>
+                                    <td className="nome-cell">Trio #{score.trioId}</td>
                                     <td className="nome-cell">
-                                        {trios[score.trioId.toString()] || `Trio #${score.trioId}`}
+                                        {getTeamNameFromString(score.timeAdivinhador, gameState.teams)}
                                     </td>
-                                    <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
-                                    <td>{score.pontos > 0 ? '✔ Sim' : '❌ Não'}</td>
+                                    <td className="nome-cell">
+                                        {score.pontos > 0 ? '✅ Acerto' : '❌ Erro'}
+                                    </td>
                                     <td className="center">{score.pontos}</td>
                                 </tr>
                             ))}

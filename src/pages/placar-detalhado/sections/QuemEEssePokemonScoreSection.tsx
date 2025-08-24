@@ -1,21 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { QuemEEssePokemonScoreEntry } from '../../../types/quemEEssePokemon';
 import type { AppState } from '../../../types';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
+import { loadQuemEEssePokemonScores } from '../../../utils/scoreStorage';
 
 interface QuemEEssePokemonScoreSectionProps {
-    scores: QuemEEssePokemonScoreEntry[];
-    nomesPokemon: Record<string, string>;
     gameState: AppState;
     getGameEmoji: (gameId: string) => string;
 }
 
 export const QuemEEssePokemonScoreSection: React.FC<QuemEEssePokemonScoreSectionProps> = ({
-    scores,
-    nomesPokemon,
     gameState,
     getGameEmoji
 }) => {
+    const [scores, setScores] = useState<QuemEEssePokemonScoreEntry[]>([]);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadScores = async () => {
+            try {
+                const quemEEssePokemonScores = loadQuemEEssePokemonScores();
+                if (!isMounted) return;
+                setScores(quemEEssePokemonScores);
+            } catch (error) {
+                if (isMounted) {
+                    console.warn('Erro ao carregar scores do Quem É Esse Pokémon:', error);
+                }
+            }
+        };
+
+        loadScores();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
     return (
         <div className="historico-subsecao">
             <h3>{getGameEmoji('quem-e-esse-pokemon')} Quem É Esse Pokémon</h3>
@@ -26,16 +47,21 @@ export const QuemEEssePokemonScoreSection: React.FC<QuemEEssePokemonScoreSection
                             <tr>
                                 <th>Pokémon</th>
                                 <th>Time</th>
-                                <th>Acertou</th>
+                                <th>Resultado</th>
                                 <th>Pontos</th>
                             </tr>
                         </thead>
                         <tbody>
                             {scores.map((score, idx) => (
                                 <tr key={idx}>
-                                    <td className="nome-cell">{nomesPokemon[score.pokemonId] || score.pokemonId}</td>
-                                    <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
-                                    <td>{score.resultado === 'acerto' ? '✔ Sim' : '❌ Não'}</td>
+                                    <td className="nome-cell">Pokémon #{score.pokemonId}</td>
+                                    <td className="nome-cell">
+                                        {getTeamNameFromString(score.timeAdivinhador, gameState.teams)}
+                                    </td>
+                                    <td className="nome-cell">
+                                        {score.resultado === 'acerto' && '✅ Acerto'}
+                                        {score.resultado === 'erro' && '❌ Erro'}
+                                    </td>
                                     <td className="center">{score.pontos}</td>
                                 </tr>
                             ))}
