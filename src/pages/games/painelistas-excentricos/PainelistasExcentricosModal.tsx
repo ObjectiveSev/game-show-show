@@ -22,6 +22,10 @@ interface PainelistasExcentricosModalProps {
         acertou?: boolean;
         pontuacaoSalva?: boolean;
     };
+    scoreEntry?: {
+        acertou: boolean;
+        pontos: number;
+    };
 }
 
 export const PainelistasExcentricosModal: React.FC<PainelistasExcentricosModalProps> = ({
@@ -32,7 +36,8 @@ export const PainelistasExcentricosModal: React.FC<PainelistasExcentricosModalPr
     timeAdversario,
     onSavePoints,
     onReset,
-    estadoFato
+    estadoFato,
+    scoreEntry
 }) => {
     const [palpite, setPalpite] = useState<'verdade' | 'mentira' | null>(null);
     const [resultado, setResultado] = useState<'acerto' | 'erro' | null>(null);
@@ -40,11 +45,12 @@ export const PainelistasExcentricosModal: React.FC<PainelistasExcentricosModalPr
 
     useEffect(() => {
         if (isOpen) {
-            if (estadoFato?.verificado && estadoFato.acertou !== undefined) {
-                // Fato já verificado - carregar estado salvo
-                setPalpite(estadoFato.acertou ? 'verdade' : 'mentira');
-                setResultado(estadoFato.acertou ? 'acerto' : 'erro');
-                setPontosCalculados(estadoFato.acertou ? 4 : 0);
+            if (estadoFato?.verificado && scoreEntry) {
+                // Fato já verificado - carregar estado salvo do score
+                const acertou = scoreEntry.acertou;
+                setPalpite(acertou ? 'verdade' : 'mentira');
+                setResultado(acertou ? 'acerto' : 'erro');
+                setPontosCalculados(scoreEntry.pontos);
             } else {
                 // Novo fato - resetar estados
                 setPalpite(null);
@@ -52,7 +58,7 @@ export const PainelistasExcentricosModal: React.FC<PainelistasExcentricosModalPr
                 setPontosCalculados(0);
             }
         }
-    }, [isOpen, estadoFato]);
+    }, [isOpen, estadoFato, scoreEntry]);
 
     const handlePalpite = (tipo: 'verdade' | 'mentira') => {
         setPalpite(tipo);
@@ -118,20 +124,38 @@ export const PainelistasExcentricosModal: React.FC<PainelistasExcentricosModalPr
                 />
             )}
 
+            {estadoFato?.verificado && scoreEntry && (
+                <div className="fato-verificado-info">
+                    <p className="status-info">
+                        ✅ Este fato já foi verificado
+                    </p>
+                    <p className="resultado-info">
+                        {scoreEntry.acertou ? '🎯 Acertou!' : '❌ Errou!'} - 
+                        {scoreEntry.pontos > 0 ? ` +${scoreEntry.pontos} pontos` : ' 0 pontos'}
+                    </p>
+                </div>
+            )}
+
             <div className="modal-actions">
-                {resultado && (
+                {resultado && !estadoFato?.verificado && (
                     <>
                         <Button
                             type={ButtonType.RESET}
                             onClick={handleReset}
                         />
-                        {!estadoFato?.pontuacaoSalva && (
-                            <Button
-                                type={ButtonType.SAVE}
-                                onClick={handleSalvar}
-                            />
-                        )}
+                        <Button
+                            type={ButtonType.SAVE}
+                            onClick={handleSalvar}
+                        />
                     </>
+                )}
+                
+                {estadoFato?.verificado && (
+                    <Button
+                        type={ButtonType.RESET}
+                        onClick={handleReset}
+                        text="Resetar Fato"
+                    />
                 )}
             </div>
         </BaseModal>

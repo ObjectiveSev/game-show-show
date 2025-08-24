@@ -87,9 +87,12 @@ export const PainelistasExcentricos: React.FC<Props> = ({ gameState, addGamePoin
     const handleFatoClick = (fato: FatoPainelista, participanteId: string) => {
         // Verificar se o fato já foi lido
         const estadoFato = estados.find(e => e.id === `${participanteId}:${fato.id}`);
-        if (estadoFato && !estadoFato.lido) {
+        
+        // Só tocar música se o fato NÃO foi lido ainda
+        if (!estadoFato || !estadoFato.lido) {
             soundManager.playGameSound('painelistas-excentricos');
         }
+        
         setFatoSelecionado(fato);
         setParticipanteSelecionado(participanteId);
         setModalOpen(true);
@@ -337,6 +340,8 @@ export const PainelistasExcentricos: React.FC<Props> = ({ gameState, addGamePoin
                 onReset={handleReset}
                 estadoFato={fatoSelecionado && participanteSelecionado ?
                     estados.find(e => e.id === `${participanteSelecionado}:${fatoSelecionado.id}`) : undefined}
+                scoreEntry={fatoSelecionado && participanteSelecionado ?
+                    loadPainelistasScores().find(s => s.fatoId === fatoSelecionado.id && s.participanteId === participanteSelecionado) : undefined}
             />
         </div>
     );

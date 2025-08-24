@@ -27,6 +27,29 @@
     font-style: italic;
 }
 
+.fato-verificado-info {
+    margin: 24px 0;
+    padding: 20px;
+    background-color: #e8f5e8;
+    border-radius: 8px;
+    border-left: 4px solid #28a745;
+    text-align: center;
+}
+
+.status-info {
+    margin: 0 0 12px 0;
+    color: #155724;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.resultado-info {
+    margin: 0;
+    color: #155724;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
 .palpite-section {
     margin-bottom: 24px;
 }
