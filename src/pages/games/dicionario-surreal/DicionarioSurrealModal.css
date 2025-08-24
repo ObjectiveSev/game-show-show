@@ -5,9 +5,11 @@
 
 .controles-host {
     margin-bottom: 20px;
-    padding: 15px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
 }
 
 .status-info {
@@ -25,13 +27,21 @@
 
 .label {
     font-weight: 600;
-    color: #e0e0e0;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .valor {
-    font-size: 1.1em;
+    font-size: 1.2em;
     font-weight: bold;
-    color: #4CAF50;
+    color: #ffffff !important;
+    background: #2c5aa0 !important;
+    padding: 6px 12px;
+    border-radius: 20px;
+    min-width: 30px;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    border: 2px solid #1e3a5f !important;
 }
 
 .extras-stepper {
@@ -44,9 +54,10 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 8px 12px;
-    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .extras-buttons {
@@ -56,8 +67,8 @@
 }
 
 .extras-btn {
-    background: #666;
-    border: none;
+    background: #2c5aa0;
+    border: 2px solid #1e3a5f;
     color: white;
     width: 24px;
     height: 20px;
@@ -70,14 +81,29 @@
 }
 
 .extras-btn:hover {
-    background: #888;
+    background: #3a6bb8;
+}
+
+.extras-btn:disabled {
+    background: #444;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.extras-btn:disabled:hover {
+    background: #444;
 }
 
 .extras-value {
     font-weight: bold;
-    color: #e0e0e0;
-    min-width: 20px;
+    color: #ffffff !important;
+    background: #2c5aa0 !important;
+    padding: 6px 12px;
+    border-radius: 20px;
+    min-width: 30px;
     text-align: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    border: 2px solid #1e3a5f !important;
 }
 
 .texto-container {

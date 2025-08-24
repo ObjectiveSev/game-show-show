@@ -105,7 +105,7 @@ function AppContent() {
         } />
         <Route path="/dicionario-surreal" element={
           <DicionarioSurreal
-            gameState={gameState}
+            gameState={{ ...gameState, syncPoints }}
             addGamePoints={addGamePoints}
             addPoints={addPoints}
           />

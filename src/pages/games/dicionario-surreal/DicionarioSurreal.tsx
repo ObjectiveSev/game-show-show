@@ -3,7 +3,8 @@ import { GameHeader } from '../../../components/game-header/GameHeader';
 import { DicionarioSurrealModal } from './DicionarioSurrealModal';
 import { DefaultCard } from '../../../components/default-card/DefaultCard';
 import { carregarDicionarioSurreal } from '../../../utils/dicionarioLoader';
-import { appendDicionarioSurrealScore } from '../../../utils/scoreStorage';
+import { appendDicionarioSurrealScore, loadDicionarioSurrealScores } from '../../../utils/scoreStorage';
+import { getTeamName } from '../../../utils/teamUtils';
 import type { DicionarioPalavra, PalavraEstado, DicionarioData } from '../../../types/dicionarioSurreal';
 import type { AppState } from '../../../types';
 import { TagType, ButtonType } from '../../../types';
@@ -12,7 +13,7 @@ import { soundManager } from '../../../utils/soundManager';
 import './DicionarioSurreal.css';
 
 interface Props {
-    gameState: AppState;
+    gameState: AppState & { syncPoints?: () => void };
     addGamePoints: (gameId: string, teamId: 'A' | 'B', points: number) => void;
     addPoints: (teamId: 'A' | 'B', points: number) => void;
 }
@@ -44,7 +45,34 @@ export const DicionarioSurreal: React.FC<Props> = ({ gameState, addGamePoints, a
                     const raw = localStorage.getItem(STORAGE_KEYS.DICIONARIO_SURREAL_ESTADOS);
                     if (raw) {
                         const saved: PalavraEstado[] = JSON.parse(raw);
-                        const merged = base.map((b: PalavraEstado) => saved.find((s) => s.id === b.id) || b);
+
+                        // Carregar scores para preencher dados faltantes
+                        const scores = loadDicionarioSurrealScores();
+
+                        const merged = base.map((b: PalavraEstado) => {
+                            const found = saved.find((s) => s.id === b.id);
+                            if (found) {
+                                // Se não tem timeAdivinhador mas tem lido: true, buscar no score
+                                if (found.lido && !found.timeAdivinhador) {
+                                    const score = scores.find(s => s.palavraId === found.id);
+                                    if (score) {
+                                        return {
+                                            ...found,
+                                            timeAdivinhador: score.timeAdivinhador,
+                                            acertou: score.acertou
+                                        };
+                                    }
+                                }
+
+                                // Garantir que os novos campos existam
+                                return {
+                                    ...found,
+                                    timeAdivinhador: found.timeAdivinhador || undefined,
+                                    acertou: found.acertou || undefined
+                                };
+                            }
+                            return b;
+                        });
                         setEstados(merged);
                     } else {
                         setEstados(base);
@@ -105,7 +133,9 @@ export const DicionarioSurreal: React.FC<Props> = ({ gameState, addGamePoints, a
                 respostaSelecionada: undefined,
                 extras: 0,
                 lido: false,
-                pontuacaoSalva: false
+                pontuacaoSalva: false,
+                timeAdivinhador: undefined,
+                acertou: undefined
             };
 
             setEstados((prev) => prev.map((e) => (e.id === palavraId ? novoEstado : e)));
@@ -130,11 +160,15 @@ export const DicionarioSurreal: React.FC<Props> = ({ gameState, addGamePoints, a
                 <div className="palavras-grid">
                     {dados.palavras.map((p) => {
                         const st = estados.find((e) => e.id === p.id);
+
+
+
                         return (
                             <DefaultCard
                                 key={p.id}
                                 title={st?.lido ? p.palavra : `Palavra #${p.id}`}
-                                tags={[st?.lido ? TagType.CORRECT : TagType.PENDING]}
+                                body={st?.lido ? (st?.timeAdivinhador ? `Respondido por: ${getTeamName(st.timeAdivinhador, gameState.teams)}` : 'Respondido por: [Time não identificado]') : undefined}
+                                tags={[st?.lido ? (st.acertou ? TagType.CORRECT : TagType.ERROR) : TagType.PENDING]}
                                 button={
                                     st?.lido
                                         ? {
@@ -166,6 +200,7 @@ export const DicionarioSurreal: React.FC<Props> = ({ gameState, addGamePoints, a
                     addGamePoints('dicionario-surreal', time, pontos);
                     addPoints(time, pontos);
                     handleUpdateEstado(novoEstado);
+
                     // salvar score detalhado
                     if (palavraAtual && estadoAtual) {
                         appendDicionarioSurrealScore({
@@ -177,6 +212,11 @@ export const DicionarioSurreal: React.FC<Props> = ({ gameState, addGamePoints, a
                             definicaoMarcadaId: novoEstado.respostaSelecionada!,
                             timestamp: Date.now()
                         });
+                    }
+
+                    // Sincronizar pontos para atualizar o dashboard APÓS todas as operações
+                    if (gameState.syncPoints) {
+                        gameState.syncPoints();
                     }
 
                     // Fechar modal após salvar

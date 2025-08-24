@@ -33,6 +33,8 @@ export interface PalavraEstado {
     extras: number; // ajustes manuais (+/-)
     lido: boolean;
     pontuacaoSalva?: boolean;
+    timeAdivinhador?: 'A' | 'B'; // qual time respondeu
+    acertou?: boolean; // se acertou ou errou
 }
 
 export interface DicionarioScoreEntry {

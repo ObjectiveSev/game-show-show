@@ -10,12 +10,13 @@ import type { ReginaldoHoraDoLancheScoreEntry } from '../../types/reginaldoHoraD
 import type { GamesConfig } from '../../types/games';
 import { loadVerdadesAbsurdasScores } from '../../utils/scoreStorage';
 import { loadDicionarioSurrealScores } from '../../utils/scoreStorage';
-import { loadPainelistasScores } from '../../utils/scoreStorage';
+import { loadPainelistasScores, loadPainelistasPunicoes } from '../../utils/scoreStorage';
 import { loadNoticiasExtraordinariasScores } from '../../utils/scoreStorage';
 import { loadCaroPraChuchuScores } from '../../utils/scoreStorage';
 import { loadQuemEEssePokemonScores } from '../../utils/scoreStorage';
 import { loadReginaldoHoraDoLancheScores } from '../../utils/scoreStorage';
 import { carregarVerdadesAbsurdas } from '../../utils/verdadesAbsurdasLoader';
+import { carregarParticipantes } from '../../utils/participantesLoader';
 import { carregarDicionarioSurreal } from '../../utils/dicionarioLoader';
 import { carregarNoticiasExtraordinarias } from '../../utils/noticiasExtraordinariasLoader';
 import { carregarQuemEEssePokemon } from '../../utils/quemEEssePokemonLoader';
@@ -33,6 +34,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
     const [verdadesAbsurdasScores, setVerdadesAbsurdasScores] = useState<VerdadesAbsurdasScoreEntry[]>([]);
     const [dicionarioSurrealScores, setDicionarioSurrealScores] = useState<DicionarioScoreEntry[]>([]);
     const [painelistasScores, setPainelistasScores] = useState<PainelistasScoreEntry[]>([]);
+    const [painelistasPunicoes, setPainelistasPunicoes] = useState<any[]>([]);
     const [noticiasExtraordinariasScores, setNoticiasExtraordinariasScores] = useState<NoticiasExtraordinariasScoreEntry[]>([]);
     const [caroPraChuchuScores, setCaroPraChuchuScores] = useState<CaroPraChuchuScoreEntry[]>([]);
     const [quemEEssePokemonScores, setQuemEEssePokemonScores] = useState<QuemEEssePokemonScoreEntry[]>([]);
@@ -42,6 +44,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
     const [manchetesNoticias, setManchetesNoticias] = useState<Record<string, string>>({});
     const [nomesPokemon, setNomesPokemon] = useState<Record<string, string>>({});
     const [nomesComidas, setNomesComidas] = useState<Record<string, string>>({});
+    const [nomesParticipantes, setNomesParticipantes] = useState<Record<string, string>>({});
     const [gamesConfig, setGamesConfig] = useState<GamesConfig | null>(null);
 
     useEffect(() => {
@@ -52,6 +55,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
             setVerdadesAbsurdasScores(loadVerdadesAbsurdasScores());
             setDicionarioSurrealScores(loadDicionarioSurrealScores());
             setPainelistasScores(loadPainelistasScores());
+            setPainelistasPunicoes(loadPainelistasPunicoes());
             setNoticiasExtraordinariasScores(loadNoticiasExtraordinariasScores());
             setCaroPraChuchuScores(loadCaroPraChuchuScores());
             setQuemEEssePokemonScores(loadQuemEEssePokemonScores());
@@ -159,6 +163,26 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                     .catch(error => {
                         if (!isMounted) {
                             console.warn('Erro ao carregar comidas:', error);
+                        }
+                        return null;
+                    })
+            );
+
+            // Participantes
+            promises.push(
+                carregarParticipantes()
+                    .then(participantes => {
+                        if (!isMounted) return null;
+                        const nomes = participantes.reduce((acc: Record<string, string>, participante: { id: string; nome: string }) => {
+                            acc[participante.id] = participante.nome;
+                            return acc;
+                        }, {});
+                        setNomesParticipantes(nomes);
+                        return nomes;
+                    })
+                    .catch(error => {
+                        if (!isMounted) {
+                            console.warn('Erro ao carregar participantes:', error);
                         }
                         return null;
                     })
@@ -273,9 +297,9 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                                     {verdadesAbsurdasScores.map((score, idx) => (
                                         <tr key={idx}>
                                             <td className="nome-cell">{titulosVerdades[score.textoId] || score.textoId}</td>
-                                            <td>{getTeamNameFromString(gameState.teams.teamA.members.includes(score.timeLeitor) ? 'A' : 'B', gameState.teams)}</td>
+                                            <td>{getTeamNameFromString(score.timeLeitor, gameState.teams)}</td>
                                             <td className="center">{score.pontosLeitor}</td>
-                                            <td>{getTeamNameFromString(gameState.teams.teamA.members.includes(score.timeAdivinhador) ? 'A' : 'B', gameState.teams)}</td>
+                                            <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
                                             <td className="center">{score.pontosAdivinhador}</td>
                                         </tr>
                                     ))}
@@ -304,7 +328,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                                     {dicionarioSurrealScores.map((score, idx) => (
                                         <tr key={idx}>
                                             <td className="nome-cell">{palavrasDicionario[score.palavraId] || score.palavraId}</td>
-                                            <td>{getTeamNameFromString(gameState.teams.teamA.members.includes(score.timeAdivinhador) ? 'A' : 'B', gameState.teams)}</td>
+                                            <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
                                             <td className="center">{score.pontos}</td>
                                         </tr>
                                     ))}
@@ -335,7 +359,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                                         <tr key={idx}>
                                             <td className="nome-cell">{score.participanteNome}</td>
                                             <td className="fato-cell">{score.fatoTexto}</td>
-                                            <td>{getTeamNameFromString(gameState.teams.teamA.members.includes(score.timeAdivinhador) ? 'A' : 'B', gameState.teams)}</td>
+                                            <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
                                             <td className="center">{score.pontos}</td>
                                         </tr>
                                     ))}
@@ -346,6 +370,33 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                         <p className="empty">Nenhum registro encontrado</p>
                     )}
                 </div>
+
+                {/* Punições dos Painelistas */}
+                {painelistasPunicoes.length > 0 && (
+                    <div className="historico-subsecao">
+                        <h3>Punições - Painelistas Excêntricos</h3>
+                        <div className="table-wrapper">
+                            <table className="pd-table">
+                                <thead>
+                                    <tr>
+                                        <th>Jogador</th>
+                                        <th>Time</th>
+                                        <th>Pontos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {painelistasPunicoes.map((punicao, idx) => (
+                                        <tr key={idx}>
+                                            <td className="nome-cell">{nomesParticipantes[punicao.participanteId] || punicao.participanteId}</td>
+                                            <td>{getTeamNameFromString(punicao.time, gameState.teams)}</td>
+                                            <td className="center">{punicao.pontos}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
 
                 {/* Notícias Extraordinárias */}
                 <div className="historico-subsecao">
@@ -367,7 +418,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                                             <td className="nome-cell">
                                                 {(manchetesNoticias[score.noticiaId] || score.manchete).substring(0, 40)}...
                                             </td>
-                                            <td>{getTeamNameFromString(gameState.teams.teamA.members.includes(score.timeAdivinhador) ? 'A' : 'B', gameState.teams)}</td>
+                                            <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
                                             <td>{score.acertou ? '✔ Sim' : '❌ Não'}</td>
                                             <td className="center">{score.pontos}</td>
                                         </tr>

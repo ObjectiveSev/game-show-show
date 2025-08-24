@@ -28,6 +28,7 @@ export interface TextoEstado {
     erros: number;
     verdadesReveladas: boolean;
     pontuacaoSalva?: boolean; // evita salvar pontuação duas vezes
+    timeLeitor?: 'A' | 'B'; // qual time leu o texto
 }
 
 export interface VerdadesAbsurdasScoreEntry {

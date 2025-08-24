@@ -85,14 +85,14 @@ export const PainelistasExcentricos: React.FC<Props> = ({ gameState, addGamePoin
 
 
     const handleFatoClick = (fato: FatoPainelista, participanteId: string) => {
-        // Verificar se o fato já foi lido
+        // Verificar se o fato já foi verificado
         const estadoFato = estados.find(e => e.id === `${participanteId}:${fato.id}`);
-        
-        // Só tocar música se o fato NÃO foi lido ainda
-        if (!estadoFato || !estadoFato.lido) {
+
+        // Só tocar música se o fato NÃO foi verificado ainda
+        if (!estadoFato || !estadoFato.verificado) {
             soundManager.playGameSound('painelistas-excentricos');
         }
-        
+
         setFatoSelecionado(fato);
         setParticipanteSelecionado(participanteId);
         setModalOpen(true);
@@ -125,6 +125,11 @@ export const PainelistasExcentricos: React.FC<Props> = ({ gameState, addGamePoin
                 // Marcar fato como verificado
                 const fid = `${participanteSelecionado}:${fatoSelecionado.id}`;
                 setEstados(prev => prev.map(e => e.id === fid ? { ...e, verificado: true } : e));
+
+                // Sincronizar pontos para atualizar o dashboard em tempo real
+                if (gameState.syncPoints) {
+                    gameState.syncPoints();
+                }
             }
         }
     };
@@ -152,53 +157,62 @@ export const PainelistasExcentricos: React.FC<Props> = ({ gameState, addGamePoin
             });
 
             setPunicoes(prev => ({ ...prev, [participanteId]: true }));
+
+            // Sincronizar pontos para atualizar o dashboard em tempo real
+            if (gameState.syncPoints) {
+                gameState.syncPoints();
+            }
         }
     };
 
     const handleResetarPontuacao = (participanteId: string) => {
-        console.log(`handleResetarPontuacao chamado para ${participanteId}`);
         if (dados) {
-            const jogador = dados.jogadores.find(j => j.participanteId === participanteId);
-            if (jogador) {
-                const time = gameState.teams.teamA.members.includes(participanteId) ? 'A' : 'B';
+            const time = gameState.teams.teamA.members.includes(participanteId) ? 'A' : 'B';
 
-                // 1. Resetar todos os fatos lidos deste participante
-                setEstados(prev => prev.map(estado =>
-                    estado.id.startsWith(participanteId + ':')
-                        ? { ...estado, verificado: false }
-                        : estado
-                ));
+            // 1. Resetar todos os fatos verificados deste participante (marcar como não verificado)
+            setEstados(prev => prev.map(estado =>
+                estado.id.startsWith(participanteId + ':')
+                    ? { ...estado, verificado: false }
+                    : estado
+            ));
 
-                // 2. Remover pontuações deste participante do placar detalhado
-                const scoresExistentes = loadPainelistasScores();
-                const scoresFiltrados = scoresExistentes.filter((score: PainelistasScoreEntry) =>
-                    score.participanteId !== participanteId
-                );
-                localStorage.setItem(STORAGE_KEYS.PAINELISTAS_SCORES, JSON.stringify(scoresFiltrados));
+            // 2. Calcular pontos a remover dos scores
+            const scoresExistentes = loadPainelistasScores();
+            const pontosScores = scoresExistentes
+                .filter((score: PainelistasScoreEntry) => score.participanteId === participanteId)
+                .reduce((sum: number, score: PainelistasScoreEntry) => sum + (score.pontos || 0), 0);
 
-                // 3. Remover punições deste participante
-                removePainelistasPunicao(participanteId);
-                setPunicoes(prev => {
-                    const newPunicoes = { ...prev };
-                    delete newPunicoes[participanteId];
-                    return newPunicoes;
-                });
+            // 3. Calcular pontos a remover das punições
+            const punicoesExistentes = loadPainelistasPunicoes();
+            const pontosPunicoes = punicoesExistentes
+                .filter(p => p.participanteId === participanteId)
+                .reduce((sum: number, p) => sum + (p.pontos || 0), 0);
 
-                // 4. Recalcular e atualizar placar geral
-                // Primeiro, remover pontos existentes deste participante
-                const pontosExistentes = scoresExistentes
-                    .filter((score: PainelistasScoreEntry) => score.participanteId === participanteId)
-                    .reduce((sum: number, score: PainelistasScoreEntry) => sum + (score.pontos || 0), 0);
+            const totalPontosARemover = pontosScores + pontosPunicoes;
 
-                if (pontosExistentes !== 0) {
-                    addGamePoints('painelistas-excêntricos', time, -pontosExistentes);
-                    addPoints(time, -pontosExistentes);
-                }
+            // 4. Remover pontuações deste participante do placar detalhado
+            const scoresFiltrados = scoresExistentes.filter((score: PainelistasScoreEntry) =>
+                score.participanteId !== participanteId
+            );
+            localStorage.setItem(STORAGE_KEYS.PAINELISTAS_SCORES, JSON.stringify(scoresFiltrados));
 
-                // 5. Sincronizar pontos para atualizar o dashboard
-                if (gameState.syncPoints) {
-                    gameState.syncPoints();
-                }
+            // 5. Remover punições deste participante
+            removePainelistasPunicao(participanteId);
+            setPunicoes(prev => {
+                const newPunicoes = { ...prev };
+                delete newPunicoes[participanteId];
+                return newPunicoes;
+            });
+
+            // 6. Atualizar placar geral (remover todos os pontos)
+            if (totalPontosARemover !== 0) {
+                addGamePoints('painelistas-excêntricos', time, -totalPontosARemover);
+                addPoints(time, -totalPontosARemover);
+            }
+
+            // 7. Sincronizar pontos para atualizar o dashboard
+            if (gameState.syncPoints) {
+                gameState.syncPoints();
             }
         }
     };
@@ -334,14 +348,13 @@ export const PainelistasExcentricos: React.FC<Props> = ({ gameState, addGamePoin
                 onClose={() => setModalOpen(false)}
                 fato={fatoSelecionado}
                 participanteNome={participantes[participanteSelecionado] || participanteSelecionado}
+                participanteId={participanteSelecionado}
                 timeAdversario={fatoSelecionado && participanteSelecionado && gameState.teams ?
                     (gameState.teams.teamA.members.includes(participanteSelecionado) ? 'B' : 'A') : 'A'}
                 onSavePoints={handleSavePoints}
                 onReset={handleReset}
                 estadoFato={fatoSelecionado && participanteSelecionado ?
                     estados.find(e => e.id === `${participanteSelecionado}:${fatoSelecionado.id}`) : undefined}
-                scoreEntry={fatoSelecionado && participanteSelecionado ?
-                    loadPainelistasScores().find(s => s.fatoId === fatoSelecionado.id && s.participanteId === participanteSelecionado) : undefined}
             />
         </div>
     );

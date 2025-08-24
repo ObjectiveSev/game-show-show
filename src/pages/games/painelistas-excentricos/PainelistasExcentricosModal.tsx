@@ -7,6 +7,7 @@ import { ResultadoStatus } from '../../../components/resultado-status/ResultadoS
 import { Button } from '../../../components/button/Button';
 import { ButtonType } from '../../../types';
 import { soundManager } from '../../../utils/soundManager';
+import { loadPainelistasScores } from '../../../utils/scoreStorage';
 import './PainelistasExcentricosModal.css';
 
 interface PainelistasExcentricosModalProps {
@@ -14,6 +15,7 @@ interface PainelistasExcentricosModalProps {
     onClose: () => void;
     fato: FatoPainelista | null;
     participanteNome: string;
+    participanteId: string;
     timeAdversario: 'A' | 'B';
     onSavePoints: (points: number) => void;
     onReset: () => void;
@@ -22,10 +24,6 @@ interface PainelistasExcentricosModalProps {
         acertou?: boolean;
         pontuacaoSalva?: boolean;
     };
-    scoreEntry?: {
-        acertou: boolean;
-        pontos: number;
-    };
 }
 
 export const PainelistasExcentricosModal: React.FC<PainelistasExcentricosModalProps> = ({
@@ -33,24 +31,36 @@ export const PainelistasExcentricosModal: React.FC<PainelistasExcentricosModalPr
     onClose,
     fato,
     participanteNome,
+    participanteId,
     timeAdversario,
     onSavePoints,
     onReset,
-    estadoFato,
-    scoreEntry
+    estadoFato
 }) => {
     const [palpite, setPalpite] = useState<'verdade' | 'mentira' | null>(null);
     const [resultado, setResultado] = useState<'acerto' | 'erro' | null>(null);
     const [pontosCalculados, setPontosCalculados] = useState<number>(0);
 
     useEffect(() => {
-        if (isOpen) {
-            if (estadoFato?.verificado && scoreEntry) {
-                // Fato já verificado - carregar estado salvo do score
-                const acertou = scoreEntry.acertou;
-                setPalpite(acertou ? 'verdade' : 'mentira');
-                setResultado(acertou ? 'acerto' : 'erro');
-                setPontosCalculados(scoreEntry.pontos);
+        if (isOpen && fato) {
+            if (estadoFato?.verificado) {
+                // Fato já verificado - buscar estado salvo do score
+                const scores = loadPainelistasScores();
+                const scoreEntry = scores.find(s =>
+                    s.fatoId === fato.id && s.participanteId === participanteId
+                );
+
+                if (scoreEntry) {
+                    const acertou = scoreEntry.acertou;
+                    setPalpite(acertou ? 'verdade' : 'mentira');
+                    setResultado(acertou ? 'acerto' : 'erro');
+                    setPontosCalculados(scoreEntry.pontos);
+                } else {
+                    // Fallback caso não encontre o score
+                    setPalpite(null);
+                    setResultado(null);
+                    setPontosCalculados(0);
+                }
             } else {
                 // Novo fato - resetar estados
                 setPalpite(null);
@@ -58,7 +68,7 @@ export const PainelistasExcentricosModal: React.FC<PainelistasExcentricosModalPr
                 setPontosCalculados(0);
             }
         }
-    }, [isOpen, estadoFato, scoreEntry]);
+    }, [isOpen, estadoFato, fato, participanteId]);
 
     const handlePalpite = (tipo: 'verdade' | 'mentira') => {
         setPalpite(tipo);
@@ -124,17 +134,7 @@ export const PainelistasExcentricosModal: React.FC<PainelistasExcentricosModalPr
                 />
             )}
 
-            {estadoFato?.verificado && scoreEntry && (
-                <div className="fato-verificado-info">
-                    <p className="status-info">
-                        ✅ Este fato já foi verificado
-                    </p>
-                    <p className="resultado-info">
-                        {scoreEntry.acertou ? '🎯 Acertou!' : '❌ Errou!'} - 
-                        {scoreEntry.pontos > 0 ? ` +${scoreEntry.pontos} pontos` : ' 0 pontos'}
-                    </p>
-                </div>
-            )}
+
 
             <div className="modal-actions">
                 {resultado && !estadoFato?.verificado && (
@@ -149,14 +149,8 @@ export const PainelistasExcentricosModal: React.FC<PainelistasExcentricosModalPr
                         />
                     </>
                 )}
-                
-                {estadoFato?.verificado && (
-                    <Button
-                        type={ButtonType.RESET}
-                        onClick={handleReset}
-                        text="Resetar Fato"
-                    />
-                )}
+
+
             </div>
         </BaseModal>
     );
