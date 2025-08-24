@@ -27,6 +27,16 @@ import { carregarReginaldoHoraDoLanche } from '../../utils/reginaldoHoraDoLanche
 import { carregarConfiguracaoJogos } from '../../utils/gamesLoader';
 import { getTeamNameFromString } from '../../utils/teamUtils';
 import { BackButton } from '../../components/back-button/BackButton';
+import {
+    VerdadesAbsurdasScoreSection,
+    PainelistasExcentricosScoreSection,
+    DicionarioSurrealScoreSection,
+    NoticiasExtraordinariasScoreSection,
+    CaroPraChuchuScoreSection,
+    OvoOuGalinhaScoreSection,
+    QuemEEssePokemonScoreSection,
+    ReginaldoHoraDoLancheScoreSection
+} from './sections';
 import './PlacarDetalhado.css';
 
 interface Props {
@@ -253,6 +263,93 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
         return game?.emoji || '🎮';
     };
 
+    const renderGameSection = (gameId: string) => {
+        switch (gameId) {
+            case 'verdades-absurdas':
+                return (
+                    <VerdadesAbsurdasScoreSection
+                        key={gameId}
+                        scores={verdadesAbsurdasScores}
+                        titulos={titulosVerdades}
+                        gameState={gameState}
+                        getGameEmoji={getGameEmoji}
+                    />
+                );
+            case 'painelistas-excentricos':
+                return (
+                    <PainelistasExcentricosScoreSection
+                        key={gameId}
+                        scores={painelistasScores}
+                        punicoes={painelistasPunicoes}
+                        nomesParticipantes={nomesParticipantes}
+                        gameState={gameState}
+                        getGameEmoji={getGameEmoji}
+                    />
+                );
+            case 'dicionario-surreal':
+                return (
+                    <DicionarioSurrealScoreSection
+                        key={gameId}
+                        scores={dicionarioSurrealScores}
+                        palavras={palavrasDicionario}
+                        gameState={gameState}
+                        getGameEmoji={getGameEmoji}
+                    />
+                );
+            case 'noticias-extraordinarias':
+                return (
+                    <NoticiasExtraordinariasScoreSection
+                        key={gameId}
+                        scores={noticiasExtraordinariasScores}
+                        manchetes={manchetesNoticias}
+                        gameState={gameState}
+                        getGameEmoji={getGameEmoji}
+                    />
+                );
+            case 'caro-pra-chuchu':
+                return (
+                    <CaroPraChuchuScoreSection
+                        key={gameId}
+                        scores={caroPraChuchuScores}
+                        gameState={gameState}
+                        getGameEmoji={getGameEmoji}
+                    />
+                );
+            case 'ovo-ou-galinha':
+                return (
+                    <OvoOuGalinhaScoreSection
+                        key={gameId}
+                        scores={ovoOuGalinhaScores}
+                        trios={triosOvoOuGalinha}
+                        gameState={gameState}
+                        getGameEmoji={getGameEmoji}
+                    />
+                );
+            case 'quem-e-esse-pokemon':
+                return (
+                    <QuemEEssePokemonScoreSection
+                        key={gameId}
+                        scores={quemEEssePokemonScores}
+                        nomesPokemon={nomesPokemon}
+                        gameState={gameState}
+                        getGameEmoji={getGameEmoji}
+                    />
+                );
+            case 'reginaldo-hora-do-lanche':
+                return (
+                    <ReginaldoHoraDoLancheScoreSection
+                        key={gameId}
+                        scores={reginaldoHoraDoLancheScores}
+                        nomesComidas={nomesComidas}
+                        gameState={gameState}
+                        getGameEmoji={getGameEmoji}
+                    />
+                );
+            default:
+                return null;
+        }
+    };
+
     return (
         <div className="placar-detalhado">
             <BackButton />
@@ -304,301 +401,9 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                     </div>
                 )}
 
-                {/* Verdades Absurdas */}
-                <div className="historico-subsecao">
-                    <h3>{getGameEmoji('verdades-absurdas')} Verdades Absurdas</h3>
-                    {verdadesAbsurdasScores.length > 0 ? (
-                        <div className="table-wrapper">
-                            <table className="pd-table">
-                                <thead>
-                                    <tr>
-                                        <th>Texto</th>
-                                        <th>Time Leitor</th>
-                                        <th>Pontos Leitor</th>
-                                        <th>Time Adivinhador</th>
-                                        <th>Pontos Adivinhador</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {verdadesAbsurdasScores.map((score, idx) => (
-                                        <tr key={idx}>
-                                            <td className="nome-cell">{titulosVerdades[score.textoId] || score.textoId}</td>
-                                            <td>{getTeamNameFromString(score.timeLeitor, gameState.teams)}</td>
-                                            <td className="center">{score.pontosLeitor}</td>
-                                            <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
-                                            <td className="center">{score.pontosAdivinhador}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    ) : (
-                        <p className="empty">Nenhum registro encontrado</p>
-                    )}
-                </div>
-
-                {/* Dicionário Surreal */}
-                <div className="historico-subsecao">
-                    <h3>{getGameEmoji('dicionario-surreal')} Dicionário Surreal</h3>
-                    {dicionarioSurrealScores.length > 0 ? (
-                        <div className="table-wrapper">
-                            <table className="pd-table">
-                                <thead>
-                                    <tr>
-                                        <th>Palavra</th>
-                                        <th>Time</th>
-                                        <th>Pontos</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {dicionarioSurrealScores.map((score, idx) => (
-                                        <tr key={idx}>
-                                            <td className="nome-cell">{palavrasDicionario[score.palavraId] || score.palavraId}</td>
-                                            <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
-                                            <td className="center">{score.pontos}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    ) : (
-                        <p className="empty">Nenhum registro encontrado</p>
-                    )}
-                </div>
-
-                {/* Painelistas Excêntricos */}
-                <div className="historico-subsecao">
-                    <h3>{getGameEmoji('painelistas-excentricos')} Painelistas Excêntricos</h3>
-                    {painelistasScores.length > 0 ? (
-                        <div className="table-wrapper">
-                            <table className="pd-table">
-                                <thead>
-                                    <tr>
-                                        <th>Jogador</th>
-                                        <th>Fato</th>
-                                        <th>Time</th>
-                                        <th>Pontos</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {painelistasScores.map((score, idx) => (
-                                        <tr key={idx}>
-                                            <td className="nome-cell">{score.participanteNome}</td>
-                                            <td className="fato-cell">{score.fatoTexto}</td>
-                                            <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
-                                            <td className="center">{score.pontos}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    ) : (
-                        <p className="empty">Nenhum registro encontrado</p>
-                    )}
-                </div>
-
-                {/* Punições dos Painelistas */}
-                {painelistasPunicoes.length > 0 && (
-                    <div className="historico-subsecao">
-                        <h3>Punições - Painelistas Excêntricos</h3>
-                        <div className="table-wrapper">
-                            <table className="pd-table">
-                                <thead>
-                                    <tr>
-                                        <th>Jogador</th>
-                                        <th>Time</th>
-                                        <th>Pontos</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {painelistasPunicoes.map((punicao, idx) => (
-                                        <tr key={idx}>
-                                            <td className="nome-cell">{nomesParticipantes[punicao.participanteId] || punicao.participanteId}</td>
-                                            <td>{getTeamNameFromString(punicao.time, gameState.teams)}</td>
-                                            <td className="center">{punicao.pontos}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
-
-                {/* Notícias Extraordinárias */}
-                <div className="historico-subsecao">
-                    <h3>{getGameEmoji('noticias-extraordinarias')} Notícias Extraordinárias</h3>
-                    {noticiasExtraordinariasScores.length > 0 ? (
-                        <div className="table-wrapper">
-                            <table className="pd-table">
-                                <thead>
-                                    <tr>
-                                        <th>Manchete</th>
-                                        <th>Time</th>
-                                        <th>Acertou</th>
-                                        <th>Pontos</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {noticiasExtraordinariasScores.map((score, idx) => (
-                                        <tr key={idx}>
-                                            <td className="nome-cell">
-                                                {(manchetesNoticias[score.noticiaId] || score.manchete).substring(0, 40)}...
-                                            </td>
-                                            <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
-                                            <td>{score.acertou ? '✔ Sim' : '❌ Não'}</td>
-                                            <td className="center">{score.pontos}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    ) : (
-                        <p className="empty">Nenhum registro encontrado</p>
-                    )}
-                </div>
-
-                {/* Caro Pra Chuchu */}
-                <div className="historico-subsecao">
-                    <h3>{getGameEmoji('caro-pra-chuchu')} Caro Pra Chuchu</h3>
-                    {caroPraChuchuScores.length > 0 ? (
-                        <div className="table-wrapper">
-                            <table className="pd-table">
-                                <thead>
-                                    <tr>
-                                        <th>Item</th>
-                                        <th>Time</th>
-                                        <th>Tipo de Acerto</th>
-                                        <th>Pontos</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {caroPraChuchuScores.map((score, idx) => (
-                                        <tr key={idx}>
-                                            <td className="nome-cell">{score.nomeItem}</td>
-                                            <td className="nome-cell">
-                                                {getTeamNameFromString(score.timeAdivinhador, gameState.teams)}
-                                            </td>
-                                            <td className="nome-cell">
-                                                {score.tipoAcerto === 'moedaCorreta' && '🪙 Moeda Correta'}
-                                                {score.tipoAcerto === 'pertoSuficiente' && '🎯 Perto Suficiente'}
-                                                {score.tipoAcerto === 'acertoLendario' && '⭐ Acerto Lendário'}
-                                                {score.tipoAcerto === 'erro' && '❌ Errou'}
-                                            </td>
-                                            <td className="center">{score.pontos}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    ) : (
-                        <p className="empty">Nenhum registro encontrado</p>
-                    )}
-                </div>
-
-                {/* Ovo ou Galinha */}
-                <div className="historico-subsecao">
-                    <h3>{getGameEmoji('ovo-ou-galinha')} Ovo ou Galinha</h3>
-                    {ovoOuGalinhaScores.length > 0 ? (
-                        <div className="table-wrapper">
-                            <table className="pd-table">
-                                <thead>
-                                    <tr>
-                                        <th>Trio</th>
-                                        <th>Time</th>
-                                        <th>Acertou</th>
-                                        <th>Pontos</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {ovoOuGalinhaScores.map((score, idx) => (
-                                        <tr key={idx}>
-                                            <td className="nome-cell">
-                                                {triosOvoOuGalinha[score.trioId.toString()] || `Trio #${score.trioId}`}
-                                            </td>
-                                            <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
-                                            <td>{score.pontos > 0 ? '✔ Sim' : '❌ Não'}</td>
-                                            <td className="center">{score.pontos}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    ) : (
-                        <p className="empty">Nenhum registro encontrado</p>
-                    )}
-                </div>
-
-                {/* Quem É Esse Pokémon */}
-                <div className="historico-subsecao">
-                    <h3>{getGameEmoji('quem-e-esse-pokemon')} Quem É Esse Pokémon</h3>
-                    {quemEEssePokemonScores.length > 0 ? (
-                        <div className="table-wrapper">
-                            <table className="pd-table">
-                                <thead>
-                                    <tr>
-                                        <th>Pokémon</th>
-                                        <th>Time</th>
-                                        <th>Resultado</th>
-                                        <th>Pontos</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {quemEEssePokemonScores.map((score, idx) => (
-                                        <tr key={idx}>
-                                            <td className="nome-cell">{nomesPokemon[score.pokemonId] || `Pokémon #${score.pokemonId}`}</td>
-                                            <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
-                                            <td className="center">
-                                                {score.resultado === 'acerto' ? '✅ Acertou' : '❌ Errou'}
-                                            </td>
-                                            <td className={`center ${score.pontos < 0 ? 'negative-points' : score.pontos > 0 ? 'positive-points' : ''}`}>
-                                                {score.pontos > 0 ? `+${score.pontos}` : score.pontos}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    ) : (
-                        <p className="empty">Nenhum registro encontrado</p>
-                    )}
-                </div>
-
-                {/* Reginaldo Hora do Lanche */}
-                <div className="historico-subsecao">
-                    <h3>{getGameEmoji('reginaldo-hora-do-lanche')} Reginaldo Hora do Lanche</h3>
-                    {reginaldoHoraDoLancheScores.length > 0 ? (
-                        <div className="table-wrapper">
-                            <table className="pd-table">
-                                <thead>
-                                    <tr>
-                                        <th>Comida</th>
-                                        <th>Time</th>
-                                        <th>Resultado</th>
-                                        <th>Pontos</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {reginaldoHoraDoLancheScores.map((score, idx) => (
-                                        <tr key={idx}>
-                                            <td className="nome-cell">{nomesComidas[score.id] || `Comida #${score.id}`}</td>
-                                            <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
-                                            <td className="center">
-                                                {score.resultado === 'acerto' ? '✅ Acertou' : '❌ Errou'}
-                                            </td>
-                                            <td className={`center ${score.pontos < 0 ? 'negative-points' : score.pontos > 0 ? 'positive-points' : ''}`}>
-                                                {score.pontos > 0 ? `+${score.pontos}` : score.pontos}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    ) : (
-                        <p className="empty">Nenhum registro encontrado</p>
-                    )}
-                </div>
+                {/* Seções dos jogos renderizadas dinamicamente baseadas no games.json */}
+                {gamesConfig?.games.map((game) => renderGameSection(game.id))}
             </div>
         </div>
     );
 };
-

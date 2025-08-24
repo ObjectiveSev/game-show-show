@@ -103,10 +103,10 @@ export const OvoOuGalinhaModal: React.FC<OvoOuGalinhaModalProps> = ({
     }, [timeSelecionado, eventosOrdenados, trio]);
 
     const handleSalvarPontuacao = useCallback(() => {
-                try {
+        try {
             onConfirm(trio.id, timeSelecionado, acertou);
             setPontuacaoSalva(true);
-            
+
             // Fechar o modal após salvar
             setTimeout(() => {
                 onClose();
