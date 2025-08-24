@@ -27,16 +27,14 @@ import { carregarReginaldoHoraDoLanche } from '../../utils/reginaldoHoraDoLanche
 import { carregarConfiguracaoJogos } from '../../utils/gamesLoader';
 import { getTeamNameFromString } from '../../utils/teamUtils';
 import { BackButton } from '../../components/back-button/BackButton';
-import {
-    VerdadesAbsurdasScoreSection,
-    PainelistasExcentricosScoreSection,
-    DicionarioSurrealScoreSection,
-    NoticiasExtraordinariasScoreSection,
-    CaroPraChuchuScoreSection,
-    OvoOuGalinhaScoreSection,
-    QuemEEssePokemonScoreSection,
-    ReginaldoHoraDoLancheScoreSection
-} from './sections';
+import { VerdadesAbsurdasScoreSection } from './sections/VerdadesAbsurdasScoreSection';
+import { PainelistasExcentricosScoreSection } from './sections/PainelistasExcentricosScoreSection';
+import { DicionarioSurrealScoreSection } from './sections/DicionarioSurrealScoreSection';
+import { NoticiasExtraordinariasScoreSection } from './sections/NoticiasExtraordinariasScoreSection';
+import { CaroPraChuchuScoreSection } from './sections/CaroPraChuchuScoreSection';
+import { OvoOuGalinhaScoreSection } from './sections/OvoOuGalinhaScoreSection';
+import { QuemEEssePokemonScoreSection } from './sections/QuemEEssePokemonScoreSection';
+import { ReginaldoHoraDoLancheScoreSection } from './sections/ReginaldoHoraDoLancheScoreSection';
 import './PlacarDetalhado.css';
 
 interface Props {
