@@ -1,21 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { NoticiasExtraordinariasScoreEntry } from '../../../types/noticiasExtraordinarias';
 import type { AppState } from '../../../types';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
+import { loadNoticiasExtraordinariasScores } from '../../../utils/scoreStorage';
+import { carregarNoticiasExtraordinarias } from '../../../utils/noticiasExtraordinariasLoader';
 
 interface NoticiasExtraordinariasScoreSectionProps {
-    scores: NoticiasExtraordinariasScoreEntry[];
-    manchetes: Record<string, string>;
     gameState: AppState;
     getGameEmoji: (gameId: string) => string;
 }
 
 export const NoticiasExtraordinariasScoreSection: React.FC<NoticiasExtraordinariasScoreSectionProps> = ({
-    scores,
-    manchetes,
     gameState,
     getGameEmoji
 }) => {
+    const [scores, setScores] = useState<NoticiasExtraordinariasScoreEntry[]>([]);
+    const [manchetes, setManchetes] = useState<Record<string, string>>({});
+
+    useEffect(() => {
+        let isMounted = true;
+
+        // Carregar scores
+        try {
+            setScores(loadNoticiasExtraordinariasScores());
+        } catch (error) {
+            console.warn('Erro ao carregar scores de notícias extraordinárias:', error);
+        }
+
+        // Carregar manchetes
+        const loadManchetes = async () => {
+            try {
+                const noticias = await carregarNoticiasExtraordinarias();
+                if (!isMounted) return;
+                
+                const manchetesMap = noticias.noticias.reduce((acc: Record<string, string>, noticia: { id: string; manchete: string }) => {
+                    acc[noticia.id] = noticia.manchete;
+                    return acc;
+                }, {});
+                setManchetes(manchetesMap);
+            } catch (error) {
+                if (isMounted) {
+                    console.warn('Erro ao carregar notícias extraordinárias:', error);
+                }
+            }
+        };
+
+        loadManchetes();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
     return (
         <div className="historico-subsecao">
             <h3>{getGameEmoji('noticias-extraordinarias')} Notícias Extraordinárias</h3>

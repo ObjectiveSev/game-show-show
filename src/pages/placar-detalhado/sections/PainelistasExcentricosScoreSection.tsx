@@ -1,23 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { PainelistasScoreEntry, PainelistasPunicaoEntry } from '../../../types/painelistas';
 import type { AppState } from '../../../types';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
+import { loadPainelistasScores, loadPainelistasPunicoes } from '../../../utils/scoreStorage';
+import { carregarParticipantes } from '../../../utils/participantesLoader';
 
 interface PainelistasExcentricosScoreSectionProps {
-    scores: PainelistasScoreEntry[];
-    punicoes: PainelistasPunicaoEntry[];
-    nomesParticipantes: Record<string, string>;
     gameState: AppState;
     getGameEmoji: (gameId: string) => string;
 }
 
 export const PainelistasExcentricosScoreSection: React.FC<PainelistasExcentricosScoreSectionProps> = ({
-    scores,
-    punicoes,
-    nomesParticipantes,
     gameState,
     getGameEmoji
 }) => {
+    const [scores, setScores] = useState<PainelistasScoreEntry[]>([]);
+    const [punicoes, setPunicoes] = useState<PainelistasPunicaoEntry[]>([]);
+    const [nomesParticipantes, setNomesParticipantes] = useState<Record<string, string>>({});
+
+    useEffect(() => {
+        let isMounted = true;
+
+        // Carregar scores e punições
+        try {
+            setScores(loadPainelistasScores());
+            setPunicoes(loadPainelistasPunicoes());
+        } catch (error) {
+            console.warn('Erro ao carregar scores de painelistas:', error);
+        }
+
+        // Carregar nomes dos participantes
+        const loadParticipantes = async () => {
+            try {
+                const participantes = await carregarParticipantes();
+                if (!isMounted) return;
+                
+                const nomes = participantes.reduce((acc: Record<string, string>, participante: { id: string; nome: string }) => {
+                    acc[participante.id] = participante.nome;
+                    return acc;
+                }, {});
+                setNomesParticipantes(nomes);
+            } catch (error) {
+                if (isMounted) {
+                    console.warn('Erro ao carregar participantes:', error);
+                }
+            }
+        };
+
+        loadParticipantes();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
     return (
         <>
             {/* Painelistas Excêntricos - Fatos */}

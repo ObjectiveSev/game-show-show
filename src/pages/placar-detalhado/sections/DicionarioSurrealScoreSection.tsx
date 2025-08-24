@@ -1,21 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { DicionarioScoreEntry } from '../../../types/dicionarioSurreal';
 import type { AppState } from '../../../types';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
+import { loadDicionarioSurrealScores } from '../../../utils/scoreStorage';
+import { carregarDicionarioSurreal } from '../../../utils/dicionarioLoader';
 
 interface DicionarioSurrealScoreSectionProps {
-    scores: DicionarioScoreEntry[];
-    palavras: Record<string, string>;
     gameState: AppState;
     getGameEmoji: (gameId: string) => string;
 }
 
 export const DicionarioSurrealScoreSection: React.FC<DicionarioSurrealScoreSectionProps> = ({
-    scores,
-    palavras,
     gameState,
     getGameEmoji
 }) => {
+    const [scores, setScores] = useState<DicionarioScoreEntry[]>([]);
+    const [palavras, setPalavras] = useState<Record<string, string>>({});
+
+    useEffect(() => {
+        let isMounted = true;
+
+        // Carregar scores
+        try {
+            setScores(loadDicionarioSurrealScores());
+        } catch (error) {
+            console.warn('Erro ao carregar scores de dicionário surreal:', error);
+        }
+
+        // Carregar palavras
+        const loadPalavras = async () => {
+            try {
+                const dicionario = await carregarDicionarioSurreal();
+                if (!isMounted) return;
+                
+                const palavrasMap = dicionario.palavras.reduce((acc: Record<string, string>, palavra: { id: string; palavra: string }) => {
+                    acc[palavra.id] = palavra.palavra;
+                    return acc;
+                }, {});
+                setPalavras(palavrasMap);
+            } catch (error) {
+                if (isMounted) {
+                    console.warn('Erro ao carregar dicionário surreal:', error);
+                }
+            }
+        };
+
+        loadPalavras();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
     return (
         <div className="historico-subsecao">
             <h3>{getGameEmoji('dicionario-surreal')} Dicionário Surreal</h3>

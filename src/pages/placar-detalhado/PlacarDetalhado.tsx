@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import type { AppState } from '../../types';
 
-import type { DicionarioScoreEntry } from '../../types/dicionarioSurreal';
-import type { PainelistasScoreEntry, PainelistasPunicaoEntry } from '../../types/painelistas';
+
+
 import type { NoticiasExtraordinariasScoreEntry } from '../../types/noticiasExtraordinarias';
 import type { CaroPraChuchuScoreEntry } from '../../types/caroPraChuchu';
 import type { OvoOuGalinhaScoreEntry } from '../../types/ovoOuGalinha';
@@ -10,16 +10,16 @@ import type { QuemEEssePokemonScoreEntry } from '../../types/quemEEssePokemon';
 import type { ReginaldoHoraDoLancheScoreEntry } from '../../types/reginaldoHoraDoLanche';
 import type { GamesConfig } from '../../types/games';
 
-import { loadDicionarioSurrealScores } from '../../utils/scoreStorage';
-import { loadPainelistasScores, loadPainelistasPunicoes } from '../../utils/scoreStorage';
+
+
 import { loadNoticiasExtraordinariasScores } from '../../utils/scoreStorage';
 import { loadCaroPraChuchuScores } from '../../utils/scoreStorage';
 import { loadOvoOuGalinhaScores } from '../../utils/scoreStorage';
 import { loadQuemEEssePokemonScores } from '../../utils/scoreStorage';
 import { loadReginaldoHoraDoLancheScores } from '../../utils/scoreStorage';
 
-import { carregarParticipantes } from '../../utils/participantesLoader';
-import { carregarDicionarioSurreal } from '../../utils/dicionarioLoader';
+
+
 import { carregarNoticiasExtraordinarias } from '../../utils/noticiasExtraordinariasLoader';
 import { carregarQuemEEssePokemon } from '../../utils/quemEEssePokemonLoader';
 import { carregarOvoOuGalinha } from '../../utils/ovoOuGalinhaLoader';
@@ -43,21 +43,20 @@ interface Props {
 
 export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
 
-    const [dicionarioSurrealScores, setDicionarioSurrealScores] = useState<DicionarioScoreEntry[]>([]);
-    const [painelistasScores, setPainelistasScores] = useState<PainelistasScoreEntry[]>([]);
-    const [painelistasPunicoes, setPainelistasPunicoes] = useState<PainelistasPunicaoEntry[]>([]);
+
+
     const [noticiasExtraordinariasScores, setNoticiasExtraordinariasScores] = useState<NoticiasExtraordinariasScoreEntry[]>([]);
     const [caroPraChuchuScores, setCaroPraChuchuScores] = useState<CaroPraChuchuScoreEntry[]>([]);
     const [ovoOuGalinhaScores, setOvoOuGalinhaScores] = useState<OvoOuGalinhaScoreEntry[]>([]);
     const [quemEEssePokemonScores, setQuemEEssePokemonScores] = useState<QuemEEssePokemonScoreEntry[]>([]);
     const [reginaldoHoraDoLancheScores, setReginaldoHoraDoLancheScores] = useState<ReginaldoHoraDoLancheScoreEntry[]>([]);
 
-    const [palavrasDicionario, setPalavrasDicionario] = useState<Record<string, string>>({});
+
     const [manchetesNoticias, setManchetesNoticias] = useState<Record<string, string>>({});
     const [nomesPokemon, setNomesPokemon] = useState<Record<string, string>>({});
     const [nomesComidas, setNomesComidas] = useState<Record<string, string>>({});
     const [triosOvoOuGalinha, setTriosOvoOuGalinha] = useState<Record<string, string>>({});
-    const [nomesParticipantes, setNomesParticipantes] = useState<Record<string, string>>({});
+
     const [gamesConfig, setGamesConfig] = useState<GamesConfig | null>(null);
 
     useEffect(() => {
@@ -65,9 +64,8 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
 
         // Carregar scores (síncrono - não precisa de async)
         try {
-            setDicionarioSurrealScores(loadDicionarioSurrealScores());
-            setPainelistasScores(loadPainelistasScores());
-            setPainelistasPunicoes(loadPainelistasPunicoes());
+
+
             setNoticiasExtraordinariasScores(loadNoticiasExtraordinariasScores());
             setCaroPraChuchuScores(loadCaroPraChuchuScores());
             setOvoOuGalinhaScores(loadOvoOuGalinhaScores());
@@ -83,7 +81,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
 
 
 
-            // Dicionário Surreal
+
             promises.push(
                 carregarDicionarioSurreal()
                     .then(dicionario => {
@@ -183,25 +181,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                     })
             );
 
-            // Participantes
-            promises.push(
-                carregarParticipantes()
-                    .then(participantes => {
-                        if (!isMounted) return null;
-                        const nomes = participantes.reduce((acc: Record<string, string>, participante: { id: string; nome: string }) => {
-                            acc[participante.id] = participante.nome;
-                            return acc;
-                        }, {});
-                        setNomesParticipantes(nomes);
-                        return nomes;
-                    })
-                    .catch(error => {
-                        if (!isMounted) {
-                            console.warn('Erro ao carregar participantes:', error);
-                        }
-                        return null;
-                    })
-            );
+
 
             // Configuração dos Jogos
             promises.push(
@@ -256,9 +236,6 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                 return (
                     <PainelistasExcentricosScoreSection
                         key={gameId}
-                        scores={painelistasScores}
-                        punicoes={painelistasPunicoes}
-                        nomesParticipantes={nomesParticipantes}
                         gameState={gameState}
                         getGameEmoji={getGameEmoji}
                     />
@@ -267,8 +244,6 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                 return (
                     <DicionarioSurrealScoreSection
                         key={gameId}
-                        scores={dicionarioSurrealScores}
-                        palavras={palavrasDicionario}
                         gameState={gameState}
                         getGameEmoji={getGameEmoji}
                     />
@@ -277,8 +252,6 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                 return (
                     <NoticiasExtraordinariasScoreSection
                         key={gameId}
-                        scores={noticiasExtraordinariasScores}
-                        manchetes={manchetesNoticias}
                         gameState={gameState}
                         getGameEmoji={getGameEmoji}
                     />
