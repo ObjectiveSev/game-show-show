@@ -9,6 +9,7 @@ import {
     loadPainelistasPunicoes,
     loadNoticiasExtraordinariasScores,
     loadCaroPraChuchuScores,
+    loadOvoOuGalinhaScores,
     loadQuemEEssePokemonScores,
     loadReginaldoHoraDoLancheScores
 } from './scoreStorage';
@@ -24,6 +25,7 @@ export const syncGameScores = (): GameScores => {
         const painelistasScores = loadPainelistasScores();
         const noticiasExtraordinariasScores = loadNoticiasExtraordinariasScores();
         const caroPraChuchuScores = loadCaroPraChuchuScores();
+        const ovoOuGalinhaScores = loadOvoOuGalinhaScores();
         const quemEEssePokemonScores = loadQuemEEssePokemonScores();
 
         // Carregar punições do Painelistas
@@ -57,6 +59,12 @@ export const syncGameScores = (): GameScores => {
         }, {} as { A: number; B: number });
 
         const caroPraChuchu = caroPraChuchuScores.reduce((acc: { [key: string]: number }, entry) => {
+            if (entry.timeAdivinhador === 'A') acc.A = (acc.A || 0) + entry.pontos;
+            if (entry.timeAdivinhador === 'B') acc.B = (acc.B || 0) + entry.pontos;
+            return acc;
+        }, {} as { A: number; B: number });
+
+        const ovoOuGalinha = ovoOuGalinhaScores.reduce((acc: { [key: string]: number }, entry) => {
             if (entry.timeAdivinhador === 'A') acc.A = (acc.A || 0) + entry.pontos;
             if (entry.timeAdivinhador === 'B') acc.B = (acc.B || 0) + entry.pontos;
             return acc;
@@ -106,6 +114,10 @@ export const syncGameScores = (): GameScores => {
                 teamA: caroPraChuchu.A || 0,
                 teamB: caroPraChuchu.B || 0
             },
+            'ovo-ou-galinha': {
+                teamA: ovoOuGalinha.A || 0,
+                teamB: ovoOuGalinha.B || 0
+            },
             'quem-e-esse-pokemon': {
                 teamA: quemEEssePokemon.A || 0,
                 teamB: quemEEssePokemon.B || 0
@@ -128,6 +140,7 @@ export const syncGameScores = (): GameScores => {
             'painelistas-excentricos': { teamA: 0, teamB: 0 },
             'noticias-extraordinarias': { teamA: 0, teamB: 0 },
             'caro-pra-chuchu': { teamA: 0, teamB: 0 },
+            'ovo-ou-galinha': { teamA: 0, teamB: 0 },
             'quem-e-esse-pokemon': { teamA: 0, teamB: 0 },
             'reginaldo-hora-do-lanche': { teamA: 0, teamB: 0 }
         };

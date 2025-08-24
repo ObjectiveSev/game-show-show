@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { BaseModal } from '../../../components/base-modal/BaseModal';
 import { TeamSelector } from '../../../components/team-selector/TeamSelector';
+import { getTeamNameFromString } from '../../../utils/teamUtils';
+import { soundManager } from '../../../utils/soundManager';
 import type { OvoOuGalinhaTrio, OvoOuGalinhaEvent } from '../../../types/ovoOuGalinha';
 import type { AppState } from '../../../types';
 
@@ -81,13 +83,38 @@ export const OvoOuGalinhaModal: React.FC<OvoOuGalinhaModalProps> = ({
             const ordemCorreta = trio.ordem;
             const ordemAtual = eventosOrdenados.map(evento => evento.id);
 
-            const acertou = ordemAtual.every((id, index) => id === ordemCorreta[index]);
+            const acertou = ordemAtual.every((id, index) => {
+                const correto = id === ordemCorreta[index];
+                return correto;
+            });
+
+            // Tocar som apropriado
+            if (acertou) {
+                soundManager.playSuccessSound();
+            } else {
+                soundManager.playErrorSound();
+            }
+
             setAcertou(acertou);
             setMostrarResultado(true);
         } catch (error) {
             console.error('Erro ao confirmar:', error);
         }
     }, [timeSelecionado, eventosOrdenados, trio]);
+
+    const handleSalvarPontuacao = useCallback(() => {
+                try {
+            onConfirm(trio.id, timeSelecionado, acertou);
+            setPontuacaoSalva(true);
+            
+            // Fechar o modal após salvar
+            setTimeout(() => {
+                onClose();
+            }, 500);
+        } catch (error) {
+            console.error('❌ Erro ao salvar pontuação:', error);
+        }
+    }, [trio.id, timeSelecionado, acertou, onConfirm, onClose]);
 
     const handleResetar = useCallback(() => {
         setEventosOrdenados([...trio.events]);
@@ -97,18 +124,7 @@ export const OvoOuGalinhaModal: React.FC<OvoOuGalinhaModalProps> = ({
         setPontuacaoSalva(false);
     }, [trio]);
 
-    const handleSalvarPontuacao = useCallback(() => {
-        try {
-            onConfirm(trio.id, timeSelecionado, acertou);
-            setPontuacaoSalva(true);
-            // Fechar o modal após salvar
-            setTimeout(() => {
-                onClose();
-            }, 500);
-        } catch (error) {
-            console.error('Erro ao salvar pontuação:', error);
-        }
-    }, [trio.id, timeSelecionado, acertou, onConfirm, onClose]);
+
 
     const getEventoStyle = (index: number) => {
         const style: React.CSSProperties = {
@@ -167,12 +183,19 @@ export const OvoOuGalinhaModal: React.FC<OvoOuGalinhaModalProps> = ({
 
 
                 <div className="modal-actions">
-                    <TeamSelector
-                        teams={gameState.teams}
-                        value={timeSelecionado as 'A' | 'B' | ''}
-                        onChange={(val: string) => setTimeSelecionado(val)}
-                        label="Time que vai responder:"
-                    />
+                    {!estadoAtual ? (
+                        <TeamSelector
+                            teams={gameState.teams}
+                            value={timeSelecionado as 'A' | 'B' | ''}
+                            onChange={(val: string) => setTimeSelecionado(val)}
+                            label="Time que vai responder:"
+                        />
+                    ) : (
+                        <div className="respondido-por">
+                            <span className="respondido-por-label">Respondido por:</span>
+                            <span className="respondido-por-time">{getTeamNameFromString(estadoAtual.timeAdivinhador, gameState.teams)}</span>
+                        </div>
+                    )}
 
                     <div className="botoes-container">
                         <button

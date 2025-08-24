@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import type { AppState } from '../../types';
 import type { VerdadesAbsurdasScoreEntry } from '../../types/verdadesAbsurdas';
 import type { DicionarioScoreEntry } from '../../types/dicionarioSurreal';
-import type { PainelistasScoreEntry } from '../../types/painelistas';
+import type { PainelistasScoreEntry, PainelistasPunicaoEntry } from '../../types/painelistas';
 import type { NoticiasExtraordinariasScoreEntry } from '../../types/noticiasExtraordinarias';
 import type { CaroPraChuchuScoreEntry } from '../../types/caroPraChuchu';
+import type { OvoOuGalinhaScoreEntry } from '../../types/ovoOuGalinha';
 import type { QuemEEssePokemonScoreEntry } from '../../types/quemEEssePokemon';
 import type { ReginaldoHoraDoLancheScoreEntry } from '../../types/reginaldoHoraDoLanche';
 import type { GamesConfig } from '../../types/games';
@@ -13,6 +14,7 @@ import { loadDicionarioSurrealScores } from '../../utils/scoreStorage';
 import { loadPainelistasScores, loadPainelistasPunicoes } from '../../utils/scoreStorage';
 import { loadNoticiasExtraordinariasScores } from '../../utils/scoreStorage';
 import { loadCaroPraChuchuScores } from '../../utils/scoreStorage';
+import { loadOvoOuGalinhaScores } from '../../utils/scoreStorage';
 import { loadQuemEEssePokemonScores } from '../../utils/scoreStorage';
 import { loadReginaldoHoraDoLancheScores } from '../../utils/scoreStorage';
 import { carregarVerdadesAbsurdas } from '../../utils/verdadesAbsurdasLoader';
@@ -20,6 +22,7 @@ import { carregarParticipantes } from '../../utils/participantesLoader';
 import { carregarDicionarioSurreal } from '../../utils/dicionarioLoader';
 import { carregarNoticiasExtraordinarias } from '../../utils/noticiasExtraordinariasLoader';
 import { carregarQuemEEssePokemon } from '../../utils/quemEEssePokemonLoader';
+import { carregarOvoOuGalinha } from '../../utils/ovoOuGalinhaLoader';
 import { carregarReginaldoHoraDoLanche } from '../../utils/reginaldoHoraDoLancheLoader';
 import { carregarConfiguracaoJogos } from '../../utils/gamesLoader';
 import { getTeamNameFromString } from '../../utils/teamUtils';
@@ -34,9 +37,10 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
     const [verdadesAbsurdasScores, setVerdadesAbsurdasScores] = useState<VerdadesAbsurdasScoreEntry[]>([]);
     const [dicionarioSurrealScores, setDicionarioSurrealScores] = useState<DicionarioScoreEntry[]>([]);
     const [painelistasScores, setPainelistasScores] = useState<PainelistasScoreEntry[]>([]);
-    const [painelistasPunicoes, setPainelistasPunicoes] = useState<any[]>([]);
+    const [painelistasPunicoes, setPainelistasPunicoes] = useState<PainelistasPunicaoEntry[]>([]);
     const [noticiasExtraordinariasScores, setNoticiasExtraordinariasScores] = useState<NoticiasExtraordinariasScoreEntry[]>([]);
     const [caroPraChuchuScores, setCaroPraChuchuScores] = useState<CaroPraChuchuScoreEntry[]>([]);
+    const [ovoOuGalinhaScores, setOvoOuGalinhaScores] = useState<OvoOuGalinhaScoreEntry[]>([]);
     const [quemEEssePokemonScores, setQuemEEssePokemonScores] = useState<QuemEEssePokemonScoreEntry[]>([]);
     const [reginaldoHoraDoLancheScores, setReginaldoHoraDoLancheScores] = useState<ReginaldoHoraDoLancheScoreEntry[]>([]);
     const [titulosVerdades, setTitulosVerdades] = useState<Record<string, string>>({});
@@ -44,6 +48,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
     const [manchetesNoticias, setManchetesNoticias] = useState<Record<string, string>>({});
     const [nomesPokemon, setNomesPokemon] = useState<Record<string, string>>({});
     const [nomesComidas, setNomesComidas] = useState<Record<string, string>>({});
+    const [triosOvoOuGalinha, setTriosOvoOuGalinha] = useState<Record<string, string>>({});
     const [nomesParticipantes, setNomesParticipantes] = useState<Record<string, string>>({});
     const [gamesConfig, setGamesConfig] = useState<GamesConfig | null>(null);
 
@@ -58,6 +63,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
             setPainelistasPunicoes(loadPainelistasPunicoes());
             setNoticiasExtraordinariasScores(loadNoticiasExtraordinariasScores());
             setCaroPraChuchuScores(loadCaroPraChuchuScores());
+            setOvoOuGalinhaScores(loadOvoOuGalinhaScores());
             setQuemEEssePokemonScores(loadQuemEEssePokemonScores());
             setReginaldoHoraDoLancheScores(loadReginaldoHoraDoLancheScores());
         } catch (error) {
@@ -163,6 +169,26 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                     .catch(error => {
                         if (!isMounted) {
                             console.warn('Erro ao carregar comidas:', error);
+                        }
+                        return null;
+                    })
+            );
+
+            // Ovo ou Galinha
+            promises.push(
+                carregarOvoOuGalinha()
+                    .then(ovoOuGalinha => {
+                        if (!isMounted) return null;
+                        const nomes = ovoOuGalinha.trios.reduce((acc: Record<string, string>, trio) => {
+                            acc[trio.id.toString()] = `Trio #${trio.id}`;
+                            return acc;
+                        }, {} as Record<string, string>);
+                        setTriosOvoOuGalinha(nomes);
+                        return nomes;
+                    })
+                    .catch(error => {
+                        if (!isMounted) {
+                            console.warn('Erro ao carregar trios ovo ou galinha:', error);
                         }
                         return null;
                     })
@@ -458,6 +484,39 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                                                 {score.tipoAcerto === 'acertoLendario' && '⭐ Acerto Lendário'}
                                                 {score.tipoAcerto === 'erro' && '❌ Errou'}
                                             </td>
+                                            <td className="center">{score.pontos}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <p className="empty">Nenhum registro encontrado</p>
+                    )}
+                </div>
+
+                {/* Ovo ou Galinha */}
+                <div className="historico-subsecao">
+                    <h3>{getGameEmoji('ovo-ou-galinha')} Ovo ou Galinha</h3>
+                    {ovoOuGalinhaScores.length > 0 ? (
+                        <div className="table-wrapper">
+                            <table className="pd-table">
+                                <thead>
+                                    <tr>
+                                        <th>Trio</th>
+                                        <th>Time</th>
+                                        <th>Acertou</th>
+                                        <th>Pontos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {ovoOuGalinhaScores.map((score, idx) => (
+                                        <tr key={idx}>
+                                            <td className="nome-cell">
+                                                {triosOvoOuGalinha[score.trioId.toString()] || `Trio #${score.trioId}`}
+                                            </td>
+                                            <td>{getTeamNameFromString(score.timeAdivinhador, gameState.teams)}</td>
+                                            <td>{score.pontos > 0 ? '✔ Sim' : '❌ Não'}</td>
                                             <td className="center">{score.pontos}</td>
                                         </tr>
                                     ))}

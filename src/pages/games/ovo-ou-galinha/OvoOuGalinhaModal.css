@@ -100,7 +100,33 @@
 .modal-actions {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 20px;
+    text-align: center;
+}
+
+.respondido-por {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    border-radius: 12px;
+    min-width: 200px;
+}
+
+.respondido-por-label {
+    font-size: 0.9rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.respondido-por-time {
+    font-size: 1.1rem;
+    color: #1f2937;
+    font-weight: 600;
 }
 
 .botoes-container {
@@ -111,14 +137,21 @@
 
 .btn-resetar,
 .btn-confirmar {
-    padding: 12px 24px;
+    padding: 14px 24px;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-width: 120px;
+    min-width: 150px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
 }
 
 .btn-resetar {
@@ -147,13 +180,20 @@
     background: linear-gradient(135deg, #10b981, #059669);
     color: white;
     border: none;
-    border-radius: 8px;
-    padding: 12px 24px;
+    border-radius: 12px;
+    padding: 14px 24px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-width: 140px;
+    min-width: 150px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
 }
 
 .btn-salvar:hover:not(:disabled) {

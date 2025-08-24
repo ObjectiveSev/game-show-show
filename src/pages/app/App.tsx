@@ -132,7 +132,11 @@ function AppContent() {
           />
         } />
         <Route path="/ovo-ou-galinha" element={
-          <OvoOuGalinha />
+          <OvoOuGalinha
+            gameState={{ ...gameState, syncPoints }}
+            addGamePoints={addGamePoints}
+            addPoints={addPoints}
+          />
         } />
         <Route path="/quem-e-esse-pokemon" element={
           <QuemEEssePokemon
