@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { AppState } from '../../types';
-import type { VerdadesAbsurdasScoreEntry } from '../../types/verdadesAbsurdas';
+
 import type { DicionarioScoreEntry } from '../../types/dicionarioSurreal';
 import type { PainelistasScoreEntry, PainelistasPunicaoEntry } from '../../types/painelistas';
 import type { NoticiasExtraordinariasScoreEntry } from '../../types/noticiasExtraordinarias';
@@ -9,7 +9,7 @@ import type { OvoOuGalinhaScoreEntry } from '../../types/ovoOuGalinha';
 import type { QuemEEssePokemonScoreEntry } from '../../types/quemEEssePokemon';
 import type { ReginaldoHoraDoLancheScoreEntry } from '../../types/reginaldoHoraDoLanche';
 import type { GamesConfig } from '../../types/games';
-import { loadVerdadesAbsurdasScores } from '../../utils/scoreStorage';
+
 import { loadDicionarioSurrealScores } from '../../utils/scoreStorage';
 import { loadPainelistasScores, loadPainelistasPunicoes } from '../../utils/scoreStorage';
 import { loadNoticiasExtraordinariasScores } from '../../utils/scoreStorage';
@@ -17,7 +17,7 @@ import { loadCaroPraChuchuScores } from '../../utils/scoreStorage';
 import { loadOvoOuGalinhaScores } from '../../utils/scoreStorage';
 import { loadQuemEEssePokemonScores } from '../../utils/scoreStorage';
 import { loadReginaldoHoraDoLancheScores } from '../../utils/scoreStorage';
-import { carregarVerdadesAbsurdas } from '../../utils/verdadesAbsurdasLoader';
+
 import { carregarParticipantes } from '../../utils/participantesLoader';
 import { carregarDicionarioSurreal } from '../../utils/dicionarioLoader';
 import { carregarNoticiasExtraordinarias } from '../../utils/noticiasExtraordinariasLoader';
@@ -42,7 +42,7 @@ interface Props {
 }
 
 export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
-    const [verdadesAbsurdasScores, setVerdadesAbsurdasScores] = useState<VerdadesAbsurdasScoreEntry[]>([]);
+
     const [dicionarioSurrealScores, setDicionarioSurrealScores] = useState<DicionarioScoreEntry[]>([]);
     const [painelistasScores, setPainelistasScores] = useState<PainelistasScoreEntry[]>([]);
     const [painelistasPunicoes, setPainelistasPunicoes] = useState<PainelistasPunicaoEntry[]>([]);
@@ -51,7 +51,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
     const [ovoOuGalinhaScores, setOvoOuGalinhaScores] = useState<OvoOuGalinhaScoreEntry[]>([]);
     const [quemEEssePokemonScores, setQuemEEssePokemonScores] = useState<QuemEEssePokemonScoreEntry[]>([]);
     const [reginaldoHoraDoLancheScores, setReginaldoHoraDoLancheScores] = useState<ReginaldoHoraDoLancheScoreEntry[]>([]);
-    const [titulosVerdades, setTitulosVerdades] = useState<Record<string, string>>({});
+
     const [palavrasDicionario, setPalavrasDicionario] = useState<Record<string, string>>({});
     const [manchetesNoticias, setManchetesNoticias] = useState<Record<string, string>>({});
     const [nomesPokemon, setNomesPokemon] = useState<Record<string, string>>({});
@@ -65,7 +65,6 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
 
         // Carregar scores (síncrono - não precisa de async)
         try {
-            setVerdadesAbsurdasScores(loadVerdadesAbsurdasScores());
             setDicionarioSurrealScores(loadDicionarioSurrealScores());
             setPainelistasScores(loadPainelistasScores());
             setPainelistasPunicoes(loadPainelistasPunicoes());
@@ -82,25 +81,7 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
         const loadData = async () => {
             const promises = [];
 
-            // Verdades Absurdas
-            promises.push(
-                carregarVerdadesAbsurdas()
-                    .then(verdades => {
-                        if (!isMounted) return null;
-                        const titulos = verdades.verdadesAbsurdas.reduce((acc: Record<string, string>, texto: { id: string; titulo: string }) => {
-                            acc[texto.id] = texto.titulo;
-                            return acc;
-                        }, {});
-                        setTitulosVerdades(titulos);
-                        return titulos;
-                    })
-                    .catch(error => {
-                        if (isMounted) {
-                            console.warn('Erro ao carregar verdades absurdas:', error);
-                        }
-                        return null;
-                    })
-            );
+
 
             // Dicionário Surreal
             promises.push(
@@ -267,8 +248,6 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
                 return (
                     <VerdadesAbsurdasScoreSection
                         key={gameId}
-                        scores={verdadesAbsurdasScores}
-                        titulos={titulosVerdades}
                         gameState={gameState}
                         getGameEmoji={getGameEmoji}
                     />

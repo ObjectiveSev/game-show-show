@@ -1,21 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { VerdadesAbsurdasScoreEntry } from '../../../types/verdadesAbsurdas';
 import type { AppState } from '../../../types';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
+import { loadVerdadesAbsurdasScores } from '../../../utils/scoreStorage';
+import { carregarVerdadesAbsurdas } from '../../../utils/verdadesAbsurdasLoader';
 
 interface VerdadesAbsurdasScoreSectionProps {
-    scores: VerdadesAbsurdasScoreEntry[];
-    titulos: Record<string, string>;
     gameState: AppState;
     getGameEmoji: (gameId: string) => string;
 }
 
 export const VerdadesAbsurdasScoreSection: React.FC<VerdadesAbsurdasScoreSectionProps> = ({
-    scores,
-    titulos,
     gameState,
     getGameEmoji
 }) => {
+    const [scores, setScores] = useState<VerdadesAbsurdasScoreEntry[]>([]);
+    const [titulos, setTitulos] = useState<Record<string, string>>({});
+
+    useEffect(() => {
+        let isMounted = true;
+
+        // Carregar scores
+        try {
+            setScores(loadVerdadesAbsurdasScores());
+        } catch (error) {
+            console.warn('Erro ao carregar scores de verdades absurdas:', error);
+        }
+
+        // Carregar títulos
+        const loadTitulos = async () => {
+            try {
+                const verdades = await carregarVerdadesAbsurdas();
+                if (!isMounted) return;
+                
+                const titulosMap = verdades.verdadesAbsurdas.reduce((acc: Record<string, string>, texto: { id: string; titulo: string }) => {
+                    acc[texto.id] = texto.titulo;
+                    return acc;
+                }, {});
+                setTitulos(titulosMap);
+            } catch (error) {
+                if (isMounted) {
+                    console.warn('Erro ao carregar verdades absurdas:', error);
+                }
+            }
+        };
+
+        loadTitulos();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
     return (
         <div className="historico-subsecao">
             <h3>{getGameEmoji('verdades-absurdas')} Verdades Absurdas</h3>
