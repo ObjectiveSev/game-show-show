@@ -122,7 +122,17 @@ export const CaroPraChuchu: React.FC<Props> = ({ gameState, addGamePoints, addPo
     };
 
     const handleResetarPontuacao = (itemId: string) => {
-        // Remover pontuação do storage
+        // Buscar o estado atual para remover os pontos do time
+        const estadoAtual = estados.find(e => e.id === itemId);
+
+        if (estadoAtual && estadoAtual.timeAdivinhador && estadoAtual.pontos) {
+            // Remover pontos negativos (para cancelar os pontos dados anteriormente)
+            const pontosNegativos = -estadoAtual.pontos;
+            addGamePoints('caro-pra-chuchu', estadoAtual.timeAdivinhador, pontosNegativos);
+            addPoints(estadoAtual.timeAdivinhador, pontosNegativos);
+        }
+
+        // Remover pontuação do storage detalhado
         removeCaroPraChuchuScore(itemId);
 
         // Resetar estado local
@@ -237,6 +247,7 @@ export const CaroPraChuchu: React.FC<Props> = ({ gameState, addGamePoints, addPo
                     item={itemSelecionado}
                     pontuacao={dados?.pontuacao}
                     teams={gameState.teams}
+                    estado={estados.find(e => e.id === itemSelecionado.id)}
                     onSalvar={handleSalvarPontuacao}
                     onResetar={() => {
                         // Apenas resetar o estado interno, não fechar o modal

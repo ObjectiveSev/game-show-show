@@ -16,6 +16,12 @@ interface Props {
     item: ItemCaroPraChuchu;
     pontuacao?: PontuacaoConfig;
     teams: { teamA: Team; teamB: Team };
+    estado?: {
+        lido: boolean;
+        timeAdivinhador?: 'A' | 'B';
+        tipoAcerto?: 'moedaCorreta' | 'pertoSuficiente' | 'acertoLendario' | 'erro';
+        pontos?: number;
+    };
     onSalvar: (timeId: 'A' | 'B', tipoAcerto: 'moedaCorreta' | 'pertoSuficiente' | 'acertoLendario' | 'erro') => void;
     onResetar: () => void;
 }
@@ -25,6 +31,7 @@ export const CaroPraChuchuModal: React.FC<Props> = ({
     onClose,
     item,
     teams,
+    estado,
     onSalvar,
     onResetar
 }) => {
@@ -107,7 +114,7 @@ export const CaroPraChuchuModal: React.FC<Props> = ({
                     <p>{item.contexto}</p>
                 </div>
 
-                {precoRevelado && (
+                {precoRevelado && !estado?.lido && (
                     <div
                         className="preco-real"
                         style={{
@@ -127,19 +134,20 @@ export const CaroPraChuchuModal: React.FC<Props> = ({
                 )}
 
                 <div className="controles">
-                    <TeamSelector
-                        teams={teams}
-                        value={timeSelecionado}
-                        onChange={(value) => setTimeSelecionado(value)}
-                        label="Time adivinhador:"
-                    />
+                    {!estado?.lido && (
+                        <TeamSelector
+                            teams={teams}
+                            value={timeSelecionado}
+                            onChange={(value) => setTimeSelecionado(value)}
+                            label="Time adivinhador:"
+                        />
+                    )}
 
-                    {!tipoAcerto && (
+                    {!tipoAcerto && !estado?.lido && timeSelecionado && (
                         <div className="acerto-buttons">
                             <Button
                                 type={ButtonType.CUSTOM}
                                 onClick={() => handleAcerto('moedaCorreta')}
-                                disabled={!timeSelecionado}
                                 customConfig={{
                                     text: 'Acertou a moeda +1 ponto',
                                     backgroundColor: '#6f42c1',
@@ -150,7 +158,6 @@ export const CaroPraChuchuModal: React.FC<Props> = ({
                             <Button
                                 type={ButtonType.CUSTOM}
                                 onClick={() => handleAcerto('pertoSuficiente')}
-                                disabled={!timeSelecionado}
                                 customConfig={{
                                     text: 'Perto o suficiente +3 pontos',
                                     backgroundColor: '#fd7e14',
@@ -161,7 +168,6 @@ export const CaroPraChuchuModal: React.FC<Props> = ({
                             <Button
                                 type={ButtonType.CUSTOM}
                                 onClick={() => handleAcerto('acertoLendario')}
-                                disabled={!timeSelecionado}
                                 customConfig={{
                                     text: 'Acerto lendário +5 pontos',
                                     backgroundColor: '#e83e8c',
@@ -172,7 +178,6 @@ export const CaroPraChuchuModal: React.FC<Props> = ({
                             <Button
                                 type={ButtonType.CUSTOM}
                                 onClick={() => handleAcerto('erro')}
-                                disabled={!timeSelecionado}
                                 customConfig={{
                                     text: 'Errou 0 pontos',
                                     backgroundColor: '#dc3545',

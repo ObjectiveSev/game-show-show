@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import type { AppState } from '../../../types';
 import type { Noticia, NoticiaEstado, NoticiasExtraordinariasData } from '../../../types/noticiasExtraordinarias';
 import { carregarNoticiasExtraordinarias } from '../../../utils/noticiasExtraordinariasLoader';
-import { saveNoticiasExtraordinariasScore } from '../../../utils/scoreStorage';
+import { saveNoticiasExtraordinariasScore, loadNoticiasExtraordinariasScores, removeNoticiasExtraordinariasScore } from '../../../utils/scoreStorage';
 import { STORAGE_KEYS } from '../../../constants';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
 import { soundManager } from '../../../utils/soundManager';
@@ -116,8 +116,23 @@ export const NoticiasExtraordinarias: React.FC<NoticiasExtraordinariasProps> = (
     };
 
     const handleResetarPontuacao = (noticiaId: string) => {
-        // Remover pontuação do storage
-        // removeNoticiasExtraordinariasScore(noticiaId); // This function was removed from imports
+        // Buscar pontuação existente para remover dos scores detalhados
+        try {
+            const scores = loadNoticiasExtraordinariasScores();
+            const scoreToRemove = scores.find(score => score.noticiaId === noticiaId);
+
+            if (scoreToRemove) {
+                // Remover pontos do placar geral (pontos negativos para desfazer)
+                const pontosNegativos = -scoreToRemove.pontos;
+                addGamePoints('noticias-extraordinarias', scoreToRemove.timeAdivinhador, pontosNegativos);
+                addPoints(scoreToRemove.timeAdivinhador, pontosNegativos);
+
+                // Remover score do storage detalhado
+                removeNoticiasExtraordinariasScore(noticiaId);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar score para remoção:', error);
+        }
 
         // Resetar estado local
         setEstados(prev => prev.map(estado =>
@@ -126,7 +141,7 @@ export const NoticiasExtraordinarias: React.FC<NoticiasExtraordinariasProps> = (
                 : estado
         ));
 
-        // Sincronizar pontos globais se disponível
+        // Sincronizar pontos para atualizar o placar geral
         if (gameState.syncPoints) {
             gameState.syncPoints();
         }
@@ -152,7 +167,7 @@ export const NoticiasExtraordinarias: React.FC<NoticiasExtraordinariasProps> = (
                             }
                             body={
                                 lida
-                                    ? getTeamNameFromString(estado?.timeAdivinhador || '', gameState.teams)
+                                    ? `Lido por: ${getTeamNameFromString(estado?.timeAdivinhador || '', gameState.teams)}`
                                     : undefined
                             }
                             button={

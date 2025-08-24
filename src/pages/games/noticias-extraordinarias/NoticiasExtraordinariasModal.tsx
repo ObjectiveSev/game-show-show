@@ -4,8 +4,10 @@ import { TeamSelector } from '../../../components/team-selector/TeamSelector';
 import { VerdadeButton } from '../../../components/verdade-button/VerdadeButton';
 import { MentiraButton } from '../../../components/mentira-button/MentiraButton';
 import { ResultadoStatus } from '../../../components/resultado-status/ResultadoStatus';
+import { Button } from '../../../components/button/Button';
 import type { Noticia, NoticiaEstado } from '../../../types/noticiasExtraordinarias';
 import type { Team } from '../../../types';
+import { ButtonType } from '../../../types';
 import { soundManager } from '../../../utils/soundManager';
 import './NoticiasExtraordinariasModal.css';
 
@@ -141,16 +143,18 @@ export const NoticiasExtraordinariasModal: React.FC<NoticiasExtraordinariasModal
                     )}
 
                     <div className="modal-actions">
-                        {resultado && (
+                        {resultado && !estado.pontuacaoSalva && (
                             <>
-                                <button className="reset-btn" onClick={handleResetar}>
-                                    🔄 Resetar
-                                </button>
-                                {!estado.pontuacaoSalva && (
-                                    <button className="save-btn" onClick={handleSalvarPontuacao}>
-                                        💾 Salvar Pontos
-                                    </button>
-                                )}
+                                <Button
+                                    type={ButtonType.RESET}
+                                    onClick={handleResetar}
+                                    text="Resetar"
+                                />
+                                <Button
+                                    type={ButtonType.SAVE}
+                                    onClick={handleSalvarPontuacao}
+                                    text="Salvar Pontos"
+                                />
                             </>
                         )}
                     </div>
