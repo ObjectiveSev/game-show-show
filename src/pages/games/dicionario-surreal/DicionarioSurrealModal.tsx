@@ -6,6 +6,7 @@ import type { Team } from '../../../types';
 import { ButtonType } from '../../../types';
 import { TeamSelector } from '../../../components/team-selector/TeamSelector';
 import { Button } from '../../../components/button/Button';
+import { Counter } from '../../../components/counter/Counter';
 import { soundManager } from '../../../utils/soundManager';
 import './DicionarioSurrealModal.css';
 
@@ -118,24 +119,13 @@ export const DicionarioSurrealModal: React.FC<DicionarioSurrealModalProps> = ({ 
                     <div className="status-info">
                         <TeamSelector teams={teams} value={time} onChange={(v) => setTime(v)} label="Time adivinhador:" />
                         <div className="verdades-info"><span className="label">Pontos atuais:</span><span className="valor">{pontosAtuais}</span></div>
-                        <div className="erros-info extras-stepper">
-                            <span className="label">Extras:</span>
-                            <div className="extras-box">
-                                {!estado.pontuacaoSalva && (
-                                    <div className="extras-buttons">
-                                        <button
-                                            className="extras-btn"
-                                            onClick={() => setExtras((estado.extras || 0) + 1)}
-                                        >▲</button>
-                                        <button
-                                            className="extras-btn"
-                                            onClick={() => setExtras((estado.extras || 0) - 1)}
-                                        >▼</button>
-                                    </div>
-                                )}
-                                <div className="extras-value">{estado.extras || 0}</div>
-                            </div>
-                        </div>
+                        <Counter
+                            label="Extras:"
+                            value={estado.extras || 0}
+                            onIncrement={() => setExtras((estado.extras || 0) + 1)}
+                            onDecrement={() => setExtras((estado.extras || 0) - 1)}
+                            disabled={estado.pontuacaoSalva}
+                        />
                     </div>
                 </div>
 

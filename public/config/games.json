@@ -46,7 +46,7 @@
             "id": "maestro-billy",
             "name": "Maestro Billy",
             "emoji": "🎵",
-            "description": "Jogo musical com buzzer",
+            "description": "Advinhe a música o quanto antes",
             "configFile": "maestro-billy.json"
         },
         {

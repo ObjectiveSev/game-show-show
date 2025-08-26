@@ -6,6 +6,7 @@ import type { CaroPraChuchuScoreEntry } from '../types/caroPraChuchu';
 import type { OvoOuGalinhaScoreEntry } from '../types/ovoOuGalinha';
 import type { QuemEEssePokemonScoreEntry } from '../types/quemEEssePokemon';
 import type { ReginaldoHoraDoLancheScoreEntry } from '../types/reginaldoHoraDoLanche';
+import type { MaestroBillyScoreEntry } from '../types/maestroBilly';
 import { STORAGE_KEYS } from '../constants';
 
 export const loadVerdadesAbsurdasScores = (): VerdadesAbsurdasScoreEntry[] => {
@@ -319,6 +320,48 @@ export const removeReginaldoHoraDoLancheScore = (comidaId: string): void => {
 export const clearReginaldoHoraDoLancheScores = (): void => {
     try {
         localStorage.removeItem(STORAGE_KEYS.REGINALDO_HORA_DO_LANCHE_SCORES);
+    } catch {
+        // Ignorar erros de localStorage
+    }
+};
+
+// ============================================================================
+// MAESTRO BILLY SCORES
+// ============================================================================
+
+export const saveMaestroBillyScore = (entry: MaestroBillyScoreEntry): void => {
+    try {
+        const existing = loadMaestroBillyScores();
+        existing.push(entry);
+        localStorage.setItem(STORAGE_KEYS.MAESTRO_BILLY_SCORES, JSON.stringify(existing));
+    } catch (error) {
+        console.error('Erro ao salvar score do Maestro Billy:', error);
+    }
+};
+
+export const loadMaestroBillyScores = (): MaestroBillyScoreEntry[] => {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEYS.MAESTRO_BILLY_SCORES);
+        return raw ? JSON.parse(raw) : [];
+    } catch (error) {
+        console.error('Erro ao carregar scores do Maestro Billy:', error);
+        return [];
+    }
+};
+
+export const removeMaestroBillyScore = (musicaId: string): void => {
+    try {
+        const existing = loadMaestroBillyScores();
+        const filtered = existing.filter(score => score.musicaId !== musicaId);
+        localStorage.setItem(STORAGE_KEYS.MAESTRO_BILLY_SCORES, JSON.stringify(filtered));
+    } catch (error) {
+        console.error('Erro ao remover score do Maestro Billy:', error);
+    }
+};
+
+export const clearMaestroBillyScores = (): void => {
+    try {
+        localStorage.removeItem(STORAGE_KEYS.MAESTRO_BILLY_SCORES);
     } catch {
         // Ignorar erros de localStorage
     }

@@ -95,6 +95,20 @@ const BUTTON_CONFIGS = {
         textColor: 'white',
         hoverBackground: '#c82333'
     },
+    [ButtonType.PLAY]: {
+        text: 'Tocar Música',
+        icon: '▶️',
+        backgroundColor: '#87ceeb',
+        textColor: 'white',
+        hoverBackground: '#5f9ea0'
+    },
+    [ButtonType.STOP]: {
+        text: 'Parar Música',
+        icon: '⏹️',
+        backgroundColor: '#1e3a8a',
+        textColor: 'white',
+        hoverBackground: '#1e40af'
+    },
     [ButtonType.CUSTOM]: {
         text: 'Custom',
         icon: '🎯',

@@ -67,6 +67,24 @@ const TAG_CONFIGS = {
         backgroundColor: '#dc3545',
         textColor: 'white',
         icon: '⚠️'
+    },
+    [TagType.TENTATIVA_1]: {
+        text: '1ª tentativa',
+        backgroundColor: '#17a2b8',
+        textColor: 'white',
+        icon: '🥇'
+    },
+    [TagType.TENTATIVA_2]: {
+        text: '2ª tentativa',
+        backgroundColor: '#6c757d',
+        textColor: 'white',
+        icon: '🥈'
+    },
+    [TagType.TENTATIVA_3]: {
+        text: '3ª tentativa',
+        backgroundColor: '#cd7f32',
+        textColor: 'white',
+        icon: '🥉'
     }
 };
 
@@ -76,7 +94,7 @@ export const Tag: React.FC<TagProps> = ({
     customConfig
 }) => {
     let config;
-    
+
     if (customConfig) {
         config = customConfig;
     } else if (type) {

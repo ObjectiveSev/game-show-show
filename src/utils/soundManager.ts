@@ -5,10 +5,6 @@ export const SoundType = {
 
 export type SoundType = typeof SoundType[keyof typeof SoundType];
 
-// Constantes para sons customizados
-// export const CUSTOM_SOUNDS = {
-//     EXEMPLO: 'https://www.myinstants.com/media/sounds/exemplo.mp3'
-// } as const;
 
 interface SoundItem {
     url: string;
@@ -25,6 +21,7 @@ interface SoundConfig {
 export class SoundManager {
     private static instance: SoundManager;
     private soundConfig!: SoundConfig;
+    private currentAudio: HTMLAudioElement | null = null;
 
     private constructor() {
         this.loadSoundConfig();
@@ -92,7 +89,8 @@ export class SoundManager {
                 ['ovo-ou-galinha', new Audio('https://www.myinstants.com/media/sounds/telecurso-2000-tema-musical-final-creditos-1.mp3')],
                 ['noticias-extraordinarias', new Audio('https://www.myinstants.com/media/sounds/jornal-nacional-short.mp3')],
                 ['dicionario-surreal', new Audio('https://www.myinstants.com/media/sounds/a-de-amor-xuxa.mp3')],
-                ['caro-pra-chuchu', new Audio('https://www.myinstants.com/media/sounds/money-money-money-abba.mp3')]
+                ['caro-pra-chuchu', new Audio('https://www.myinstants.com/media/sounds/money-money-money-abba.mp3')],
+                ['maestro-billy', new Audio('https://www.myinstants.com/media/sounds/loucura-loucura-caldeirao.mp3')]
             ])
         };
     }
@@ -166,6 +164,9 @@ export class SoundManager {
                 this.soundConfig.custom.set(url, audio);
             }
 
+            // Salvar referência ao áudio atual
+            this.currentAudio = audio;
+
             // Tocar o áudio
             audio.play().catch(error => {
                 console.error(`Erro ao tocar som customizado:`, error);
@@ -173,6 +174,14 @@ export class SoundManager {
 
         } catch (error) {
             console.error(`Erro ao tocar som customizado:`, error);
+        }
+    }
+
+    public stopCurrentSound(): void {
+        if (this.currentAudio) {
+            this.currentAudio.pause();
+            this.currentAudio.currentTime = 0;
+            this.currentAudio = null;
         }
     }
 

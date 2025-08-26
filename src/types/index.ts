@@ -104,7 +104,10 @@ export const TagType = {
     PERTO_SUFICIENTE: 'perto_suficiente',
     ACERTO_LENDARIO: 'acerto_lendario',
     ERRO: 'erro',
-    PUNIDO: 'punido'
+    PUNIDO: 'punido',
+    TENTATIVA_1: 'tentativa_1',
+    TENTATIVA_2: 'tentativa_2',
+    TENTATIVA_3: 'tentativa_3'
 } as const;
 
 export type TagType = typeof TagType[keyof typeof TagType];
@@ -121,6 +124,8 @@ export const ButtonType = {
     SETTINGS: 'settings',
     CLEAR_STORAGE: 'clear_storage',
     PUNICAO: 'punicao',
+    PLAY: 'play',
+    STOP: 'stop',
     CUSTOM: 'custom'
 } as const;
 

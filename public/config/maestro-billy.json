@@ -1,0 +1,91 @@
+{
+    "pontuacao": {
+        "primeiraTentativa": {
+            "nomeMusica": 3,
+            "artista": 3
+        },
+        "segundaTentativa": {
+            "nomeMusica": 2,
+            "artista": 2
+        },
+        "terceiraTentativa": {
+            "nomeMusica": 1,
+            "artista": 1
+        },
+        "erro": -2
+    },
+    "musicas": [
+        {
+            "id": "1",
+            "nome": "Alors on Danse",
+            "artista": "Stromae",
+            "arquivo": "1-alors-on-danse.mp3"
+        },
+        {
+            "id": "2",
+            "nome": "Wave",
+            "artista": "Tom Jobim",
+            "arquivo": "2-wave.mp3"
+        },
+        {
+            "id": "3",
+            "nome": "Hotel California",
+            "artista": "Eagles",
+            "arquivo": "3-hotel-california.mp3"
+        },
+        {
+            "id": "4",
+            "nome": "Love Will Tear Us Apart",
+            "artista": "Joy Division",
+            "arquivo": "4-love-will-tear-us-apart.mp3"
+        },
+        {
+            "id": "5",
+            "nome": "Alive",
+            "artista": "Pearl Jam",
+            "arquivo": "5-alive.mp3"
+        },
+        {
+            "id": "6",
+            "nome": "Lose Yourself",
+            "artista": "Eminem",
+            "arquivo": "6-lose-yourself.mp3"
+        },
+        {
+            "id": "7",
+            "nome": "Lágrima",
+            "artista": "Amália Rodrigues",
+            "arquivo": "7-lagrima.mp3"
+        },
+        {
+            "id": "8",
+            "nome": "10%",
+            "artista": "Maiara & Maraisa",
+            "arquivo": "8-10-percent.mp3"
+        },
+        {
+            "id": "9",
+            "nome": "Around the World",
+            "artista": "Daft Punk",
+            "arquivo": "9-around-the-world.mp3"
+        },
+        {
+            "id": "10",
+            "nome": "APT",
+            "artista": "ROSÉ & Bruno Mars",
+            "arquivo": "10-apt.mp3"
+        },
+        {
+            "id": "11",
+            "nome": "Fico Assim Sem Você",
+            "artista": "Claudinho & Buchecha",
+            "arquivo": "11-fico-assim-sem-voce.mp3"
+        },
+        {
+            "id": "12",
+            "nome": "Deixa a Vida Me Levar",
+            "artista": "Zeca Pagodinho",
+            "arquivo": "12-deixa-a-vida-me-levar.mp3"
+        }
+    ]
+}

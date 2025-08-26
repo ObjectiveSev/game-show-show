@@ -10,6 +10,7 @@ import { CaroPraChuchu } from '../games/caro-pra-chuchu/CaroPraChuchu';
 import { OvoOuGalinha } from '../games/ovo-ou-galinha/OvoOuGalinha';
 import { QuemEEssePokemon } from '../games/quem-e-esse-pokemon/QuemEEssePokemon';
 import { ReginaldoHoraDoLanche } from '../games/reginaldo-hora-do-lanche/ReginaldoHoraDoLanche';
+import { MaestroBilly } from '../games/maestro-billy/MaestroBilly';
 import { PlacarDetalhado } from '../placar-detalhado/PlacarDetalhado';
 import { TeamSettingsModal } from '../team-settings/TeamSettingsModal';
 import { clearAllLocalStorage } from '../../utils/fileSystem';
@@ -56,6 +57,9 @@ function AppContent() {
         break;
       case 'reginaldo-hora-do-lanche':
         navigate('/reginaldo-hora-do-lanche');
+        break;
+      case 'maestro-billy':
+        navigate('/maestro-billy');
         break;
       default:
         alert(`Jogo "${gameId}" será implementado em breve!`);
@@ -147,6 +151,13 @@ function AppContent() {
         } />
         <Route path="/reginaldo-hora-do-lanche" element={
           <ReginaldoHoraDoLanche
+            gameState={{ ...gameState, syncPoints }}
+            addGamePoints={addGamePoints}
+            addPoints={addPoints}
+          />
+        } />
+        <Route path="/maestro-billy" element={
+          <MaestroBilly
             gameState={{ ...gameState, syncPoints }}
             addGamePoints={addGamePoints}
             addPoints={addPoints}
