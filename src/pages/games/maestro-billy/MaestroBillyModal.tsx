@@ -29,11 +29,19 @@ interface MaestroBillyModalProps {
 export const MaestroBillyModal: React.FC<MaestroBillyModalProps> = ({ isOpen, onClose, musica, config, gameState, onUpdateEstado, addGamePoints }) => {
     const [selectedTeam, setSelectedTeam] = useState<'A' | 'B' | null>(null);
     const [tentativaAtual, setTentativaAtual] = useState<number>(1);
-    const [pontuacaoAcumulada, setPontuacaoAcumulada] = useState<{ timeA: number; timeB: number }>({ timeA: 0, timeB: 0 });
     const [batePronto, setBatePronto] = useState<boolean>(false);
-    const [showResultado, setShowResultado] = useState<boolean>(false);
+    const [pontuacaoAcumulada, setPontuacaoAcumulada] = useState<{ timeA: number; timeB: number }>({ timeA: 0, timeB: 0 });
     const [hitType, setHitType] = useState<'none' | 'musica' | 'artista' | 'tudo' | 'erro' | 'ninguemAcertou'>('none');
-    const [isPlaying, setIsPlaying] = useState(false);
+    const [showResultado, setShowResultado] = useState<boolean>(false);
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
+    // Novo estado para rastrear erros individuais com suas tentativas
+    const [errosIndividuais, setErrosIndividuais] = useState<Array<{
+        time: 'A' | 'B';
+        tentativa: number;
+        pontos: number;
+        batePronto: boolean;
+    }>>([]);
 
     // Resetar estado quando modal abrir
     useEffect(() => {
@@ -159,6 +167,16 @@ export const MaestroBillyModal: React.FC<MaestroBillyModalProps> = ({ isOpen, on
         const pontos = config.erro;
 
         setHitType('erro');
+
+        // Adicionar erro individual com sua tentativa específica
+        setErrosIndividuais(prev => [...prev, {
+            time: timeQueErrou,
+            tentativa: tentativaAtual,
+            pontos: pontos,
+            batePronto: batePronto
+        }]);
+
+        // Manter pontuação acumulada para compatibilidade
         setPontuacaoAcumulada(prev => ({
             ...prev,
             [timeQueErrou === 'A' ? 'timeA' : 'timeB']: prev[timeQueErrou === 'A' ? 'timeA' : 'timeB'] + pontos
@@ -180,95 +198,111 @@ export const MaestroBillyModal: React.FC<MaestroBillyModalProps> = ({ isOpen, on
         setBatePronto(false);
         setPontuacaoAcumulada({ timeA: 0, timeB: 0 });
         setHitType('none');
+        setErrosIndividuais([]); // Limpar erros individuais
         stopMusicAndCleanup();
     };
 
     const handleSalvarPontuacao = () => {
         if (!selectedTeam) return;
 
-        let acertouNome = false;
-        let acertouArtista = false;
-        let pontosNome = 0;
-        let pontosArtista = 0;
-        let totalPontos = 0;
-        let ninguemAcertou = false;
+        // Salvar TODOS os resultados acumulados (erros + acertos)
+        const scoresToSave: MaestroBillyScoreEntry[] = [];
 
-        // Determinar o tipo de acerto baseado no hitType
-        const tentativaIndex = tentativaAtual - 1; // 1 -> 0, 2 -> 1, 3 -> 2
-        const pontosMaximos = config.pontuacao[tentativaIndex];
+        // 1. Salvar erros individuais com suas tentativas específicas
+        errosIndividuais.forEach(erro => {
+            const erroEntry: MaestroBillyScoreEntry = {
+                musicaId: musica.id,
+                nomeMusica: musica.nome,
+                artista: musica.artista,
+                arquivo: musica.arquivo,
+                timeAdivinhador: erro.time,
+                tentativa: erro.tentativa, // Tentativa específica em que o erro aconteceu
+                acertouNome: false,
+                acertouArtista: false,
+                pontosNome: 0,
+                pontosArtista: 0,
+                totalPontos: erro.pontos, // Pontos do erro específico
+                batePronto: erro.batePronto, // Se foi bate-pronto ou não
+                ninguemAcertou: false
+            };
+            scoresToSave.push(erroEntry);
+        });
 
-        if (hitType === 'musica') {
-            acertouNome = true;
-            pontosNome = pontosMaximos.musica;
-            totalPontos = pontosMaximos.musica;
-        } else if (hitType === 'artista') {
-            acertouArtista = true;
-            pontosArtista = pontosMaximos.artista;
-            totalPontos = pontosMaximos.artista;
-        } else if (hitType === 'tudo') {
-            acertouNome = true;
-            acertouArtista = true;
-            pontosNome = pontosMaximos.musica;
-            pontosArtista = pontosMaximos.artista;
-            totalPontos = pontosMaximos.musica + pontosMaximos.artista;
-        } else if (hitType === 'erro') {
-            // Para erro, usar os pontos do JSON (-2)
-            totalPontos = config.erro;
+        // 2. Salvar acerto final (se houver)
+        if (hitType !== 'erro' && hitType !== 'ninguemAcertou') {
+            let acertouNome = false;
+            let acertouArtista = false;
+            let pontosNome = 0;
+            let pontosArtista = 0;
+            let totalPontos = 0;
+
+            const tentativaIndex = tentativaAtual - 1;
+            const pontosMaximos = config.pontuacao[tentativaIndex];
+
+            if (hitType === 'musica') {
+                acertouNome = true;
+                pontosNome = pontosMaximos.musica;
+                totalPontos = pontosMaximos.musica;
+            } else if (hitType === 'artista') {
+                acertouArtista = true;
+                pontosArtista = pontosMaximos.artista;
+                totalPontos = pontosMaximos.artista;
+            } else if (hitType === 'tudo') {
+                acertouNome = true;
+                acertouArtista = true;
+                pontosNome = pontosMaximos.musica;
+                pontosArtista = pontosMaximos.artista;
+                totalPontos = pontosMaximos.musica + pontosMaximos.artista;
+            }
+
+            const timeQueRecebePontos = batePronto ? (selectedTeam === 'A' ? 'B' : 'A') : selectedTeam;
+
+            const acertoEntry: MaestroBillyScoreEntry = {
+                musicaId: musica.id,
+                nomeMusica: musica.nome,
+                artista: musica.artista,
+                arquivo: musica.arquivo,
+                timeAdivinhador: timeQueRecebePontos,
+                tentativa: tentativaAtual,
+                acertouNome,
+                acertouArtista,
+                pontosNome,
+                pontosArtista,
+                totalPontos,
+                batePronto,
+                ninguemAcertou: false
+            };
+            scoresToSave.push(acertoEntry);
         } else if (hitType === 'ninguemAcertou') {
-            totalPontos = 0;
-            ninguemAcertou = true;
+            // Não criar scoreEntry para "Ninguém Acertou" - não queremos linha com 0 pontos
+            // Apenas marcar o estado como ninguemAcertou = true
         }
 
-        // Determinar qual time recebe os pontos baseado no bate-pronto
-        // Se bate-pronto está OFF: pontos vão para o time selecionado no dropdown
-        // Se bate-pronto está ON: pontos vão para o time contrário
-        const timeQueRecebePontos = batePronto ? (selectedTeam === 'A' ? 'B' : 'A') : selectedTeam;
+        // 3. Salvar todos os scores no localStorage
+        const existingScores = JSON.parse(localStorage.getItem(STORAGE_KEYS.MAESTRO_BILLY_SCORES) || '[]');
+        existingScores.push(...scoresToSave);
+        localStorage.setItem(STORAGE_KEYS.MAESTRO_BILLY_SCORES, JSON.stringify(existingScores));
 
-        const scoreEntry: MaestroBillyScoreEntry = {
-            musicaId: musica.id,
-            nomeMusica: musica.nome,
-            artista: musica.artista,
-            arquivo: musica.arquivo,
-            timeAdivinhador: timeQueRecebePontos,
-            tentativa: tentativaAtual,
-            acertouNome: acertouNome,
-            acertouArtista: acertouArtista,
-            pontosNome: pontosNome,
-            pontosArtista: pontosArtista,
-            totalPontos: totalPontos,
-            batePronto: batePronto,
-            ninguemAcertou: ninguemAcertou
-        };
-
-        // Salvar score no localStorage
-        const scores = JSON.parse(localStorage.getItem(STORAGE_KEYS.MAESTRO_BILLY_SCORES) || '[]');
-        scores.push(scoreEntry);
-        localStorage.setItem(STORAGE_KEYS.MAESTRO_BILLY_SCORES, JSON.stringify(scores));
-
-        // Atualizar estado da música como lida
+        // 4. Atualizar estado da música como lida
         const novoEstado: MusicaEstado = {
             id: musica.id,
             lida: true,
             tentativas: tentativaAtual,
-            acertouNome,
-            acertouArtista,
-            pontosNome,
-            pontosArtista,
-            ninguemAcertou
+            acertouNome: hitType === 'musica' || hitType === 'tudo',
+            acertouArtista: hitType === 'artista' || hitType === 'tudo',
+            pontosNome: hitType === 'musica' || hitType === 'tudo' ? config.pontuacao[tentativaAtual - 1].musica : 0,
+            pontosArtista: hitType === 'artista' || hitType === 'tudo' ? config.pontuacao[tentativaAtual - 1].artista : 0,
+            ninguemAcertou: hitType === 'ninguemAcertou'
         };
 
-        // Atualizar estado da música como lida
         onUpdateEstado(novoEstado);
 
-        // Aplicar TODOS os pontos acumulados (incluindo erros) aos times
-        // Para erros, não usar addGamePoints pois o scoreEntry já salva os pontos corretos
-        if (hitType !== 'erro') {
-            if (pontuacaoAcumulada.timeA !== 0) {
-                addGamePoints(GAME_IDS.MAESTRO_BILLY, 'A', pontuacaoAcumulada.timeA);
-            }
-            if (pontuacaoAcumulada.timeB !== 0) {
-                addGamePoints(GAME_IDS.MAESTRO_BILLY, 'B', pontuacaoAcumulada.timeB);
-            }
+        // 5. Aplicar TODOS os pontos acumulados aos times
+        if (pontuacaoAcumulada.timeA !== 0) {
+            addGamePoints(GAME_IDS.MAESTRO_BILLY, 'A', pontuacaoAcumulada.timeA);
+        }
+        if (pontuacaoAcumulada.timeB !== 0) {
+            addGamePoints(GAME_IDS.MAESTRO_BILLY, 'B', pontuacaoAcumulada.timeB);
         }
 
         // Parar música antes de fechar

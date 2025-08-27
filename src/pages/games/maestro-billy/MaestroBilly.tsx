@@ -210,17 +210,23 @@ export const MaestroBilly: React.FC<MaestroBillyProps> = ({
     const getTimeVencedor = (estado: MusicaEstado, musicaId: string) => {
         if (!estado.lida) return null;
 
-        const totalPontos = estado.pontosNome + estado.pontosArtista;
-        if (totalPontos <= 0) return null;
+        // Se não acertou nada, não há vencedor
+        if (!estado.acertouNome && !estado.acertouArtista) return null;
 
         // Buscar no localStorage para encontrar qual time acertou
         try {
             const scores = JSON.parse(localStorage.getItem(STORAGE_KEYS.MAESTRO_BILLY_SCORES) || '[]');
-            const scoreEntry = scores.find((score: any) => score.musicaId === musicaId);
 
-            if (scoreEntry && scoreEntry.timeAdivinhador) {
+            // Encontrar o scoreEntry que representa o acerto final (pontos positivos)
+            const acertoEntry = scores.find((score: any) =>
+                score.musicaId === musicaId &&
+                score.totalPontos > 0 &&
+                !score.ninguemAcertou
+            );
+
+            if (acertoEntry && acertoEntry.timeAdivinhador) {
                 // Usar a função getTeamNameFromString para retornar o nome do time
-                return getTeamNameFromString(scoreEntry.timeAdivinhador, gameState.teams);
+                return getTeamNameFromString(acertoEntry.timeAdivinhador, gameState.teams);
             }
         } catch (error) {
             console.warn('Erro ao buscar time vencedor:', error);

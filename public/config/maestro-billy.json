@@ -1,15 +1,15 @@
 {
     "pontuacao": [
         {
-            "musica": 3,
+            "musica": 4,
             "artista": 3
         },
         {
-            "musica": 2,
+            "musica": 3,
             "artista": 2
         },
         {
-            "musica": 1,
+            "musica": 2,
             "artista": 1
         }
     ],
