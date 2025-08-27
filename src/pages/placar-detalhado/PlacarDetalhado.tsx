@@ -4,6 +4,7 @@ import type { GamesConfig } from '../../types/games';
 import { carregarConfiguracaoJogos } from '../../utils/gamesLoader';
 import { getTeamNameFromString } from '../../utils/teamUtils';
 import { BackButton } from '../../components/back-button/BackButton';
+import { GAME_IDS } from '../../constants';
 import { VerdadesAbsurdasScoreSection } from './sections/VerdadesAbsurdasScoreSection';
 import { PainelistasExcentricosScoreSection } from './sections/PainelistasExcentricosScoreSection';
 import { DicionarioSurrealScoreSection } from './sections/DicionarioSurrealScoreSection';
@@ -12,6 +13,7 @@ import { CaroPraChuchuScoreSection } from './sections/CaroPraChuchuScoreSection'
 import { OvoOuGalinhaScoreSection } from './sections/OvoOuGalinhaScoreSection';
 import { QuemEEssePokemonScoreSection } from './sections/QuemEEssePokemonScoreSection';
 import { ReginaldoHoraDoLancheScoreSection } from './sections/ReginaldoHoraDoLancheScoreSection';
+import { MaestroBillyScoreSection } from './sections/MaestroBillyScoreSection';
 import { HostExtraPointsScoreSection } from './sections/HostExtraPointsScoreSection';
 import './PlacarDetalhado.css';
 
@@ -112,6 +114,14 @@ export const PlacarDetalhado: React.FC<Props> = ({ gameState }) => {
             case 'reginaldo-hora-do-lanche':
                 return (
                     <ReginaldoHoraDoLancheScoreSection
+                        key={gameId}
+                        gameState={gameState}
+                        getGameEmoji={getGameEmoji}
+                    />
+                );
+            case GAME_IDS.MAESTRO_BILLY:
+                return (
+                    <MaestroBillyScoreSection
                         key={gameId}
                         gameState={gameState}
                         getGameEmoji={getGameEmoji}

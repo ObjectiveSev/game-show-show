@@ -246,11 +246,7 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
 
     return (
         <div className="verdades-absurdas">
-            <GameHeader
-                title="Verdades Absurdas"
-                subtitle="Encontre as 5 verdades escondidas em cada texto"
-                emoji="🤔"
-            />
+            <GameHeader gameId="verdades-absurdas" />
 
             <main className="main-content">
                 <div className="textos-grid">

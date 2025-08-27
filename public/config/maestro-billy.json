@@ -1,19 +1,19 @@
 {
-    "pontuacao": {
-        "primeiraTentativa": {
-            "nomeMusica": 3,
+    "pontuacao": [
+        {
+            "musica": 3,
             "artista": 3
         },
-        "segundaTentativa": {
-            "nomeMusica": 2,
+        {
+            "musica": 2,
             "artista": 2
         },
-        "terceiraTentativa": {
-            "nomeMusica": 1,
+        {
+            "musica": 1,
             "artista": 1
-        },
-        "erro": -2
-    },
+        }
+    ],
+    "erro": -2,
     "musicas": [
         {
             "id": "1",

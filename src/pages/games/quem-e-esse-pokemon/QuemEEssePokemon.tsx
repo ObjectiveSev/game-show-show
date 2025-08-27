@@ -160,11 +160,7 @@ export const QuemEEssePokemon: React.FC<QuemEEssePokemonProps> = ({
 
     return (
         <div className="quem-e-esse-pokemon">
-            <GameHeader
-                title="Quem É Esse Pokémon?"
-                subtitle="Clique em um Pokémon para começar a adivinhar!"
-                emoji="⚡"
-            />
+            <GameHeader gameId="quem-e-esse-pokemon" />
 
             <div className="pokemon-grid">
                 {config.pokemons.map((pokemon) => {

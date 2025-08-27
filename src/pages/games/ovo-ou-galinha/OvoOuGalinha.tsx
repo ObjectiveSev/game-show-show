@@ -155,11 +155,7 @@ export const OvoOuGalinha: React.FC<Props> = ({ gameState, addGamePoints }) => {
 
     return (
         <div className="ovo-ou-galinha-page">
-            <GameHeader
-                title="O Ovo ou a Galinha"
-                subtitle="Ordene os eventos históricos do mais antigo para o mais recente."
-                emoji="🥚"
-            />
+            <GameHeader gameId="ovo-ou-galinha" />
 
             <div className="trios-grid">
                 {config.trios.map((trio) => {

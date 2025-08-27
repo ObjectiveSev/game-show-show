@@ -332,11 +332,7 @@ export const PainelistasExcentricos: React.FC<Props> = ({ gameState, addGamePoin
 
     return (
         <div className="painelistas">
-            <GameHeader
-                title="Painelistas Excêntricos"
-                subtitle="Escolha um fato por participante para jogar"
-                emoji="🎭"
-            />
+            <GameHeader gameId="painelistas-excentricos" />
 
             <main className="main-content">
                 {renderTimeSection(gameState.teams.teamA)}

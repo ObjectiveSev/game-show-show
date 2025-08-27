@@ -3,11 +3,12 @@ import { GameHeader } from '../../../components/game-header/GameHeader';
 import { MaestroBillyModal } from './MaestroBillyModal';
 import { DefaultCard } from '../../../components/default-card/DefaultCard';
 import { carregarMaestroBilly } from '../../../utils/maestroBillyLoader';
-import { saveMaestroBillyScore, removeMaestroBillyScore } from '../../../utils/scoreStorage';
+import { removeMaestroBillyScore } from '../../../utils/scoreStorage';
 import type { Musica, MusicaEstado, MaestroBillyConfig } from '../../../types/maestroBilly';
 import type { Team } from '../../../types';
-import { TagType } from '../../../types';
-import { STORAGE_KEYS } from '../../../constants';
+import { TagType, ButtonType } from '../../../types';
+import { STORAGE_KEYS, GAME_IDS } from '../../../constants';
+import { getTeamNameFromString } from '../../../utils/teamUtils';
 import { soundManager } from '../../../utils/soundManager';
 import './MaestroBilly.css';
 
@@ -20,13 +21,11 @@ interface MaestroBillyProps {
         syncPoints: () => void;
     };
     addGamePoints: (gameId: string, teamId: 'A' | 'B', points: number) => void;
-    addPoints: (teamId: 'A' | 'B', points: number) => void;
 }
 
 export const MaestroBilly: React.FC<MaestroBillyProps> = ({
     gameState,
-    addGamePoints,
-    addPoints
+    addGamePoints
 }) => {
     const [config, setConfig] = useState<MaestroBillyConfig | null>(null);
     const [estadosMusicas, setEstadosMusicas] = useState<MusicaEstado[]>([]);
@@ -103,7 +102,7 @@ export const MaestroBilly: React.FC<MaestroBillyProps> = ({
         if (estado) {
             // Só tocar som se não foi lida antes
             if (!estado.lida) {
-                soundManager.playGameSound('maestro-billy');
+                soundManager.playGameSound(GAME_IDS.MAESTRO_BILLY);
             }
             setMusicaAtual(musica);
             setEstadoAtual(estado);
@@ -111,61 +110,9 @@ export const MaestroBilly: React.FC<MaestroBillyProps> = ({
         }
     };
 
-    const handleUpdateEstado = (novoEstado: MusicaEstado) => {
-        setEstadosMusicas(prev =>
-            prev.map(estado =>
-                estado.id === novoEstado.id ? novoEstado : estado
-            )
-        );
-        setEstadoAtual(novoEstado);
-    };
 
-    const handleSalvarPontuacao = (timeId: 'A' | 'B', pontosNome: number, pontosArtista: number, tentativa: number) => {
-        if (!musicaAtual || !estadoAtual || !config) return;
 
-        // Salvar score detalhado
-        const scoreEntry = {
-            musicaId: musicaAtual.id,
-            nomeMusica: musicaAtual.nome,
-            artista: musicaAtual.artista,
-            arquivo: musicaAtual.arquivo,
-            timeAdivinhador: timeId,
-            tentativa,
-            acertouNome: pontosNome > 0,
-            acertouArtista: pontosArtista > 0,
-            pontosNome,
-            pontosArtista,
-            totalPontos: pontosNome + pontosArtista,
-            timestamp: Date.now()
-        };
 
-        saveMaestroBillyScore(scoreEntry);
-
-        // Atualizar estado da música
-        const novoEstado: MusicaEstado = {
-            ...estadoAtual,
-            lida: true,
-            tentativas: tentativa,
-            acertouNome: pontosNome > 0,
-            acertouArtista: pontosArtista > 0,
-            pontosNome,
-            pontosArtista
-        };
-
-        handleUpdateEstado(novoEstado);
-
-        // Adicionar pontos ao time
-        const totalPontos = pontosNome + pontosArtista;
-        if (totalPontos > 0) {
-            addGamePoints('maestro-billy', timeId, totalPontos);
-            addPoints(timeId, totalPontos);
-        }
-
-        // Fechar modal
-        setModalAberto(false);
-        setMusicaAtual(null);
-        setEstadoAtual(null);
-    };
 
     const handleResetarPontuacao = (musicaId: string) => {
         // Remover pontuação específica do localStorage
@@ -184,6 +131,14 @@ export const MaestroBilly: React.FC<MaestroBillyProps> = ({
         if (gameState.syncPoints) {
             gameState.syncPoints();
         }
+    };
+
+    const handleUpdateEstado = (novoEstado: MusicaEstado) => {
+        setEstadosMusicas(prev =>
+            prev.map(estado =>
+                estado.id === novoEstado.id ? novoEstado : estado
+            )
+        );
     };
 
     const handleCloseModal = () => {
@@ -224,13 +179,26 @@ export const MaestroBilly: React.FC<MaestroBillyProps> = ({
                 tags.push(TagType.ERROR);
             }
 
-            // Adicionar tag de tentativa
-            if (estado.tentativas === 1) {
-                tags.push(TagType.TENTATIVA_1);
-            } else if (estado.tentativas === 2) {
-                tags.push(TagType.TENTATIVA_2);
-            } else if (estado.tentativas === 3) {
-                tags.push(TagType.TENTATIVA_3);
+            // Adicionar apenas UMA tag de tentativa, SOMENTE se não for "Ninguém Acertou"
+            if (!estado.ninguemAcertou) {
+                if (estado.tentativas === 1) {
+                    tags.push(TagType.TENTATIVA_1);
+                } else if (estado.tentativas === 2) {
+                    tags.push(TagType.TENTATIVA_2);
+                } else if (estado.tentativas === 3) {
+                    tags.push(TagType.TENTATIVA_3);
+                }
+            }
+
+            // Adicionar tag de tipo de acerto (Música, Artista, Ambos), SOMENTE se não for "Ninguém Acertou"
+            if (!estado.ninguemAcertou) {
+                if (estado.acertouNome && estado.acertouArtista) {
+                    tags.push(TagType.ACERTO_AMBOS); // Para "Ambos"
+                } else if (estado.acertouNome) {
+                    tags.push(TagType.ACERTO_MUSICA); // Para "Música"
+                } else if (estado.acertouArtista) {
+                    tags.push(TagType.ACERTO_ARTISTA); // Para "Artista"
+                }
             }
         } else {
             tags.push(TagType.PENDING);
@@ -239,58 +207,60 @@ export const MaestroBilly: React.FC<MaestroBillyProps> = ({
         return tags;
     };
 
-    const getPontosInfo = (estado: MusicaEstado) => {
+    const getTimeVencedor = (estado: MusicaEstado, musicaId: string) => {
         if (!estado.lida) return null;
 
         const totalPontos = estado.pontosNome + estado.pontosArtista;
-        if (totalPontos === 0) return null;
+        if (totalPontos <= 0) return null;
 
-        return (
-            <div className={`pontos-info ${totalPontos > 0 ? 'pontos-positivos' : 'pontos-negativos'}`}>
-                {totalPontos > 0 ? '+' : ''}{totalPontos} pts
-            </div>
-        );
+        // Buscar no localStorage para encontrar qual time acertou
+        try {
+            const scores = JSON.parse(localStorage.getItem(STORAGE_KEYS.MAESTRO_BILLY_SCORES) || '[]');
+            const scoreEntry = scores.find((score: any) => score.musicaId === musicaId);
+
+            if (scoreEntry && scoreEntry.timeAdivinhador) {
+                // Usar a função getTeamNameFromString para retornar o nome do time
+                return getTeamNameFromString(scoreEntry.timeAdivinhador, gameState.teams);
+            }
+        } catch (error) {
+            console.warn('Erro ao buscar time vencedor:', error);
+        }
+
+        return null;
     };
 
     return (
         <div className="maestro-billy">
-            <GameHeader
-                title="Maestro Billy"
-                subtitle="Jogo musical com buzzer"
-                emoji="🎵"
-            />
+            <GameHeader gameId="maestro-billy" />
 
             <div className="musicas-grid">
                 {config.musicas.map((musica) => {
                     const estado = estadosMusicas.find(e => e.id === musica.id);
                     if (!estado) return null;
 
-                    const tags = getTagsForMusica(estado);
-                    const pontosInfo = getPontosInfo(estado);
+                    const timeVencedor = getTimeVencedor(estado, musica.id);
 
                     return (
                         <div key={musica.id} className="musica-card">
                             <DefaultCard
                                 title={estado.lida ? musica.nome : `Música #${musica.id}`}
-                                tags={tags}
+                                tags={getTagsForMusica(estado)}
+                                body={estado.lida && (estado.acertouNome || estado.acertouArtista) ?
+                                    `${timeVencedor ? `Acertado por: ${timeVencedor}` : ''}` :
+                                    undefined
+                                }
                                 onClick={() => handleCardClick(musica)}
+                                button={estado.lida ? {
+                                    type: ButtonType.RESET,
+                                    onClick: () => handleResetarPontuacao(musica.id)
+                                } : undefined}
                             >
                                 {estado.lida && (
                                     <div className="musica-info">
                                         <p className="artista">{musica.artista}</p>
-                                        {pontosInfo}
                                     </div>
                                 )}
                             </DefaultCard>
-
-                            {estado.lida && (
-                                <button
-                                    className="reset-button"
-                                    onClick={() => handleResetarPontuacao(musica.id)}
-                                >
-                                    Resetar
-                                </button>
-                            )}
                         </div>
                     );
                 })}
@@ -300,11 +270,11 @@ export const MaestroBilly: React.FC<MaestroBillyProps> = ({
                 <MaestroBillyModal
                     isOpen={modalAberto}
                     onClose={handleCloseModal}
-                    musica={musicaAtual}
-                    estado={estadoAtual}
-                    config={config}
-                    onSalvarPontuacao={handleSalvarPontuacao}
+                    musica={musicaAtual!}
+                    config={config!}
+                    onUpdateEstado={handleUpdateEstado}
                     gameState={gameState}
+                    addGamePoints={addGamePoints}
                 />
             )}
         </div>

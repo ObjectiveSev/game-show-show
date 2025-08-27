@@ -11,7 +11,8 @@ import {
     loadCaroPraChuchuScores,
     loadOvoOuGalinhaScores,
     loadQuemEEssePokemonScores,
-    loadReginaldoHoraDoLancheScores
+    loadReginaldoHoraDoLancheScores,
+    loadMaestroBillyScores
 } from './scoreStorage';
 
 /**
@@ -82,6 +83,12 @@ export const syncGameScores = (): GameScores => {
             return acc;
         }, {} as { A: number; B: number });
 
+        const maestroBilly = loadMaestroBillyScores().reduce((acc: { [key: string]: number }, entry) => {
+            if (entry.timeAdivinhador === 'A') acc.A = (acc.A || 0) + entry.totalPontos;
+            if (entry.timeAdivinhador === 'B') acc.B = (acc.B || 0) + entry.totalPontos;
+            return acc;
+        }, {} as { A: number; B: number });
+
         // Calcular pontos das punições
         const punicoes = painelistasPunicoes.reduce((acc: { [key: string]: number }, entry) => {
             if (entry.time === 'A') acc.A = (acc.A || 0) + entry.pontos;
@@ -125,6 +132,10 @@ export const syncGameScores = (): GameScores => {
             'reginaldo-hora-do-lanche': {
                 teamA: reginaldoHoraDoLanche.A || 0,
                 teamB: reginaldoHoraDoLanche.B || 0
+            },
+            'maestro-billy': {
+                teamA: maestroBilly.A || 0,
+                teamB: maestroBilly.B || 0
             }
         };
 
@@ -142,7 +153,8 @@ export const syncGameScores = (): GameScores => {
             'caro-pra-chuchu': { teamA: 0, teamB: 0 },
             'ovo-ou-galinha': { teamA: 0, teamB: 0 },
             'quem-e-esse-pokemon': { teamA: 0, teamB: 0 },
-            'reginaldo-hora-do-lanche': { teamA: 0, teamB: 0 }
+            'reginaldo-hora-do-lanche': { teamA: 0, teamB: 0 },
+            'maestro-billy': { teamA: 0, teamB: 0 }
         };
     }
 };

@@ -72,4 +72,20 @@ export const TEAM_COLORS = {
         color: '#4ecdc4',
         gradient: 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
     },
+} as const;
+
+// ============================================================================
+// GAME IDs
+// ============================================================================
+
+export const GAME_IDS = {
+    VERDADES_ABSURDAS: 'verdades-absurdas',
+    PAINELISTAS_EXCENTRICOS: 'painelistas-excentricos',
+    DICIONARIO_SURREAL: 'dicionario-surreal',
+    NOTICIAS_EXTRAORDINARIAS: 'noticias-extraordinarias',
+    CARO_PRA_CHUCHU: 'caro-pra-chuchu',
+    OVO_OU_GALINHA: 'ovo-ou-galinha',
+    QUEM_E_ESSE_POKEMON: 'quem-e-esse-pokemon',
+    REGINALDO_HORA_DO_LANCHE: 'reginaldo-hora-do-lanche',
+    MAESTRO_BILLY: 'maestro-billy'
 } as const; 

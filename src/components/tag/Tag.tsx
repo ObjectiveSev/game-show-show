@@ -85,6 +85,24 @@ const TAG_CONFIGS = {
         backgroundColor: '#cd7f32',
         textColor: 'white',
         icon: '🥉'
+    },
+    [TagType.ACERTO_MUSICA]: {
+        text: 'Música',
+        backgroundColor: '#28a745',
+        textColor: 'white',
+        icon: '🎵'
+    },
+    [TagType.ACERTO_ARTISTA]: {
+        text: 'Artista',
+        backgroundColor: '#28a745',
+        textColor: 'white',
+        icon: '🎤'
+    },
+    [TagType.ACERTO_AMBOS]: {
+        text: 'Ambos',
+        backgroundColor: '#28a745',
+        textColor: 'white',
+        icon: '🎉'
     }
 };
 

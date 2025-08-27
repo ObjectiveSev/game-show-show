@@ -7,17 +7,20 @@
 
 .musicas-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 20px;
     margin-top: 30px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .musica-card {
     position: relative;
+    height: 100%;
 }
 
 .musica-info {
-    margin-top: 15px;
     text-align: center;
 }
 

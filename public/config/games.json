@@ -11,14 +11,14 @@
             "id": "painelistas-excentricos",
             "name": "Painelistas Excêntricos",
             "emoji": "🎭",
-            "description": "Adivinhe se os fatos são verdade ou mentira",
+            "description": "Você conhece bem o amiguinho?",
             "configFile": "painelistas-excentricos.json"
         },
         {
             "id": "dicionario-surreal",
             "name": "Dicionário Surreal",
             "emoji": "📚",
-            "description": "Escolha a definição correta para palavras raras",
+            "description": "Escolha a definição correta para cada palavra",
             "configFile": "dicionario-surreal.json"
         },
         {
@@ -39,7 +39,7 @@
             "id": "ovo-ou-galinha",
             "name": "O Ovo ou a Galinha",
             "emoji": "🥚",
-            "description": "Ordenação cronológica",
+            "description": "Quem veio primeiro?",
             "configFile": "ovo-ou-galinha.json"
         },
         {

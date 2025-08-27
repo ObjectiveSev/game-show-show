@@ -6,28 +6,25 @@ export interface Musica {
 }
 
 export interface PontuacaoTentativa {
-    nomeMusica: number;
+    musica: number;
     artista: number;
 }
 
 export interface MaestroBillyConfig {
-    pontuacao: {
-        primeiraTentativa: PontuacaoTentativa;
-        segundaTentativa: PontuacaoTentativa;
-        terceiraTentativa: PontuacaoTentativa;
-        erro: number;
-    };
+    pontuacao: PontuacaoTentativa[];
+    erro: number;
     musicas: Musica[];
 }
 
 export interface MusicaEstado {
     id: string;
-    tentativas: number;
+    lida: boolean;
     acertouNome: boolean;
     acertouArtista: boolean;
+    tentativas: number;
     pontosNome: number;
     pontosArtista: number;
-    lida: boolean;
+    ninguemAcertou?: boolean;
 }
 
 export interface MaestroBillyScoreEntry {
@@ -42,5 +39,6 @@ export interface MaestroBillyScoreEntry {
     pontosNome: number;
     pontosArtista: number;
     totalPontos: number;
-    timestamp: number;
+    batePronto: boolean;
+    ninguemAcertou?: boolean;
 }

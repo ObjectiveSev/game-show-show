@@ -229,11 +229,7 @@ export const CaroPraChuchu: React.FC<Props> = ({ gameState, addGamePoints, addPo
 
     return (
         <div className="caro-pra-chuchu">
-            <GameHeader
-                title="Caro Pra Chuchu"
-                subtitle="Adivinhe os preços históricos dos itens mais caros"
-                emoji="💰"
-            />
+            <GameHeader gameId="caro-pra-chuchu" />
 
             <main className="main-content">
                 {renderItensGrid()}

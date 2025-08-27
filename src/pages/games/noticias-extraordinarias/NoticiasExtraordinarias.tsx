@@ -201,11 +201,7 @@ export const NoticiasExtraordinarias: React.FC<NoticiasExtraordinariasProps> = (
 
     return (
         <div className="noticias-extraordinarias">
-            <GameHeader
-                title="Notícias Extraordinárias"
-                subtitle="Identifique se as manchetes são verdadeiras ou falsas"
-                emoji="📰"
-            />
+            <GameHeader gameId="noticias-extraordinarias" />
 
             <main className="main-content">
                 {renderNoticiasGrid()}

@@ -107,7 +107,10 @@ export const TagType = {
     PUNIDO: 'punido',
     TENTATIVA_1: 'tentativa_1',
     TENTATIVA_2: 'tentativa_2',
-    TENTATIVA_3: 'tentativa_3'
+    TENTATIVA_3: 'tentativa_3',
+    ACERTO_MUSICA: 'acerto_musica',
+    ACERTO_ARTISTA: 'acerto_artista',
+    ACERTO_AMBOS: 'acerto_ambos'
 } as const;
 
 export type TagType = typeof TagType[keyof typeof TagType];

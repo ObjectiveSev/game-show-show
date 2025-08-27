@@ -247,6 +247,8 @@ export const useGameState = () => {
         localStorage.removeItem(STORAGE_KEYS.QUEM_E_ESSE_POKEMON_ESTADOS);
         localStorage.removeItem(STORAGE_KEYS.REGINALDO_HORA_DO_LANCHE_SCORES);
         localStorage.removeItem(STORAGE_KEYS.REGINALDO_HORA_DO_LANCHE_ESTADOS);
+        localStorage.removeItem(STORAGE_KEYS.MAESTRO_BILLY_SCORES);
+        localStorage.removeItem(STORAGE_KEYS.MAESTRO_BILLY_ESTADOS);
         localStorage.removeItem(STORAGE_KEYS.EXTRA_POINTS);
     };
 

@@ -150,11 +150,7 @@ export const DicionarioSurreal: React.FC<Props> = ({ gameState, addGamePoints, a
 
     return (
         <div className="dicionario-surreal">
-            <GameHeader
-                title="Dicionário Surreal"
-                subtitle="Escolha a definição correta para palavras raras"
-                emoji="📚"
-            />
+            <GameHeader gameId="dicionario-surreal" />
 
             <main className="main-content">
                 <div className="palavras-grid">

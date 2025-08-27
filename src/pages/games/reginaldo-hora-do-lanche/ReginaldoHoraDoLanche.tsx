@@ -160,11 +160,7 @@ export const ReginaldoHoraDoLanche: React.FC<ReginaldoHoraDoLancheProps> = ({
 
     return (
         <div className="reginaldo-hora-do-lanche">
-            <GameHeader
-                title="Reginaldo Hora do Lanche"
-                subtitle="Clique em uma comida para começar a adivinhar!"
-                emoji="🍽️"
-            />
+            <GameHeader gameId="reginaldo-hora-do-lanche" />
 
             <div className="comida-grid">
                 {config.comidas.map((comida) => {
@@ -215,7 +211,7 @@ export const ReginaldoHoraDoLanche: React.FC<ReginaldoHoraDoLancheProps> = ({
                         >
                             {jogado && estado?.pontos !== undefined && (
                                 <div className={`pontos-info ${estado.pontos > 0 ? 'pontos-positivos' :
-                                        estado.pontos < 0 ? 'pontos-negativos' : 'zero-pontos'
+                                    estado.pontos < 0 ? 'pontos-negativos' : 'zero-pontos'
                                     }`}>
                                     {estado.pontos > 0 ? `+${estado.pontos}` : estado.pontos} pontos
                                 </div>
