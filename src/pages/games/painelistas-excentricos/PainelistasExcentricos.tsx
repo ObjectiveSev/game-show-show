@@ -227,7 +227,7 @@ export const PainelistasExcentricos: React.FC<Props> = ({ gameState, addGamePoin
                 <div key={time.id} className="time-section">
                     <h2 className="time-title">{time.name || `Time ${time.id}`}</h2>
                     <div className="time-vazio">
-                        <p>⏳ Este time ainda não tem jogadores selecionados</p>
+                        <p>⏳ {time.name || `Time ${time.id}`} ainda não tem jogadores selecionados</p>
                         <p className="time-vazio-subtitle">
                             Configure os membros do time nas configurações do dashboard
                         </p>
@@ -347,6 +347,7 @@ export const PainelistasExcentricos: React.FC<Props> = ({ gameState, addGamePoin
                 participanteId={participanteSelecionado}
                 timeAdversario={fatoSelecionado && participanteSelecionado && gameState.teams ?
                     (gameState.teams.teamA.members.includes(participanteSelecionado) ? 'B' : 'A') : 'A'}
+                teams={gameState.teams}
                 onSavePoints={handleSavePoints}
                 onReset={handleReset}
                 estadoFato={fatoSelecionado && participanteSelecionado ?

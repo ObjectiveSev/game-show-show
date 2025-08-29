@@ -144,23 +144,23 @@ export const ToolsSection: React.FC<ToolsSectionProps> = ({
                     <div className="razao-modal" style={{
                         backgroundColor: '#2a2a2a',
                         borderRadius: '12px',
-                        padding: '24px',
-                        maxWidth: '400px',
+                        padding: '32px',
+                        maxWidth: '600px',
                         width: '90%',
                         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
                     }}>
-                        <h3 style={{ margin: '0 0 16px 0', color: 'white', textAlign: 'center' }}>
+                        <h3 style={{ margin: '0 0 20px 0', color: 'white', textAlign: 'center' }}>
                             🎯 Adicionar Pontos Extras
                         </h3>
-                        <p style={{ margin: '0 0 20px 0', color: '#ccc', textAlign: 'center' }}>
+                        <p style={{ margin: '0 0 28px 0', color: '#ccc', textAlign: 'center' }}>
                             {pontosPendentes?.points && pontosPendentes.points > 0 ? '+' : ''}{pontosPendentes?.points || 0} ponto{(pontosPendentes?.points || 0) !== 1 ? 's' : ''} para{' '}
                             {getTeamNameFromString(pontosPendentes?.teamId || 'A', { teamA, teamB })}
                         </p>
 
-                        <div className="razao-input-group" style={{ marginBottom: '24px' }}>
+                        <div className="razao-input-group" style={{ marginBottom: '32px' }}>
                             <label htmlFor="razao" style={{
                                 display: 'block',
-                                marginBottom: '8px',
+                                marginBottom: '12px',
                                 color: 'white',
                                 fontWeight: 'bold'
                             }}>
@@ -175,19 +175,19 @@ export const ToolsSection: React.FC<ToolsSectionProps> = ({
                                 maxLength={100}
                                 style={{
                                     width: '100%',
-                                    padding: '12px',
+                                    padding: '16px',
                                     borderRadius: '6px',
                                     border: '1px solid #444',
                                     backgroundColor: '#333',
                                     color: 'white',
-                                    fontSize: '14px'
+                                    fontSize: '16px'
                                 }}
                             />
                         </div>
 
                         <div className="razao-modal-actions" style={{
                             display: 'flex',
-                            gap: '12px',
+                            gap: '16px',
                             justifyContent: 'center'
                         }}>
                             <Button

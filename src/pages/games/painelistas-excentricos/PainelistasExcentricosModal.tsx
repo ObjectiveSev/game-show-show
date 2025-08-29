@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { FatoPainelista } from '../../../types/painelistas';
+import type { Team } from '../../../types';
 import { BaseModal } from '../../../components/base-modal/BaseModal';
 import { VerdadeButton } from '../../../components/verdade-button/VerdadeButton';
 import { MentiraButton } from '../../../components/mentira-button/MentiraButton';
@@ -8,6 +9,7 @@ import { Button } from '../../../components/button/Button';
 import { ButtonType } from '../../../types';
 import { soundManager } from '../../../utils/soundManager';
 import { loadPainelistasScores } from '../../../utils/scoreStorage';
+import { getTeamName } from '../../../utils/teamUtils';
 import './PainelistasExcentricosModal.css';
 
 interface PainelistasExcentricosModalProps {
@@ -17,6 +19,7 @@ interface PainelistasExcentricosModalProps {
     participanteNome: string;
     participanteId: string;
     timeAdversario: 'A' | 'B';
+    teams: { teamA: Team; teamB: Team };
     onSavePoints: (points: number) => void;
     onReset: () => void;
     estadoFato?: {
@@ -33,6 +36,7 @@ export const PainelistasExcentricosModal: React.FC<PainelistasExcentricosModalPr
     participanteNome,
     participanteId,
     timeAdversario,
+    teams,
     onSavePoints,
     onReset,
     estadoFato
@@ -114,7 +118,7 @@ export const PainelistasExcentricosModal: React.FC<PainelistasExcentricosModalPr
             <div className="fato-info">
                 <h3>Participante: {participanteNome}</h3>
                 <p className="fato-texto">{fato.texto}</p>
-                <p className="time-adversario">Time {timeAdversario} deve adivinhar se é verdade ou mentira</p>
+                <p className="time-adversario">{getTeamName(timeAdversario, teams)} deve adivinhar se é verdade ou mentira</p>
             </div>
 
             {!palpite && !estadoFato?.verificado && (

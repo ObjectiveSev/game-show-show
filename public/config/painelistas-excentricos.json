@@ -11,27 +11,12 @@
             "fatos": [
                 {
                     "id": "f1",
-                    "texto": "Já morei em três países diferentes.",
+                    "texto": "Já joguei basquete infantil profissional e participei do estadual de SP",
                     "verdadeiro": true
                 },
                 {
                     "id": "f2",
-                    "texto": "Coleciono pedras que encontro na rua.",
-                    "verdadeiro": false
-                }
-            ]
-        },
-        {
-            "participanteId": "p2",
-            "fatos": [
-                {
-                    "id": "f1",
-                    "texto": "Sou faixa preta em judô.",
-                    "verdadeiro": false
-                },
-                {
-                    "id": "f2",
-                    "texto": "Toquei bateria em uma banda na escola.",
+                    "texto": "Já bebi Cândida",
                     "verdadeiro": true
                 }
             ]
@@ -41,8 +26,83 @@
             "fatos": [
                 {
                     "id": "f1",
-                    "texto": "Tenho um canal de receitas veganas.",
+                    "texto": "Eu já montei um armário pra tomar um banho",
                     "verdadeiro": true
+                },
+                {
+                    "id": "f2",
+                    "texto": "Eu já desloquei o ombro apagando o quadro na sala de aula",
+                    "verdadeiro": false
+                }
+            ]
+        },
+        {
+            "participanteId": "p4",
+            "fatos": [
+                {
+                    "id": "f1",
+                    "texto": "Contei pro Andrezinho que estou grávida e ele está triste porque não quer um irmão",
+                    "verdadeiro": false
+                },
+                {
+                    "id": "f2",
+                    "texto": "Fiz exame de DNA há 2 anos porque achava que meu pai biológico não era meu pai",
+                    "verdadeiro": true
+                }
+            ]
+        },
+        {
+            "participanteId": "p5",
+            "fatos": [
+                {
+                    "id": "f1",
+                    "texto": "Quando criança, eu tinha muito medo de morcegos",
+                    "verdadeiro": true
+                },
+                {
+                    "id": "f2",
+                    "texto": "Eu já vi ao vivo o Hernane marcar 3 gols na mesma partida no Maracanã",
+                    "verdadeiro": true
+                }
+            ]
+        },
+        {
+            "participanteId": "p6",
+            "fatos": [
+                {
+                    "id": "f1",
+                    "texto": "Já fui atropelado por um ônibus",
+                    "verdadeiro": true
+                },
+                {
+                    "id": "f2",
+                    "texto": "Em uma gravação no estúdio de Copa quando eu cheguei no estúdio, descobri que o Magrão errou o dia",
+                    "verdadeiro": false
+                }
+            ]
+        },
+        {
+            "participanteId": "p7",
+            "fatos": [
+                {
+                    "id": "f1",
+                    "texto": "Eu já roubei roupa de uma loja de roupa",
+                    "verdadeiro": false
+                },
+                {
+                    "id": "f2",
+                    "texto": "Eu já saí escondido de casa na madrugada",
+                    "verdadeiro": true
+                }
+            ]
+        },
+        {
+            "participanteId": "p8",
+            "fatos": [
+                {
+                    "id": "f1",
+                    "texto": "Eu já prendi um menino com síndrome de down dentro de um armário e tranquei ele lá dentro quando era criança",
+                    "verdadeiro": false
                 }
             ]
         }

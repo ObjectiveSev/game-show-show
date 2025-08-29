@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Team } from '../../types';
+import { getTeamName } from '../../utils/teamUtils';
 import './TeamSelector.css';
 
 interface TeamSelectorProps {
@@ -27,8 +28,8 @@ export const TeamSelector: React.FC<TeamSelectorProps> = ({
                 disabled={disabled}
             >
                 <option value="">Selecionar o time</option>
-                <option value="A">{teams.teamA?.name || 'Time A'}</option>
-                <option value="B">{teams.teamB?.name || 'Time B'}</option>
+                <option value="A">{getTeamName('A', teams)}</option>
+                <option value="B">{getTeamName('B', teams)}</option>
             </select>
         </div>
     );
