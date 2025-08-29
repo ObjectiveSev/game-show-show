@@ -15,6 +15,7 @@ export const HostExtraPointsScoreSection: React.FC<HostExtraPointsScoreSectionPr
         teamId: string;
         points: number;
         timestamp: number;
+        razao?: string;
     }>>([]);
 
     useEffect(() => {
@@ -56,6 +57,7 @@ export const HostExtraPointsScoreSection: React.FC<HostExtraPointsScoreSectionPr
                         <tr>
                             <th>Time</th>
                             <th>Pontos</th>
+                            <th>Razão</th>
                             <th>Data/Hora</th>
                         </tr>
                     </thead>
@@ -64,6 +66,7 @@ export const HostExtraPointsScoreSection: React.FC<HostExtraPointsScoreSectionPr
                             <tr key={entry.id}>
                                 <td>{getTeamNameFromString(entry.teamId, gameState.teams)}</td>
                                 <td className="center">{entry.points > 0 ? `+${entry.points}` : entry.points}</td>
+                                <td className="razao-cell">{entry.razao || '-'}</td>
                                 <td>{new Date(entry.timestamp).toLocaleString('pt-BR')}</td>
                             </tr>
                         ))}

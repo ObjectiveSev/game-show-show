@@ -100,6 +100,7 @@ export const MaestroBillyModal: React.FC<MaestroBillyModalProps> = ({ isOpen, on
     const handleTocarMusica = () => {
         // Tocar música local da pasta musicas
         const audioPath = `/musicas/${musica.arquivo}`;
+        soundManager.stopCurrentSound();
         soundManager.playCustomSound(audioPath);
         setIsPlaying(true);
     };

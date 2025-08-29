@@ -200,13 +200,14 @@ export const useGameState = () => {
     };
 
     // Função para adicionar pontos extras do host
-    const addExtraPoints = (teamId: 'A' | 'B', points: number) => {
+    const addExtraPoints = (teamId: 'A' | 'B', points: number, razao?: string) => {
         const entry: ExtraPointsEntry = {
             id: Date.now().toString(),
             teamId,
             points,
             timestamp: Date.now(),
-            description: `${points > 0 ? '+' : ''}${points} ponto${points !== 1 ? 's' : ''}`
+            description: `${points > 0 ? '+' : ''}${points} ponto${points !== 1 ? 's' : ''}`,
+            razao: razao || undefined
         };
 
         setGameState(prev => ({

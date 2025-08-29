@@ -31,7 +31,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
     addPoints,
     resetScores,
     onClearLocalStorage,
-    addExtraPoints: onAddExtraPoints
+    addExtraPoints
 }) => {
     const [gamesConfig, setGamesConfig] = useState<GamesConfig | null>(null);
     const [loading, setLoading] = useState(true);
@@ -133,7 +133,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         }
                     }}
                     onClearLocalStorage={onClearLocalStorage}
-                    onAddExtraPoints={onAddExtraPoints}
+                    onAddExtraPoints={addExtraPoints}
                     teamA={gameState.teams.teamA}
                     teamB={gameState.teams.teamB}
                 />

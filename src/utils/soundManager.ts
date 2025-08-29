@@ -5,7 +5,6 @@ export const SoundType = {
 
 export type SoundType = typeof SoundType[keyof typeof SoundType];
 
-
 interface SoundItem {
     url: string;
     audio?: HTMLAudioElement;
@@ -19,14 +18,21 @@ interface SoundConfig {
 }
 
 export class SoundManager {
+    // Private variables
     private static instance: SoundManager;
     private soundConfig!: SoundConfig;
     private currentAudio: HTMLAudioElement | null = null;
+    private isPlaying: boolean = false;
+    private isPaused: boolean = false;
+    private playPromise: Promise<void> | null = null;
+    private isDestroyed: boolean = false;
 
+    // Constructor
     private constructor() {
         this.loadSoundConfig();
     }
 
+    // Public functions
     public static getInstance(): SoundManager {
         if (!SoundManager.instance) {
             SoundManager.instance = new SoundManager();
@@ -34,6 +40,157 @@ export class SoundManager {
         return SoundManager.instance;
     }
 
+    public playSuccessSound(): void {
+        if (this.isDestroyed) return;
+        const soundItem = this.getRandomSound('success');
+        if (soundItem) {
+            this.playAudio(soundItem);
+        }
+    }
+
+    public playErrorSound(): void {
+        if (this.isDestroyed) return;
+        const soundItem = this.getRandomSound('error');
+        if (soundItem) {
+            this.playAudio(soundItem);
+        }
+    }
+
+    public playCustomSound(url: string): void {
+        if (this.isDestroyed) return;
+        try {
+            let audio: HTMLAudioElement;
+
+            // Verificar se já temos o Audio pré-carregado no map de custom sounds
+            const existingAudio = this.soundConfig.custom.get(url);
+
+            if (existingAudio) {
+                audio = existingAudio;
+                audio.currentTime = 0;
+            } else {
+                // Criar novo Audio
+                audio = new Audio(url);
+
+                // Salvar para reutilização no map de custom sounds
+                this.soundConfig.custom.set(url, audio);
+            }
+
+            this.playAudio(audio);
+
+        } catch (error) {
+            console.error(`Erro ao tocar som customizado:`, error);
+        }
+    }
+
+    public stopCurrentSound(): void {
+        if (this.isDestroyed) return;
+        if (this.currentAudio && !this.isPaused) {
+            // Se há uma promise de play em andamento, aguardar
+            if (this.playPromise) {
+                this.playPromise.then(() => {
+                    if (!this.isDestroyed && this.currentAudio) {
+                        this.currentAudio.pause();
+                        this.currentAudio.currentTime = 0;
+                        this.currentAudio = null;
+                        this.isPlaying = false;
+                        this.isPaused = false;
+                        this.playPromise = null;
+                    }
+                }).catch(() => {
+                    // Se a promise falhou, limpar estado
+                    if (!this.isDestroyed) {
+                        this.currentAudio = null;
+                        this.isPlaying = false;
+                        this.isPaused = false;
+                        this.playPromise = null;
+                    }
+                });
+            } else {
+                this.currentAudio.pause();
+                this.currentAudio.currentTime = 0;
+                this.currentAudio = null;
+                this.isPlaying = false;
+                this.isPaused = false;
+            }
+        }
+    }
+
+    public pauseCurrentSound(): void {
+        if (this.isDestroyed) return;
+        if (this.currentAudio && this.isPlaying && !this.isPaused) {
+            // Se há uma promise de play em andamento, aguardar
+            if (this.playPromise) {
+                this.playPromise.then(() => {
+                    if (!this.isDestroyed && this.currentAudio) {
+                        this.currentAudio.pause();
+                        this.isPaused = true;
+                        this.isPlaying = false;
+                    }
+                }).catch(() => {
+                    // Se a promise falhou, limpar estado
+                    if (!this.isDestroyed) {
+                        this.isPlaying = false;
+                        this.isPaused = false;
+                    }
+                });
+            } else {
+                this.currentAudio.pause();
+                this.isPaused = true;
+                this.isPlaying = false;
+            }
+        }
+    }
+
+    public resumeCurrentSound(): void {
+        if (this.isDestroyed) return;
+        if (this.currentAudio && this.isPaused && !this.isPlaying) {
+            this.playAudio(this.currentAudio);
+        }
+    }
+
+    public playGameSound(gameId: string): void {
+        if (this.isDestroyed) return;
+        try {
+            // Verificar se o jogo tem som configurado no map
+            const existingAudio = this.soundConfig.gameSounds.get(gameId);
+
+            if (!existingAudio) {
+                console.warn(`Nenhum som configurado para o jogo: ${gameId}`);
+                return;
+            }
+
+            this.playAudio(existingAudio);
+
+        } catch (error) {
+            console.error(`Erro ao tocar som do jogo ${gameId}:`, error);
+        }
+    }
+
+    public cleanup(): void {
+        this.isDestroyed = true;
+
+        // Limpar promise atual
+        if (this.playPromise) {
+            this.playPromise = null;
+        }
+
+        // Parar áudio atual
+        if (this.currentAudio) {
+            try {
+                this.currentAudio.pause();
+                this.currentAudio.currentTime = 0;
+                this.currentAudio = null;
+            } catch (error) {
+                // Ignorar erros de cleanup
+            }
+        }
+
+        // Resetar estado
+        this.isPlaying = false;
+        this.isPaused = false;
+    }
+
+    // Private functions
     private loadSoundConfig(): void {
         this.soundConfig = {
             success: [
@@ -95,118 +252,122 @@ export class SoundManager {
         };
     }
 
-    private playSound(type: SoundType): void {
-        try {
-            if (!this.soundConfig) {
-                console.warn('Configuração de sons ainda não carregada');
-                return;
-            }
+    // Função centralizada para tocar áudio com overloads
+    private playAudio(audio: HTMLAudioElement): void;
+    private playAudio(soundItem: SoundItem): void;
+    private playAudio(input: HTMLAudioElement | SoundItem): void {
+        if (this.isDestroyed) return;
 
-            const sounds = type === SoundType.SUCCESS ? this.soundConfig.success : this.soundConfig.error;
-
-            if (sounds.length === 0) {
-                console.warn(`Nenhum som configurado para ${type}`);
-                return;
-            }
-
-            // Selecionar som aleatório
-            const randomIndex = Math.floor(Math.random() * sounds.length);
-            const soundItem = sounds[randomIndex];
-
-            let audio: HTMLAudioElement;
-
-            // Verificar se já temos o Audio pré-carregado
-            if (soundItem.audio) {
-                audio = soundItem.audio;
-                // Resetar o áudio para o início antes de tocar
-                audio.currentTime = 0;
-            } else {
-                // Criar novo Audio e salvar para reutilização
-                audio = new Audio(soundItem.url);
-                audio.volume = 0.7; // Volume em 70%
-                soundItem.audio = audio;
-            }
-
-            // Tocar o áudio (sem await)
-            audio.play().catch(error => {
-                console.error(`Erro ao tocar som ${type}:`, error);
-            });
-
-        } catch (error) {
-            console.error(`Erro ao tocar som ${type}:`, error);
-        }
-    }
-
-    public playSuccessSound(): void {
-        this.playSound(SoundType.SUCCESS);
-    }
-
-    public playErrorSound(): void {
-        this.playSound(SoundType.ERROR);
-    }
-
-    public playCustomSound(url: string): void {
         try {
             let audio: HTMLAudioElement;
 
-            // Verificar se já temos o Audio pré-carregado no map de custom sounds
-            const existingAudio = this.soundConfig.custom.get(url);
-
-            if (existingAudio) {
-                audio = existingAudio;
-                audio.currentTime = 0;
+            if (input instanceof HTMLAudioElement) {
+                // Caso 1: Recebeu HTMLAudioElement diretamente
+                audio = input;
             } else {
-                // Criar novo Audio
-                audio = new Audio(url);
-                audio.volume = 0.7; // Volume em 70%
-
-                // Salvar para reutilização no map de custom sounds
-                this.soundConfig.custom.set(url, audio);
+                // Caso 2: Recebeu SoundItem (com url e audio opcional)
+                if (input.audio) {
+                    audio = input.audio;
+                    audio.currentTime = 0;
+                } else {
+                    // Criar novo Audio e salvar para reutilização
+                    audio = new Audio(input.url);
+                    input.audio = audio;
+                }
             }
 
-            // Salvar referência ao áudio atual
-            this.currentAudio = audio;
+            // Verificar se o áudio está pausado e não está tocando
+            if (audio.paused && !this.isPlaying && !this.playPromise) {
+                // Configurar volume e resetar para início
+                audio.volume = 0.7;
+                audio.currentTime = 0;
 
-            // Tocar o áudio
-            audio.play().catch(error => {
-                console.error(`Erro ao tocar som customizado:`, error);
-            });
+                // Salvar referência ao áudio atual
+                this.currentAudio = audio;
+
+                // Configurar event listeners para controle de estado
+                this.setupAudioEventListeners(audio);
+
+                // Tocar o áudio e armazenar a promise
+                this.playPromise = audio.play();
+                this.playPromise
+                    .then(() => {
+                        if (!this.isDestroyed) {
+                            this.isPlaying = true;
+                            this.isPaused = false;
+                            this.playPromise = null;
+                        }
+                    })
+                    .catch((error) => {
+                        if (!this.isDestroyed) {
+                            // Ignorar AbortError (interrupção normal)
+                            if (error.name !== 'AbortError') {
+                                console.error('Erro ao tocar áudio:', error);
+                            }
+                            this.isPlaying = false;
+                            this.isPaused = false;
+                            this.playPromise = null;
+                        }
+                    });
+            }
 
         } catch (error) {
-            console.error(`Erro ao tocar som customizado:`, error);
+            console.error('Erro ao tocar áudio:', error);
         }
     }
 
-    public stopCurrentSound(): void {
-        if (this.currentAudio) {
-            this.currentAudio.pause();
-            this.currentAudio.currentTime = 0;
-            this.currentAudio = null;
+    // Função para obter som aleatório de uma propriedade específica
+    private getRandomSound(property: 'success' | 'error'): SoundItem | null {
+        if (this.isDestroyed) return null;
+
+        const sounds = this.soundConfig[property];
+
+        if (sounds.length === 0) {
+            console.warn(`Nenhum som de ${property} configurado`);
+            return null;
         }
+
+        const randomIndex = Math.floor(Math.random() * sounds.length);
+        return sounds[randomIndex];
     }
 
-    public playGameSound(gameId: string): void {
-        try {
-            // Verificar se o jogo tem som configurado no map
-            const existingAudio = this.soundConfig.gameSounds.get(gameId);
-
-            if (!existingAudio) {
-                console.warn(`Nenhum som configurado para o jogo: ${gameId}`);
-                return;
+    // Configurar event listeners para controle de estado do áudio
+    private setupAudioEventListeners(audio: HTMLAudioElement): void {
+        // On audio playing
+        audio.onplaying = () => {
+            if (!this.isDestroyed) {
+                this.isPlaying = true;
+                this.isPaused = false;
             }
+        };
 
-            // Configurar volume e resetar para início
-            existingAudio.volume = 0.7;
-            existingAudio.currentTime = 0;
+        // On audio pause
+        audio.onpause = () => {
+            if (!this.isDestroyed) {
+                this.isPlaying = false;
+                this.isPaused = true;
+            }
+        };
 
-            // Tocar o áudio
-            existingAudio.play().catch(error => {
-                console.error(`Erro ao tocar som do jogo ${gameId}:`, error);
-            });
+        // On audio ended
+        audio.onended = () => {
+            if (!this.isDestroyed) {
+                this.isPlaying = false;
+                this.isPaused = false;
+                this.currentAudio = null;
+                this.playPromise = null;
+            }
+        };
 
-        } catch (error) {
-            console.error(`Erro ao tocar som do jogo ${gameId}:`, error);
-        }
+        // On audio error
+        audio.onerror = () => {
+            if (!this.isDestroyed) {
+                this.isPlaying = false;
+                this.isPaused = false;
+                this.currentAudio = null;
+                this.playPromise = null;
+            }
+        };
     }
 }
 

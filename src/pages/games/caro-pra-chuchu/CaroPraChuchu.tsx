@@ -78,6 +78,14 @@ export const CaroPraChuchu: React.FC<Props> = ({ gameState, addGamePoints, addPo
         setModalOpen(true);
     };
 
+    // Cleanup effect para parar o som do jogo quando o modal fechar
+    useEffect(() => {
+        if (!modalOpen) {
+            // Parar o som do jogo quando o modal fechar
+            soundManager.stopCurrentSound();
+        }
+    }, [modalOpen]);
+
     const handleSalvarPontuacao = (timeId: 'A' | 'B', tipoAcerto: 'moedaCorreta' | 'pertoSuficiente' | 'acertoLendario' | 'erro') => {
         if (!itemSelecionado || !dados) return;
 

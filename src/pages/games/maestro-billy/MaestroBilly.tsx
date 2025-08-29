@@ -100,6 +100,9 @@ export const MaestroBilly: React.FC<MaestroBillyProps> = ({
     const handleCardClick = (musica: Musica) => {
         const estado = estadosMusicas.find(e => e.id === musica.id);
         if (estado) {
+            // Parar qualquer música que esteja tocando antes de abrir o modal
+            soundManager.stopCurrentSound();
+
             // Só tocar som se não foi lida antes
             if (!estado.lida) {
                 soundManager.playGameSound(GAME_IDS.MAESTRO_BILLY);

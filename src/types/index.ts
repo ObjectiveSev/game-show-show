@@ -42,6 +42,7 @@ export interface ExtraPointsEntry {
     points: number;
     timestamp: number;
     description: string;
+    razao?: string; // Razão opcional para os pontos extras
 }
 
 export interface AppState {

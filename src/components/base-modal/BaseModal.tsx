@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import './BaseModal.css';
+import { soundManager } from '../../utils/soundManager';
 
 interface BaseModalProps {
     isOpen: boolean;
@@ -19,6 +20,8 @@ export const BaseModal: React.FC<BaseModalProps> = ({
     useEffect(() => {
         const handleEsc = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
+                // Parar música antes de fechar
+                soundManager.stopCurrentSound();
                 onClose();
             }
         };
@@ -29,17 +32,24 @@ export const BaseModal: React.FC<BaseModalProps> = ({
         }
     }, [isOpen, onClose]);
 
+    // Função para fechar modal com parada de música
+    const handleClose = () => {
+        // Parar música antes de fechar
+        soundManager.stopCurrentSound();
+        onClose();
+    };
+
     if (!isOpen) return null;
 
     return (
-        <div className="base-modal-overlay" onClick={onClose}>
+        <div className="base-modal-overlay" onClick={handleClose}>
             <div
                 className={`base-modal base-modal--${size}`}
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="base-modal-header">
                     <h2>{title}</h2>
-                    <button className="base-modal-close-button" onClick={onClose}>×</button>
+                    <button className="base-modal-close-button" onClick={handleClose}>×</button>
                 </div>
 
                 <div className="base-modal-body">
