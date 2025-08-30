@@ -103,6 +103,11 @@
                     "id": "f1",
                     "texto": "Eu já prendi um menino com síndrome de down dentro de um armário e tranquei ele lá dentro quando era criança",
                     "verdadeiro": false
+                },
+                {
+                    "id": "f2",
+                    "texto": "Eu invadi duas casas, roubei itens pela janela em plena luz do dia e despejei os objetos roubados em outras residências",
+                    "verdadeiro": true
                 }
             ]
         }
