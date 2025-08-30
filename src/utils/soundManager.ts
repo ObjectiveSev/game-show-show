@@ -180,7 +180,7 @@ export class SoundManager {
                 this.currentAudio.pause();
                 this.currentAudio.currentTime = 0;
                 this.currentAudio = null;
-            } catch (error) {
+            } catch {
                 // Ignorar erros de cleanup
             }
         }

@@ -221,7 +221,7 @@ export const MaestroBilly: React.FC<MaestroBillyProps> = ({
             const scores = JSON.parse(localStorage.getItem(STORAGE_KEYS.MAESTRO_BILLY_SCORES) || '[]');
 
             // Encontrar o scoreEntry que representa o acerto final (pontos positivos)
-            const acertoEntry = scores.find((score: any) =>
+            const acertoEntry = scores.find((score: { musicaId: string; totalPontos: number; ninguemAcertou: boolean; timeAdivinhador?: string }) =>
                 score.musicaId === musicaId &&
                 score.totalPontos > 0 &&
                 !score.ninguemAcertou

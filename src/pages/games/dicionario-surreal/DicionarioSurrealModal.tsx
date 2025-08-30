@@ -56,7 +56,7 @@ export const DicionarioSurrealModal: React.FC<DicionarioSurrealModalProps> = ({ 
                 setDicasAbertasLocais(palavra.definicoes.map(() => false));
             }
         }
-    }, [isOpen, palavra, estado]);
+    }, [isOpen, palavra, estado, pontuacao.baseAcerto, pontuacao.pontosPorDica]);
 
     useEffect(() => {
         if (!palavra || !estado) return;
@@ -69,7 +69,7 @@ export const DicionarioSurrealModal: React.FC<DicionarioSurrealModalProps> = ({ 
         } else {
             setPontosAtuais(base);
         }
-    }, [palavra, estado, pontuacao, verificado, acertou, dicasAbertasLocais]);
+    }, [palavra, estado, pontuacao.baseAcerto, pontuacao.pontosPorDica, verificado, acertou, dicasAbertasLocais]);
 
     if (!isOpen || !palavra || !estado) return null;
 
