@@ -157,42 +157,44 @@ export const OvoOuGalinha: React.FC<Props> = ({ gameState, addGamePoints }) => {
         <div className="ovo-ou-galinha-page">
             <GameHeader gameId="ovo-ou-galinha" />
 
-            <div className="trios-grid">
-                {config.trios.map((trio) => {
-                    const estado = estadosTrios.get(trio.id);
-                    const completado = estado !== undefined;
+            <main className="main-content">
+                <div className="trios-grid">
+                    {config.trios.map((trio) => {
+                        const estado = estadosTrios.get(trio.id);
+                        const completado = estado !== undefined;
 
-                    return (
-                        <DefaultCard
-                            key={trio.id}
-                            title={`Trio #${trio.id}`}
-                            tags={
-                                completado
-                                    ? [TagType.READ, estado.acertou ? TagType.CORRECT : TagType.ERROR]
-                                    : [TagType.PENDING]
-                            }
-                            body={
-                                completado
-                                    ? `Respondido por: ${getTeamNameFromString(estado.timeAdivinhador, gameState.teams)}`
-                                    : undefined
-                            }
-                            button={
-                                completado
-                                    ? {
-                                        type: ButtonType.RESET,
-                                        onClick: (e) => {
-                                            e.stopPropagation();
-                                            handleResetarTrio(trio.id);
+                        return (
+                            <DefaultCard
+                                key={trio.id}
+                                title={`Trio #${trio.id}`}
+                                tags={
+                                    completado
+                                        ? [TagType.READ, estado.acertou ? TagType.CORRECT : TagType.ERROR]
+                                        : [TagType.PENDING]
+                                }
+                                body={
+                                    completado
+                                        ? `Respondido por: ${getTeamNameFromString(estado.timeAdivinhador, gameState.teams)}`
+                                        : undefined
+                                }
+                                button={
+                                    completado
+                                        ? {
+                                            type: ButtonType.RESET,
+                                            onClick: (e) => {
+                                                e.stopPropagation();
+                                                handleResetarTrio(trio.id);
+                                            }
                                         }
-                                    }
-                                    : undefined
-                            }
-                            onClick={() => handleTrioClick(trio)}
-                            className={completado ? 'completado' : ''}
-                        />
-                    );
-                })}
-            </div>
+                                        : undefined
+                                }
+                                onClick={() => handleTrioClick(trio)}
+                                className={completado ? 'completado' : ''}
+                            />
+                        );
+                    })}
+                </div>
+            </main>
 
             {modalOpen && trioSelecionado && (
                 <OvoOuGalinhaModal

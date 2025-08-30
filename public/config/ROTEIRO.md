@@ -135,16 +135,6 @@ Mande seus 2 fatos e a explicação se cada um é verdade ou mentira!
 ---
 
 ### Fatos dos Participantes
-*[Cada participante deve enviar 2 fatos sobre si mesmo antes do jogo]*
-
-**Baby:** _[2 fatos pendentes]_
-**Victor:** _[2 fatos pendentes]_
-**João:** _[2 fatos pendentes]_
-**Átila:** _[2 fatos pendentes]_
-**Álan:** _[2 fatos pendentes]_
-**Bruno:** _[2 fatos pendentes]_
-**Matheus:** _[2 fatos pendentes]_
-**Sand:** _[2 fatos pendentes]_
 
 ---
 

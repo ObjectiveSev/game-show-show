@@ -130,6 +130,9 @@ export const VerdadesAbsurdasModal: React.FC<VerdadesAbsurdasModalProps> = ({
             // Clicou em uma verdade - usar estados locais
             const verdadesEncontradas = [...verdadesEncontradasLocal];
             if (!verdadesEncontradas.includes(indiceVerdade)) {
+                // Tocar som de sucesso ao acertar uma verdade
+                soundManager.playSuccessSound();
+
                 verdadesEncontradas.push(indiceVerdade);
                 verdadesEncontradas.sort((a, b) => a - b);
                 setVerdadesEncontradasLocal(verdadesEncontradas);

@@ -181,7 +181,10 @@ export const VerdadesAbsurdas: React.FC<VerdadesAbsurdasProps> = ({
             ...estadoAtual,
             lido: true,
             timeLeitor,
-            pontuacaoSalva: true
+            pontuacaoSalva: true,
+            verdadesEncontradas: dadosTemporarios.verdadesEncontradas,
+            erros: dadosTemporarios.erros,
+            verdadesReveladas: dadosTemporarios.verdadesReveladas
         };
         handleUpdateEstado(novoEstado);
 
