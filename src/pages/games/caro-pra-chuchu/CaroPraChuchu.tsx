@@ -11,7 +11,7 @@ import { DefaultCard } from '../../../components/default-card/DefaultCard';
 import { TagType, ButtonType } from '../../../types';
 import { getTeamNameFromString } from '../../../utils/teamUtils';
 import { soundManager } from '../../../utils/soundManager';
-import './CaroPrachuchu.css';
+import './CaroPraChuchu.css';
 
 interface Props {
     gameState: AppState & { syncPoints?: () => void };
